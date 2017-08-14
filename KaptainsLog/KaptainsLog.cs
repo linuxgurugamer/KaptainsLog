@@ -364,6 +364,11 @@ namespace KaptainsLogNamespace
             {
                 GameEvents.onGUIApplicationLauncherReady.Add(OnGUIAppLauncherReady);
                 GameEvents.onGUIApplicationLauncherDestroyed.Add(OnGUIAppLauncherDestroyed);
+
+                // Add hooks for showing/hiding on F2
+                GameEvents.onShowUI.Add(showUI);
+                GameEvents.onHideUI.Add(hideUI);
+
                 OnGUIAppLauncherReady();
             }
             else
@@ -426,6 +431,16 @@ namespace KaptainsLogNamespace
             }
         }
 
+        bool visibleUI = true;
+        internal void showUI() // triggered on F2
+        {
+            visibleUI = true;
+        }
+
+        internal void hideUI() // triggered on F2
+        {
+            visibleUI = false;
+        }
 
         void onManualEntry()
         {
@@ -556,7 +571,8 @@ namespace KaptainsLogNamespace
 
         public void OnGUI()
         {
-
+            if (!visibleUI)
+                return;
             GUI.color = Color.grey;
             //  GUI.skin = HighLogic.Skin;
             Event e = Event.current;
@@ -582,17 +598,20 @@ namespace KaptainsLogNamespace
 
             if (visibleByToolbar)
             {
-                int buttonWidth = 40;
-                if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
-                    buttonWidth = 0;
-                if (mainWindow.x + mainWindow.width > Screen.width - buttonWidth)
-                    mainWindow.x = Screen.width - mainWindow.width - buttonWidth;
-                if (mainWindow.x < 0)
-                    mainWindow.x = 0;
-                if (mainWindow.y < 0)
-                    mainWindow.y = 0;
-                if (mainWindow.y + mainWindow.height > Screen.height)
-                    mainWindow.y = Screen.height - mainWindow.height;
+                if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().keepOnScreen)
+                {
+                    int buttonWidth = 40;
+                    if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
+                        buttonWidth = 0;
+                    if (mainWindow.x + mainWindow.width > Screen.width - buttonWidth)
+                        mainWindow.x = Screen.width - mainWindow.width - buttonWidth;
+                    if (mainWindow.x < 0)
+                        mainWindow.x = 0;
+                    if (mainWindow.y < 0)
+                        mainWindow.y = 0;
+                    if (mainWindow.y + mainWindow.height > Screen.height)
+                        mainWindow.y = Screen.height - mainWindow.height;
+                }
                 mainWindow = GUILayout.Window(mainWindowId, mainWindow, DisplayMainWindow, "Kaptain's Log Display", windowStyle);
             }
             if (notesEntry && !utils.recoveryRequested)
@@ -705,14 +724,15 @@ namespace KaptainsLogNamespace
             largestUniTime = 0;
             allVessels.Clear();
 
+           
             // Get size and other data from list of log entries.
             for (int i = 0; i < kaptainsLogList.Count; i++)
             {
                 var le1 = kaptainsLogList[i];
 
-                highestAltitude = Math.Max(highestAltitude, le1.altitude + 1);
-                largestTime = Math.Max(largestTime, le1.missionTime + 1);
-                highestSpeed = Math.Max(highestSpeed, le1.speed + 1);
+                highestAltitude = Math.Min(Math.Max(highestAltitude, le1.altitude + 1), HighLogic.CurrentGame.Parameters.CustomParams<KL_5>().altitudeFilterMax);
+                largestTime = Math.Max(largestTime, le1.missionTime); // allow filter to be 2 hours later than newest mission time.
+                highestSpeed = Math.Min(Math.Max(highestSpeed, le1.speed + 1), HighLogic.CurrentGame.Parameters.CustomParams<KL_5>().speedFilterMax);
                 largestUniTime = Math.Max(largestUniTime, le1.universalTime + 1);
 
                 if (!allVessels.ContainsKey(le1.id))
@@ -751,7 +771,7 @@ namespace KaptainsLogNamespace
             }
 
             maxAlt = (float)highestAltitude;
-            misTimEnd = (float)largestTime;
+            misTimEnd = (float)Planetarium.GetUniversalTime() + 3600 * 2;
             spdHigh = (float)highestSpeed;
             uniTimEnd = (float)largestUniTime;
 
@@ -1067,6 +1087,8 @@ namespace KaptainsLogNamespace
                     logEntryComplete = false;
                     notesEntryComplete = false;
                     utils.SaveLogs();
+                    if (visibleByToolbar)
+                        UpdateImageCache();
                 }
                 else
                 {

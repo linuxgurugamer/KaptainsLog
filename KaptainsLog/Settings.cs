@@ -30,11 +30,19 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("Use Blizzy toolbar if installed")]
         public bool useBlizzy = false;
 
+        [GameParameters.CustomParameterUI("Keep windows on screen",
+            toolTip ="Prevents windows from being dragged to be off-screen, even partially")]
+        public bool keepOnScreen = true;
+
         [GameParameters.CustomParameterUI("Override Pause menu in Flight scene")]
         public bool overridePause = true;
 
         [GameParameters.CustomParameterUI("Screenshot at log entry")]
         public bool screenshot = true;
+
+        [GameParameters.CustomParameterUI("Save screenshots/thumbnails in save folder",
+            toolTip ="The screenshots will be saved in a folder called 'KaptainsLogScreenshots' in the save folder")]
+        public bool saveScreenshotsInSaveFolder = true;
 
 
         [GameParameters.CustomParameterUI("Hide UI for screenshot",
@@ -50,14 +58,14 @@ namespace KaptainsLogNamespace
         public bool keepPNG = true;
 
         [GameParameters.CustomIntParameterUI("Thumbnail size", minValue = 24, maxValue = 200)]
-        public int thumbnailSize = 60;
+        public int thumbnailSize = 120;
 
         [GameParameters.CustomParameterUI("Use Bilinear filtering for thumbnail",
                     toolTip = "If false, will use point filtering")]
         public bool useBilinear = true;
 
 
-        [GameParameters.CustomFloatParameterUI("Delay before pause for notes", minValue = 0.0f, maxValue = 5.0f)]
+        [GameParameters.CustomFloatParameterUI("Delay before pause for screenshot & notes", minValue = 0.0f, maxValue = 5.0f)]
         public double delayBeforePause = 2.5f;
 
         [GameParameters.CustomFloatParameterUI("Minimum time between log entries", minValue = 0.0f, maxValue = 300f)]
@@ -76,10 +84,11 @@ namespace KaptainsLogNamespace
             hideUIforScreenshot = true;
             saveAsJPEG = true;
             keepPNG = true;
-            thumbnailSize = 60;
+            thumbnailSize = 120;
             useBilinear = true;
             delayBeforePause = 2.5f;
             minTime = 60f;
+            saveScreenshotsInSaveFolder = true;
 
         }
 

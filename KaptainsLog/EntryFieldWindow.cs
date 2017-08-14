@@ -18,7 +18,7 @@ namespace KaptainsLogNamespace
         void DisplayEntryFieldWindow(int id)
         {
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Specify vessels to filter on:");
+            GUILayout.Label("Specify " + LogEntry.displayFieldName(entryField) + " to filter on:");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();

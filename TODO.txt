@@ -1,4 +1,0 @@
-
-after revert, reset all values
-
-use onGameStateLoad to know when a revert is done

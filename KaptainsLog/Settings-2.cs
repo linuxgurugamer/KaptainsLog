@@ -17,7 +17,7 @@ namespace KaptainsLogNamespace
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "Kaptain's Log 2"; } }
         public override string DisplaySection { get { return "Kaptain's Log 2"; } }
-        public override int SectionOrder { get { return 3; } }
+        public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return true; } }
 
         [GameParameters.CustomParameterUI("Vessel name")]
@@ -51,7 +51,45 @@ namespace KaptainsLogNamespace
         public bool lastItem = false;
 
 
-     
+
+
+        public override void SetDifficultyPreset(GameParameters.Preset preset)
+        {
+        }
+
+        public override bool Enabled(MemberInfo member, GameParameters parameters)
+        {
+            return true;
+        }
+
+        public override bool Interactible(MemberInfo member, GameParameters parameters)
+        {
+            return true;
+        }
+
+        public override IList ValidValues(MemberInfo member)
+        {
+            return null;
+        }
+    }
+    public class KL_5 : GameParameters.CustomParameterNode
+    {
+        public override string Title { get { return "Filter Limits"; } }
+        public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
+        public override string Section { get { return "Kaptain's Log 2"; } }
+        public override string DisplaySection { get { return "Kaptain's Log 2"; } }
+        public override int SectionOrder { get { return 2; } }
+        public override bool HasPresets { get { return true; } }
+
+        [GameParameters.CustomFloatParameterUI("Upper limit on altitude filter", minValue = 100.0f, maxValue = 500000.0f)]
+        public double altitudeFilterMax = 300000f;
+
+        [GameParameters.CustomFloatParameterUI("Upper limit on speed filter", minValue = 100.0f, maxValue = 5000.0f)]
+        public double speedFilterMax = 2500;
+
+
+
+
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {

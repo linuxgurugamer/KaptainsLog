@@ -43,8 +43,11 @@ namespace KaptainsLogNamespace
                         continue;
                     GUILayout.BeginHorizontal();
                     GUILayout.Label("  ");
+                    bool oldFilter = displayFields[d].filter;
                     displayFields[d].filter = GUILayout.Toggle(displayFields[d].filter, "");
                     GUI.enabled = displayFields[d].filter;
+                    if (oldFilter != displayFields[d].filter)
+                        Shelter.dirtyFilter = true;
 
                     if (f == Fields.vesselName || f == Fields.vesselSituation || f == Fields.mainBody || f == Fields.eventType || f == Fields.controlLevel)
                     {
@@ -123,7 +126,8 @@ namespace KaptainsLogNamespace
 
                                 GUILayout.Label(utils.GetKerbinTime(misTimEnd) + ":", GUILayout.Width(LABEL_WIDTH));
                                 old = misTimEnd;
-                                misTimEnd = GUILayout.HorizontalSlider(misTimEnd, 0, (float)largestTime, GUILayout.Width(SLIDER_WIDTH));
+                                
+                                misTimEnd = GUILayout.HorizontalSlider(misTimEnd, 0, (float)Planetarium.GetUniversalTime() + 3600 * 2, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != misTimEnd)
                                     Shelter.dirtyFilter = true;
                                 if (misTimStart > misTimEnd)

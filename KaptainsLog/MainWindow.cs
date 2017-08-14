@@ -56,6 +56,27 @@ namespace KaptainsLogNamespace
             Shelter.imgCacheFilled = true;
         }
 
+        void UpdateImageCache()
+        {
+            for (int i = imgCacheList.Count; i < kaptainsLogList.Count; i++)
+            {
+                var le1 = kaptainsLogList[i];
+
+                var fileName = le1.jpgThumbnailName;
+                GUIContent content = new GUIContent();
+                if (System.IO.File.Exists(fileName))
+                {
+
+                    string _imageurl = "file://" + fileName;
+                    var imagetex = new WWW(_imageurl + _imageurl);
+                    content.image = imagetex.texture;
+                }
+                imgCacheList.Add(content);
+            }
+            Shelter.imgCacheFilled = true;
+        }
+
+
         int? deleteItem, editItem;
 
         void DisplayMainWindow(int id)
@@ -230,6 +251,7 @@ namespace KaptainsLogNamespace
             {
                 kaptainsLogList.RemoveAt(deleteItem.Value);
                 deleteItem = null;
+                utils.SaveLogs();
             }
             if (editItem != null && !notesEntry)
             {

@@ -1,0 +1,14 @@
+0.0.1.4
+		Released to beta
+
+0.0.1.x
+		Fixed label on entry field window
+		Made mod follow the UI visiblity flag
+		Added upper limit on altitude and speed filters, upper limits specified in settings
+		Added option to allow windows to be off-screen
+		Fixed upper limit of time filter to be current time + 2 hours
+		Fixed issue where filters were being applied even if disabled
+		Changed default thumbnail size from 60 to 120
+		Added option to save screenshots in save directory rather than global save directory
+		Added ScenarioModule to save screenshot count to fix issue of invalid screenshots being saved.
+		Added code to update image cache while screenshots are in progress and window displayed

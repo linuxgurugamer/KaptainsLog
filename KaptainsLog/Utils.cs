@@ -662,7 +662,7 @@ else
             leLocal.manualEntryRequired = manualEntryRequired;
             leLocal.eventType = evt;
             leLocal.notes = notes;
-            klw.notesText = "";
+            klw.notesText = notes;
 
             if (manualEntryRequired)
             {
@@ -1019,17 +1019,37 @@ else
         public int snapshotTaken = 0;
 
         public bool wasUIVisible;
-        string screenshotPath = KaptainsLog.ROOT_PATH + "Screenshots/";
+       
        // public string thumbnailName;
 
         public void queueScreenshot(int cnt, ref LogEntry le)
         {
-            string s = KaptainsLog.screenshotPrefix + HighLogic.SaveFolder+"_" + cnt.ToString("000");
+            cnt = KLScenario.GetNextCnt;
+            Log.Info("queueScreenshot cnt: " + cnt.ToString());
+            string s;
+            string screenshotPath = KaptainsLog.ROOT_PATH + "Screenshots/";
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().saveScreenshotsInSaveFolder)
+            {
+                screenshotPath = KaptainsLog.ROOT_PATH + "saves/" + HighLogic.SaveFolder + "/KaptainsLogScreenshots/";
+                if (!System.IO.Directory.Exists(screenshotPath))
+                    System.IO.Directory.CreateDirectory(screenshotPath);
+                s = "KL_" + cnt.ToString("000");
+            }
+            else
+            {
+                s = KaptainsLog.screenshotPrefix + HighLogic.SaveFolder + "_" + cnt.ToString("000");
+            }
 
             le.pngName = System.IO.Path.GetFullPath(screenshotPath) + s + ".png";
             le.pngThumbnailName = System.IO.Path.GetFullPath(screenshotPath) + s + "_thumb.png";
             le.jpgThumbnailName = System.IO.Path.GetFullPath(screenshotPath) + s + "_thumb.jpg";
             le.jpgName = System.IO.Path.GetFullPath(screenshotPath) + s + ".jpg";
+
+            Log.Info("pngName: " + le.pngName);
+            Log.Info("jpgName: " + le.jpgName);
+            Log.Info("pngThumbnailName: " + le.pngThumbnailName);
+            Log.Info("jpgThumbnailName: " + le.jpgThumbnailName);
+
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().saveAsJPEG)
                 le.screenshotName = le.pngName;
             else

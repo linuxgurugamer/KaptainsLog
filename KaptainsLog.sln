@@ -8,12 +8,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFolder", "SolutionFolder", "{46E05230-E19A-42F6-BA4E-6AFBB1E61FCC}"
 	ProjectSection(SolutionItems) = preProject
 		buildRelease.bat = buildRelease.bat
+		ChangeLog.txt = ChangeLog.txt
 		deploy.bat = deploy.bat
 		KaptainsLog.version = KaptainsLog.version
 		LICENSE = LICENSE
 		README.md = README.md
 		TemplateDoc.txt = TemplateDoc.txt
-		TODO.txt = TODO.txt
 	EndProjectSection
 EndProject
 Global
