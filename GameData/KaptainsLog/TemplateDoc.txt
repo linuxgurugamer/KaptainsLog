@@ -1,0 +1,66 @@
+Template Documentation
+
+Templates consist of up to four files, one of which is required and the others are specified inside this file:
+
+	templateConfig.cfg - Required
+
+
+All of these entries are case sensitive.  The filenames for the header, detail and footer can be overridden in the config file
+
+The template.cfg file is in the standed KSP config file format, and can contain the following optional entry fields:
+
+	TemplateConfig
+	{
+		isHtml = true			// True if this is an HTML template, false otherwise
+		entriesPerPage = ##		// Specifies how many entries are put on each page.  If not there, then no paging is done.
+		fileSuffix = html		// Optional file suffix
+		header = header.tmpl	//
+		detail = detail.tmpl
+		footer = footer.tmpl
+
+		// The following lines allow you to specify the IMG html for the different types of images
+		// The default is shown.  
+		// Note that you MUST leave the     [url]     which will be replaced by the file URL
+
+		flagHtml = <img src="[url]">
+		screenshotHtml = <img src="[url]">
+		thumbnailHtml = <img src="[url]">
+
+		headerImgHtml = <img src="[url]">
+		footerImgHtml = <img src="[url]">
+	}
+
+If html = true, then the images are formatted with the appropriate HTML tags for images
+
+Headers and footers have the following template fields.  These fields are replaced with the appropriate data from the logs.
+
+	[HeaderImg]		Image file
+	[FooterImg]		Image file
+	[Page]			Page number
+	[HeaderTitle]
+	[FooterTitle]
+	[Flag]
+
+All of these can be used interchangably in both the header and footer templates.
+
+
+Detail templates are used for each line being exported.  The following fields are available:
+
+	[VesselName]
+	[UniversalTime]
+	[UTCtime]
+	[MissionTime]
+	[Situation]
+	[MainBody]
+	[ControlLevel]
+	[Altitude]
+	[Speed]
+	[EventType]
+	[Notes-0]		First line of notes, zero based
+	[Notes-1]		Second line of notes
+	[Notes]			All the notes
+	[Screenshot]	Screenshots are only printed if selected on the log display 
+	[Thumbnail]
+	[VesselFlag]
+
+Note that you can actually create a custom CSV export using this syntax
