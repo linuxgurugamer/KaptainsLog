@@ -119,7 +119,9 @@ namespace KaptainsLogNamespace
         {
             Log.Info("onGameStatePostLoad");
             leQ.Clear();
-            KaptainsLog.Instance.InitOnLoad();
+            //KaptainsLog.Instance.InitOnLoad();
+            Shelter.Instance.DoInit();
+            
             CreateLogEntry(Events.Revert, false, "", "");
 
         }
@@ -174,12 +176,16 @@ namespace KaptainsLogNamespace
         void onKerbalPassedOutFromGeeForce(ProtoCrewMember crewMember)
         {
             Log.Info("onKerbalPassedOutFromGeeForce");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnKerbalPassedOutFromGeeForce)
+                return;
             CreateLogEntry(Events.KerbalPassedOutFromGeeForce, false, crewMember.name, crewMember.name);
         }
 
         void onCrewOnEva(GameEvents.FromToAction<Part, Part> b)
         {
             Log.Info("onCrewOnEva");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnCrewOnEVA)
+                return;
             Log.Info("from: " + b.from.partInfo.name + "    to: " + b.to.partInfo.name);
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnCrewOnEVA)
             //    klw.activatePause();
@@ -206,6 +212,8 @@ namespace KaptainsLogNamespace
             if (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
                 return;
             Log.Info("onCrashSplashdown");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnCrashSplashdown)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnCrashSplashdown)
             //    klw.activatePause();
             CreateLogEntry(Events.Landed, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnCrashSplashdown);
@@ -221,7 +229,8 @@ namespace KaptainsLogNamespace
             if (pv == null || (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION))
                 return;
             Log.Info("onVesselRecovered");
-
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnVesselRecovered)
+                return;
             recoveryRequested = false;
             CreateLogEntry(Events.VesselRecovered, false, pv.vesselName, pv.vesselName);
         }
@@ -246,7 +255,8 @@ namespace KaptainsLogNamespace
             if (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
                 return;
             Log.Info("onLaunch");
-
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnLaunch)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnLaunch)
             //    klw.activatePause();
             CreateLogEntry(Events.Launch, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnLaunch, getCurrentCrew());
@@ -257,6 +267,8 @@ namespace KaptainsLogNamespace
             if (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
                 return;
             Log.Info("onStageSeperation");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnStageSeparation)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnStageSeparation)
             //    klw.activatePause();
             CreateLogEntry(Events.StageSeparation, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnStageSeparation);
@@ -266,6 +278,8 @@ namespace KaptainsLogNamespace
             if (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION)
                 return;
             Log.Info("onStageActivate");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnStageActivate)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnStageActivate)
             //    klw.activatePause();
             CreateLogEntry(Events.StageActivate, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnStageActivate);
@@ -276,7 +290,8 @@ namespace KaptainsLogNamespace
             if (p == null || (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION))
                 return;
             Log.Info("onPartDie");
-
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnPartDie)
+                return;
             string s;
             if (p.vessel.rootPart != p)
                 s = p.vessel.name + ", " + p.partInfo.name + " was destroyed";
@@ -294,6 +309,8 @@ namespace KaptainsLogNamespace
             if (evt.from.vessel.rootPart.Modules.Contains<KerbalEVA>())
                 return;
             Log.Info("onPartCouple");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnPartCouple)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnPartCouple)
             //    klw.activatePause();
 
@@ -323,12 +340,13 @@ namespace KaptainsLogNamespace
             if (v.vesselType == VesselType.Flag)
                 return;
             Log.Info("onVesselWasModified");
-
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnVesselWasModified)
+                return;
             var s = v.name + " was modified";
             if (v == FlightGlobals.ActiveVessel)
                 CreateLogEntry(Events.VesselModified, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnVesselWasModified, s);
-else
-            CreateLogEntry(Events.VesselModified, false, s);
+            else
+                CreateLogEntry(Events.VesselModified, false, s);
         }
 
         void onVesselCrewWasModified(Vessel v)
@@ -344,6 +362,8 @@ else
                 kerbalTransferred--;
                 return;
             }
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnVesselCrewWasModified)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnVesselCrewWasModified)
             //    klw.activatePause();
             CreateLogEntry(Events.CrewModified, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnVesselCrewWasModified);
@@ -354,6 +374,8 @@ else
             if (v == null || (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION))
                 return;
             Log.Info("onVesselOrbitClosed");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnVesselOrbitClosed)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnVesselOrbitClosed)
             //    klw.activatePause();
             CreateLogEntry(Events.OrbitClosed, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnVesselOrbitClosed);
@@ -364,6 +386,8 @@ else
             if (v == null || (HighLogic.LoadedScene != GameScenes.SPACECENTER && HighLogic.LoadedScene != GameScenes.FLIGHT && HighLogic.LoadedScene != GameScenes.TRACKSTATION))
                 return;
             Log.Info("onVesselOrbitEscaped, vessel: " + v.name);
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnVesselOrbitEscaped)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnVesselOrbitEscaped)
             //    klw.activatePause();
             CreateLogEntry(Events.OrbitEscaped, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnVesselOrbitEscaped);
@@ -376,6 +400,8 @@ else
             //if (snapshotTaken > 0)
                 //return;
             Log.Info("onFlightLogRecorded");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnFlightLogRecorded)
+                return;
             //CreateLogEntry(Events.FlightLogRecorded);
 
             FlightLog.Entry fe = VesselTripLog.FromVessel(v).Log.Last();
@@ -389,6 +415,8 @@ else
         void onCrewKilled(EventReport report)
         {
             Log.Info("onCrewKilled");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnCrewKilled)
+                return;
             // report.sender
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnCrewKilled)
             //    klw.activatePause();
@@ -425,6 +453,8 @@ else
             // This happens when, for example, a kerbal goes EVA on a planet
             if (data.from.bodyName == data.to.bodyName)
                 return;
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnDominantBodyChange)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnDominantBodyChange)
             //    klw.activatePause();
             CreateLogEntry(Events.DominantBodyChange, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnDominantBodyChange, data.from.bodyName + " to " + data.to.bodyName);
@@ -433,10 +463,11 @@ else
         void onFlagPlant(Vessel v)
         {
             Log.Info("onFlagPlant");
-
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnFlagPlant)
+                return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnFlagPlant)
             //    klw.activatePause();
-            
+
             CreateLogEntry(Events.FlagPlant, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnFlagPlant,  v.vesselName + " planted flag on " + v.mainBody.name);
         }
 
@@ -449,6 +480,8 @@ else
             if (node == null)
                 return;
             Log.Info("onProgressAchieve");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnProgressAchieve)
+                return;
             // Need to get info from the progressnode and add it to the notes
             if (progressParser .isIntervalType(node))
             {
@@ -479,6 +512,9 @@ else
             if (!node.IsComplete)
                 return;
             Log.Info("onProgressComplete");
+
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnProgressComplete)
+                return;
 
             Log.Info("onProgressComplete, node type: " + node.GetType().ToString());
             // Need to get info from the progressnode and add it to the notes
@@ -667,7 +703,8 @@ else
             if (manualEntryRequired)
             {
                 Log.Info("queueScreenshot 2");
-                queueScreenshot(KaptainsLog.kaptainsLogList.Count + 1, ref leLocal);
+                
+                queueScreenshot(ref leLocal);
                 klw.notesEntryComplete = false; 
                 leQ.Enqueue(leLocal);
                 Log.Info("leQ size: " + leQ.Count.ToString());
@@ -681,12 +718,12 @@ else
                 //Shelter.dirtyFilter = true;
                 //SaveLogs();
 
-                queueScreenshot(KaptainsLog.kaptainsLogList.Count + 1, ref leLocal);
+                queueScreenshot(ref leLocal);
                 klw.notesEntryComplete = false;
                 leQ.Enqueue(leLocal);
                 Log.Info("leQ size: " + leQ.Count.ToString());
                 le = leQ.Peek();
-
+                Log.Info("Next event to be logged: " + le.eventType.ToString());
             }            
         }
         
@@ -745,35 +782,35 @@ else
                 ConfigNode[] entries = log.GetNodes();
                 foreach (var entry in entries)
                 {
-                    le = new LogEntry();
-                    le.vesselName = entry.GetValue("vesselName");
-                    le.id = entry.GetValue("id");
+                    var leLocal = new LogEntry();
+                    leLocal.vesselName = entry.GetValue("vesselName");
+                    leLocal.id = entry.GetValue("id");
 
-                    le.universalTime = Double.Parse(SafeLoad(entry.GetValue("universalTime"), 0));
-                    le.missionTime = Double.Parse(SafeLoad(entry.GetValue("missionTime"), 0));
-                    le.utcTime = DateTime.Parse(SafeLoad(entry.GetValue("utcTime"), DateTime.UtcNow));
+                    leLocal.universalTime = Double.Parse(SafeLoad(entry.GetValue("universalTime"), 0));
+                    leLocal.missionTime = Double.Parse(SafeLoad(entry.GetValue("missionTime"), 0));
+                    leLocal.utcTime = DateTime.Parse(SafeLoad(entry.GetValue("utcTime"), DateTime.UtcNow));
 
-                    le.vesselSituation = (Vessel.Situations)Enum.Parse(typeof(Vessel.Situations), SafeLoad(entry.GetValue("vesselSituation"), "LANDED"));
-                    le.controlLevel = (Vessel.ControlLevel)Enum.Parse(typeof(Vessel.ControlLevel), SafeLoad(entry.GetValue("controlLevel"), "FULL"));
-                    le.vesselMainBody = SafeLoad(entry.GetValue("vesselMainBody"), "Kerbin");
-                    le.altitude = Double.Parse(SafeLoad(entry.GetValue("altitude"), 0));
-                    le.speed = Double.Parse(SafeLoad(entry.GetValue("speed"), 0));
-                    le.eventType = (Events)Enum.Parse(typeof(Events), SafeLoad(entry.GetValue("eventType"), "ManualEntry"));
+                    leLocal.vesselSituation = (Vessel.Situations)Enum.Parse(typeof(Vessel.Situations), SafeLoad(entry.GetValue("vesselSituation"), "LANDED"));
+                    leLocal.controlLevel = (Vessel.ControlLevel)Enum.Parse(typeof(Vessel.ControlLevel), SafeLoad(entry.GetValue("controlLevel"), "FULL"));
+                    leLocal.vesselMainBody = SafeLoad(entry.GetValue("vesselMainBody"), "Kerbin");
+                    leLocal.altitude = Double.Parse(SafeLoad(entry.GetValue("altitude"), 0));
+                    leLocal.speed = Double.Parse(SafeLoad(entry.GetValue("speed"), 0));
+                    leLocal.eventType = (Events)Enum.Parse(typeof(Events), SafeLoad(entry.GetValue("eventType"), "ManualEntry"));
 
                     int notesLines = int.Parse(SafeLoad(entry.GetValue("notesLines"), 0));
-                    le.notes = "";
+                    leLocal.notes = "";
                     for (int i = 0; i < notesLines; i++)
                     {
                         string str = entry.GetValue("notes-" + i.ToString());
                         if (i > 0)
-                            le.notes += "\n";
-                        le.notes += str;
+                            leLocal.notes += "\n";
+                        leLocal.notes += str;
                     }
                     
-                    le.vesselFlagURL = SafeLoad(entry.GetValue("vesselFlagURL"), "");
-                    le.screenshotName = SafeLoad(entry.GetValue("screenshotName"), "");
-                    le.pngThumbnailName = SafeLoad(entry.GetValue("pngThumbnailName"), "");
-                    le.jpgThumbnailName = SafeLoad(entry.GetValue("jpgThumbnailName"), "");
+                    leLocal.vesselFlagURL = SafeLoad(entry.GetValue("vesselFlagURL"), "");
+                    leLocal.screenshotName = SafeLoad(entry.GetValue("screenshotName"), "");
+                    leLocal.pngThumbnailName = SafeLoad(entry.GetValue("pngThumbnailName"), "");
+                    leLocal.jpgThumbnailName = SafeLoad(entry.GetValue("jpgThumbnailName"), "");
 
                     ConfigNode[] crewEntries = entry.GetNodes(klw.CREWNODE);
                     foreach (var crew in crewEntries)
@@ -782,23 +819,23 @@ else
                         cm.name = SafeLoad(crew.GetValue("name"), "none");
                         cm.experienceLevel = int.Parse(SafeLoad(crew.GetValue("experienceLevel"), 0));
                         cm.type = (ProtoCrewMember.KerbalType)Enum.Parse(typeof(ProtoCrewMember.KerbalType), SafeLoad(entry.GetValue("type"), "Crew"));
-                        le.crewList.Add(cm);
+                        leLocal.crewList.Add(cm);
                     }
 
                     Log.Info("Loaded log: " +
-                        "vesselName: " + le.vesselName +
-                        ", id: " + le.id +
-                        ", universalTime: " + le.universalTime.ToString() +
-                        ", utcTime: " + le.utcTime.ToString() +
-                        ", vesselSituation: " + le.vesselSituation.ToString() +
-                        ", controlLevel: " + le.controlLevel.ToString() +
-                        ", altitude: " + le.altitude.ToString() +
-                        ", eventType: " + le.eventType.ToString() +
-                        ", notes: " + le.notes
+                        "vesselName: " + leLocal.vesselName +
+                        ", id: " + leLocal.id +
+                        ", universalTime: " + leLocal.universalTime.ToString() +
+                        ", utcTime: " + leLocal.utcTime.ToString() +
+                        ", vesselSituation: " + leLocal.vesselSituation.ToString() +
+                        ", controlLevel: " + leLocal.controlLevel.ToString() +
+                        ", altitude: " + leLocal.altitude.ToString() +
+                        ", eventType: " + leLocal.eventType.ToString() +
+                        ", notes: " + leLocal.notes
 
 
                         );
-                    KaptainsLog.kaptainsLogList.Add(le);
+                    KaptainsLog.kaptainsLogList.Add(leLocal);
                     Shelter.dirtyFilter = true;
                 }
             }
@@ -816,29 +853,29 @@ else
 
             for (int i = 0; i < KaptainsLog.kaptainsLogList.Count; i++)
             {
-                le = KaptainsLog.kaptainsLogList[i];
+                var leLocal = KaptainsLog.kaptainsLogList[i];
                 var entry = new ConfigNode();
-                entry.AddValue("vesselName", le.vesselName);
-                entry.AddValue("id", le.id);
-                entry.AddValue("universalTime", le.universalTime);
-                entry.AddValue("missionTime", le.missionTime);
-                entry.AddValue("utcTime", le.utcTime);
+                entry.AddValue("vesselName", leLocal.vesselName);
+                entry.AddValue("id", leLocal.id);
+                entry.AddValue("universalTime", leLocal.universalTime);
+                entry.AddValue("missionTime", leLocal.missionTime);
+                entry.AddValue("utcTime", leLocal.utcTime);
 
-                entry.AddValue("vesselSituation", le.vesselSituation);
-                entry.AddValue("controlLevel", le.controlLevel);
-                entry.AddValue("vesselMainBody", le.vesselMainBody);
-                entry.AddValue("altitude", le.altitude);
-                entry.AddValue("speed", le.speed);
-                entry.AddValue("eventType", le.eventType);
+                entry.AddValue("vesselSituation", leLocal.vesselSituation);
+                entry.AddValue("controlLevel", leLocal.controlLevel);
+                entry.AddValue("vesselMainBody", leLocal.vesselMainBody);
+                entry.AddValue("altitude", leLocal.altitude);
+                entry.AddValue("speed", leLocal.speed);
+                entry.AddValue("eventType", leLocal.eventType);
 
-                entry.AddValue("notes", le.notes);
-                string[] lines = le.notes.Split('\n');
+                entry.AddValue("notes", leLocal.notes);
+                string[] lines = leLocal.notes.Split('\n');
                 entry.AddValue("notesLines", lines.Length.ToString());
                 for (int cnt = 0; cnt < lines.Length; cnt++)
                 {
                     entry.AddValue("notes-" + cnt.ToString(), lines[cnt]);
                 }
-                foreach (var cm in le.crewList)
+                foreach (var cm in leLocal.crewList)
                 {
                     ConfigNode crewNode = new ConfigNode();
                     crewNode.AddValue("name", cm.name);
@@ -847,10 +884,10 @@ else
                     entry.AddNode(klw.CREWNODE, crewNode);
                 }
 
-                entry.AddValue("vesselFlagURL", le.vesselFlagURL);
-                entry.AddValue("screenshotName", le.screenshotName);
-                entry.AddValue("pngThumbnailName", le.pngThumbnailName);
-                entry.AddValue("jpgThumbnailName", le.jpgThumbnailName);
+                entry.AddValue("vesselFlagURL", leLocal.vesselFlagURL);
+                entry.AddValue("screenshotName", leLocal.screenshotName);
+                entry.AddValue("pngThumbnailName", leLocal.pngThumbnailName);
+                entry.AddValue("jpgThumbnailName", leLocal.jpgThumbnailName);
 
                 log.AddNode(i.ToString("D5"), entry);
             }
@@ -1022,18 +1059,26 @@ else
        
        // public string thumbnailName;
 
-        public void queueScreenshot(int cnt, ref LogEntry le)
+        public void queueScreenshot(ref LogEntry le)
         {
-            cnt = KLScenario.GetNextCnt;
+            int cnt = KLScenario.GetNextCnt;
             Log.Info("queueScreenshot cnt: " + cnt.ToString());
             string s;
             string screenshotPath = KaptainsLog.ROOT_PATH + "Screenshots/";
+            string thumbnailPath = screenshotPath;
             if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().saveScreenshotsInSaveFolder)
             {
                 screenshotPath = KaptainsLog.ROOT_PATH + "saves/" + HighLogic.SaveFolder + "/KaptainsLogScreenshots/";
                 if (!System.IO.Directory.Exists(screenshotPath))
                     System.IO.Directory.CreateDirectory(screenshotPath);
-                s = "KL_" + cnt.ToString("000");
+            }
+            s = "KL_" + cnt.ToString("000");
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().saveThumbnailsInSubFolder)
+            {
+                thumbnailPath = screenshotPath + "Thumbnails/";
+                if (!System.IO.Directory.Exists(thumbnailPath))
+                    System.IO.Directory.CreateDirectory(thumbnailPath);
+
             }
             else
             {
@@ -1041,9 +1086,9 @@ else
             }
 
             le.pngName = System.IO.Path.GetFullPath(screenshotPath) + s + ".png";
-            le.pngThumbnailName = System.IO.Path.GetFullPath(screenshotPath) + s + "_thumb.png";
-            le.jpgThumbnailName = System.IO.Path.GetFullPath(screenshotPath) + s + "_thumb.jpg";
+            le.pngThumbnailName = System.IO.Path.GetFullPath(thumbnailPath) + s + "_thumb.png";
             le.jpgName = System.IO.Path.GetFullPath(screenshotPath) + s + ".jpg";
+            le.jpgThumbnailName = System.IO.Path.GetFullPath(thumbnailPath) + s + "_thumb.jpg";
 
             Log.Info("pngName: " + le.pngName);
             Log.Info("jpgName: " + le.jpgName);

@@ -125,7 +125,7 @@ namespace KaptainsLogNamespace
                 case Events.VesselModified: return "Vessel modified";
                 case Events.StageActivate: return "Stage activate";
                 case Events.OrbitClosed: return "Orbit closed";
-                case Events.OrbitEscaped: return "Orbit escapted";
+                case Events.OrbitEscaped: return "Orbit escaped";
                 case Events.VesselRecovered: return "Vessel recovered";
                 case Events.Landed: return "Landed";
                 case Events.CrewModified: return "Crew modified";

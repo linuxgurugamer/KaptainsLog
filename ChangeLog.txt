@@ -1,7 +1,7 @@
 0.0.1.4
 		Released to beta
 
-0.0.1.x
+0.0.1.5
 		Fixed label on entry field window
 		Made mod follow the UI visiblity flag
 		Added upper limit on altitude and speed filters, upper limits specified in settings
@@ -12,3 +12,25 @@
 		Added option to save screenshots in save directory rather than global save directory
 		Added ScenarioModule to save screenshot count to fix issue of invalid screenshots being saved.
 		Added code to update image cache while screenshots are in progress and window displayed
+
+0.0.1.6
+		Fixed title for option in settings for Pause on Crew EVA (it was the 2nd Flag Plant)
+		Fixed the Save screenshot as jpg to default to false
+		Fixed typo in the Hime when no messages tooltip
+		Fixed double colon, in the "Keep messsages for"
+
+		Reordered settings columns and pages
+		Added setting column for logging events
+		Added options to log/not log specific events
+		There are now 4 events which don't have "pause" options:
+		    Log on Kerbal passed out from G-force
+            Log on Flight Log Recorded
+			Log on Progress Achievement
+			Log on Progress Completion
+		Added options to control screenshots for specific events
+		Shortened text for "Save screenshots/thumbnails in save folder"
+		Added settings to specify which events to take snapshots on
+		Added option to put thumbnails into a subfolder, defaulting to true
+		Clicking on a thumbnail now brings up an image viewer of the image, scalable 
+		Now deletes screenshots and thumbnails when last log item referring to them is deleted.
+		Added buttons for individual filters onto main screen

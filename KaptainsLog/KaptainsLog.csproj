@@ -63,6 +63,7 @@
     <Compile Include="FilterSelection.cs" />
     <Compile Include="HtmlTemplateSelection.cs" />
     <Compile Include="ImageSelection.cs" />
+    <Compile Include="ImageViewer.cs" />
     <Compile Include="KaptainsLog.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogEntry.cs" />

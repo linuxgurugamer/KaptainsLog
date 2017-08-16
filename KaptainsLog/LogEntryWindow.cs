@@ -23,6 +23,7 @@ namespace KaptainsLogNamespace
             manualEntry = false;
             escapePressed = false;
             notesEntryComplete = true;
+
             editItem = null;
             FlightDriver.SetPause(false);
         }
@@ -94,6 +95,7 @@ namespace KaptainsLogNamespace
                 {
                     Log.Info("escapePressed, setting pms = PauseMenuState.KLEntry");
                     pms = PauseMenuState.KLEntry;
+                    cancelManualEntry = true;
                 }
                 DisplayLogEntryExitCleanup();
                
@@ -142,7 +144,7 @@ namespace KaptainsLogNamespace
                             if (utils.le.screenshotName == null || utils.le.screenshotName == "")
                             {
                                 Log.Info("queueScreenshot 1");
-                                utils.queueScreenshot(kaptainsLogList.Count + 1, ref utils.le);
+                                utils.queueScreenshot(ref utils.le);
 
                             }
                         }

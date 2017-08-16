@@ -88,14 +88,14 @@ namespace KaptainsLogNamespace
                     }
 
                     // Remove expired messages here
-                    while (scrnMsgLog.Count > HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().maxMsgs)
+                    while (scrnMsgLog.Count > HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().maxMsgs)
                     {
                         scrnMsgLog.Dequeue();
                     }
-                    while (scrnMsgLog.Count > 0 && scrnMsgLog.LastOrDefault().startTime + 60 * HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().expireMsgsAfter < Time.realtimeSinceStartup)
+                    while (scrnMsgLog.Count > 0 && scrnMsgLog.LastOrDefault().startTime + 60 * HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().expireMsgsAfter < Time.realtimeSinceStartup)
                     {
                         scrnMsgLog.Dequeue();
-                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().hideWhenNoMsgs && scrnMsgLog.Count == 0)
+                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().hideWhenNoMsgs && scrnMsgLog.Count == 0)
                             ShowWin(false);
 
                     }

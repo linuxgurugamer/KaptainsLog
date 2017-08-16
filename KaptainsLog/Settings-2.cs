@@ -11,13 +11,13 @@ using UnityEngine;
 
 namespace KaptainsLogNamespace
 {
-    public class KL_4 : GameParameters.CustomParameterNode
+    public class KL_5 : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Initial Display Columns"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Kaptain's Log 2"; } }
-        public override string DisplaySection { get { return "Kaptain's Log 2"; } }
-        public override int SectionOrder { get { return 1; } }
+        public override string Section { get { return "Kaptain's Log"; } }
+        public override string DisplaySection { get { return "Kaptain's Log"; } }
+        public override int SectionOrder { get { return 2; } }
         public override bool HasPresets { get { return true; } }
 
         [GameParameters.CustomParameterUI("Vessel name")]
@@ -72,14 +72,18 @@ namespace KaptainsLogNamespace
             return null;
         }
     }
-    public class KL_5 : GameParameters.CustomParameterNode
+    public class KL_6 : GameParameters.CustomParameterNode
     {
-        public override string Title { get { return "Filter Limits"; } }
+        public override string Title { get { return "Misc"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
-        public override string Section { get { return "Kaptain's Log 2"; } }
-        public override string DisplaySection { get { return "Kaptain's Log 2"; } }
-        public override int SectionOrder { get { return 2; } }
+        public override string Section { get { return "Kaptain's Log"; } }
+        public override string DisplaySection { get { return "Kaptain's Log"; } }
+        public override int SectionOrder { get { return 3; } }
         public override bool HasPresets { get { return true; } }
+
+
+        [GameParameters.CustomStringParameterUI("Filter Limits", autoPersistance = true, lines = 2, title = "Filter Limits", toolTip = "Specifiy limits on some filters")]
+        public string UIstring = "";
 
         [GameParameters.CustomFloatParameterUI("Upper limit on altitude filter", minValue = 100.0f, maxValue = 500000.0f)]
         public double altitudeFilterMax = 300000f;
@@ -88,6 +92,21 @@ namespace KaptainsLogNamespace
         public double speedFilterMax = 2500;
 
 
+        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "\n\nScreen Message Log\n", toolTip = "Options for the screen messages")]
+        public string UIstring2 = "";
+
+
+        [GameParameters.CustomIntParameterUI("Max screen messages to display", minValue = 1, maxValue = 50,
+            toolTip = "This refers to the messages which appear on screen")]
+        public int maxMsgs = 20;
+
+        [GameParameters.CustomIntParameterUI("Keep screen messages for (minutes)", minValue = 0, maxValue = 50,
+            toolTip = "This refers to the messages which appear on screen")]
+        public int expireMsgsAfter = 20;
+
+        [GameParameters.CustomParameterUI("Hide when no screen messages",
+            toolTip = "Hide the window if it is open and the remaining messages are expired")]
+        public bool hideWhenNoMsgs = false;
 
 
 
@@ -110,5 +129,5 @@ namespace KaptainsLogNamespace
             return null;
         }
     }
-
+    
 }

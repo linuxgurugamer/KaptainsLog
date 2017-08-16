@@ -161,10 +161,17 @@ namespace KaptainsLogNamespace
                         {
                             if (i < imgCacheList.Count - 1 &&  imgCacheList[i].image != null)
                             {
-                                    GUILayout.Box(imgCacheList[i].image, GUILayout.ExpandWidth(false));
+                                
+                                if (GUILayout.Button(imgCacheList[i].image, GUIStyle.none, GUILayout.Width(imgCacheList[i].image.width), GUILayout.Height(imgCacheList[i].image.height)))
+                                {
+                                    displayScreenshot = true;
+                                    imageToDisplay = utils.getDisplayString(le1, Fields.screenshot);
+                                    Log.Info("imageToDisplay: " + imageToDisplay);
+                                }
+                                    //GUILayout.Box(imgCacheList[i].image, GUILayout.ExpandWidth(false));
                             }
                             else
-                                GUILayout.Box("n/a", GUILayout.Width(8+colWidth[d]));
+                                GUILayout.Box("n/a", GUILayout.Width(colWidth[d]));
                         }
                     }
 
@@ -173,6 +180,51 @@ namespace KaptainsLogNamespace
             }
             Shelter.dirtyFilter = false;
             GUILayout.EndScrollView();
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();
+            if (GUILayout.Button("Vessel"))
+                if (entryField == Fields.none)
+                    entryField = Fields.vesselName;
+                else
+                    entryField = Fields.none;
+            if (GUILayout.Button("Mission Time"))
+                 if (entryField == Fields.none)
+                    entryField = Fields.missionTime;
+                else
+                    entryField = Fields.none;
+            if (GUILayout.Button("Situation"))
+                if (entryField == Fields.none)
+                    entryField = Fields.vesselSituation;
+                else
+                    entryField = Fields.none;
+            if (GUILayout.Button("Body"))
+                if (entryField == Fields.none)
+                    entryField = Fields.mainBody;
+                else
+                    entryField = Fields.none;
+            if (GUILayout.Button("Altitude"))
+                if (entryField == Fields.none)
+                    entryField = Fields.altitude;
+                else
+                    entryField = Fields.none;
+            if (GUILayout.Button("Speed"))
+                if (entryField == Fields.none)
+                    entryField = Fields.speed;
+                else
+                    entryField = Fields.none;
+            if (GUILayout.Button("Event"))
+                if (entryField == Fields.none)
+                    entryField = Fields.eventType;
+                else
+                    entryField = Fields.none;
+            if (entryField != Fields.none)
+            {
+                for (int d = 0; d < displayFields.Count; d++)
+                    if (displayFields[d].f == entryField)
+                    displayFields[d].filter = true;
+            }
+            
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -249,9 +301,35 @@ namespace KaptainsLogNamespace
 
             if (deleteItem != null)
             {
+                var le = kaptainsLogList[deleteItem.Value];
                 kaptainsLogList.RemoveAt(deleteItem.Value);
                 deleteItem = null;
                 utils.SaveLogs();
+
+                // Check to see if the associated images are being used by another log record
+                // If not, then they can be deleted.
+                foreach (var l in kaptainsLogList)
+                {
+                    if (le.pngName == l.pngName)
+                        le.pngName = "";
+                    if (le.jpgName == l.jpgName)
+                        le.jpgName = "";
+
+                    if (le.pngThumbnailName == l.pngThumbnailName)
+                        le.pngThumbnailName = "";
+                    if (le.jpgThumbnailName == l.jpgThumbnailName)
+                        le.jpgThumbnailName = "";
+                }
+                if (le.pngName != "")
+                    System.IO.File.Delete(le.pngName);
+                if (le.jpgName != "")
+                    System.IO.File.Delete(le.jpgName);
+                if (le.pngThumbnailName != "")
+                    System.IO.File.Delete(le.pngThumbnailName);
+                if (le.jpgThumbnailName != "")
+                    System.IO.File.Delete(le.jpgThumbnailName);
+
+               
             }
             if (editItem != null && !notesEntry)
             {
