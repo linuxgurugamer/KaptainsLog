@@ -31,6 +31,11 @@ namespace KaptainsLogNamespace
         StageActivate, OrbitClosed, OrbitEscaped, VesselRecovered, Landed, CrewModified, ProgressRecord,
         KerbalPassedOutFromGeeForce, Revert,
         CrewKilled, CrewTransferred, DominantBodyChange, FlagPlant, CrewOnEVA,
+        OnScienceChanged, OnScienceReceived, OnOrbitalSurveyCompleted,
+
+        OnReputationChanged, OnTechnologyResearched, OnTriggeredDataTransmission, OnVesselRollout, OnPartUpgradePurchased, OnPartPurchased,
+        OnFundsChanged,
+
         FinalFrontier, MiscExternal,
         ManualEntry
     };
@@ -139,6 +144,16 @@ namespace KaptainsLogNamespace
                 case Events.DominantBodyChange: return "SOI change";
                 case Events.FlagPlant: return "Flag plant";
                 case Events.KerbalPassedOutFromGeeForce: return "Kerbal passed out from Gee force";
+                case Events.OnScienceChanged: return "Science changed";
+                case Events.OnScienceReceived: return "Science received at R&D";
+                case Events.OnOrbitalSurveyCompleted: return "Orbital survey completed";
+                case Events.OnReputationChanged: return "Reputation changed";
+                case Events.OnTechnologyResearched: return "Technology researched";
+                case Events.OnTriggeredDataTransmission: return "Data transmission triggered";
+                case Events.OnVesselRollout: return "Vessel rollout";
+                case Events.OnPartUpgradePurchased: return "Part upgrade purchased";
+                case Events.OnPartPurchased: return "Part purchased";
+                case Events.OnFundsChanged: return "Funds changed";
             }
             return evt.ToString();
         }

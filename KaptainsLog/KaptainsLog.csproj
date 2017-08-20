@@ -80,6 +80,7 @@
     <Compile Include="TextureScale.cs" />
     <Compile Include="ToolbarWrapper.cs" />
     <Compile Include="Utils.cs" />
+    <Compile Include="WatchForReloadRevert.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="AssemblyVersion.tt">

@@ -1,7 +1,6 @@
 # KaptainsLog
 
-  Quote
-Captain's log, Stardate 43539.1. We have moved into orbit around Bre'el IV. With the assistance of the planet's emergency control center, we are investigating a catastrophic threat to the population from a descending asteroidal moon.
+ "Captain's log, Stardate 43539.1. We have moved into orbit around Bre'el IV. With the assistance of the planet's emergency control center, we are investigating a catastrophic threat to the population from a descending asteroidal moon.""
 
 This mod REQUIRES and depends on the ProgressParser mod created by @DMagic.
 I have included a current version of this in the download.
@@ -74,3 +73,7 @@ I am writing the following simple templates for the initial release:
 	Detailed with Full Size Images
 	Detailed with Thumbnails
 	Details, No images
+
+
+
+	My thanks to @DMagic for giving me some icons to use for the message window

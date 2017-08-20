@@ -274,10 +274,7 @@ namespace KaptainsLogNamespace
             //GUILayout.FlexibleSpace();
             if (GUILayout.Button("Close", GUILayout.Width(90)))
             {
-                visibleByToolbar = false;
                 ToggleToolbarButton();
-                kaptainsLogStockButton.SetFalse();
-                // FreeImgCache(); // Done in the ToggleToolbarButton method
             }
             GUILayout.FlexibleSpace();
             if (FlightGlobals.ActiveVessel != null)
@@ -288,12 +285,11 @@ namespace KaptainsLogNamespace
 
                 }
             }
-            if (GUILayout.Button("ScreenMessages"))
+            if (GUILayout.Button("Screen Messages"))
             {
                 ScreenMessagesLog.Instance.ShowWin(true);
-                visibleByToolbar = false;
-                ToggleToolbarButton();
-                kaptainsLogStockButton.SetFalse();
+                //visibleByToolbar = false;
+                ToggleToolbarButton();                
             }
 
             GUILayout.EndHorizontal();

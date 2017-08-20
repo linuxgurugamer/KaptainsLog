@@ -57,6 +57,10 @@ namespace KaptainsLogNamespace
         private const string PencilIcon = "KaptainsLog/Icons/pencil";
         public const string screenshotPrefix = "KL_";
 
+       
+
+
+
         // true lock input, false to unlock.
         private bool _toggleInput;
 
@@ -316,10 +320,10 @@ namespace KaptainsLogNamespace
 
         void onGameStateCreated(Game g)
         {
-            Log.Info("onGameStateCreated");
+            //Log.Info("onGameStateCreated");
             utils.LoadLogs();
             Shelter.logsLoaded = true;
-            InitDisplayFields();
+           // InitDisplayFields();
 
             visibleByToolbar = false;
             showStdPauseMenu = false;
@@ -352,9 +356,46 @@ namespace KaptainsLogNamespace
             displayFields.Add(new DisplayField(kl4.speed, Fields.speed));
             displayFields.Add(new DisplayField(kl4.eventType, Fields.eventType));
             displayFields.Add(new DisplayField(kl4.thumbnail, Fields.thumbnail));
+            displayFields.Add(new DisplayField(kl4.notes, Fields.notes));
+        }
+        bool blizzyButtonActive;
+        void ShowStockToolbarButton()
+        {
+            GameEvents.onGUIApplicationLauncherReady.Add(OnGUIAppLauncherReady);
+            GameEvents.onGUIApplicationLauncherDestroyed.Add(OnGUIAppLauncherDestroyed);
 
+            OnGUIAppLauncherReady();
+            blizzyButtonActive = false;
+        }
+        void ShowBlizzyButton()
+        {
+            kaptainsLogIButton = ToolbarManager.Instance.add("notes", "toggle");
+            kaptainsLogIButton.TexturePath = BlizzyToolbarIconInActive;
+            kaptainsLogIButton.ToolTip = _tooltipOff;
+            kaptainsLogIButton.OnClick += e => ToggleToolbarButton();
+            blizzyButtonActive = true;
         }
 
+        internal void OnGameSettingsApplied()
+        {
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy != blizzyButtonActive)
+            {
+                if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
+                {
+                    if (kaptainsLogIButton != null)
+                    {
+                        kaptainsLogIButton.Destroy();
+                        kaptainsLogIButton = null;
+                    }
+                    ShowStockToolbarButton();
+                }
+                else
+                {
+                    OnGUIAppLauncherDestroyed();
+                    ShowBlizzyButton();
+                }
+            }
+        }
         // Start toolbar if present.
         private void Start()
         {
@@ -365,23 +406,14 @@ namespace KaptainsLogNamespace
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().EnabledForSave)
                 return;
             if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
-            {
-                GameEvents.onGUIApplicationLauncherReady.Add(OnGUIAppLauncherReady);
-                GameEvents.onGUIApplicationLauncherDestroyed.Add(OnGUIAppLauncherDestroyed);
-
-                // Add hooks for showing/hiding on F2
-                GameEvents.onShowUI.Add(showUI);
-                GameEvents.onHideUI.Add(hideUI);
-
-                OnGUIAppLauncherReady();
-            }
+                ShowStockToolbarButton();
             else
-            {
-                kaptainsLogIButton = ToolbarManager.Instance.add("notes", "toggle");
-                kaptainsLogIButton.TexturePath = BlizzyToolbarIconInActive;
-                kaptainsLogIButton.ToolTip = _tooltipOff;
-                kaptainsLogIButton.OnClick += e => ToggleToolbarButton();
-            }
+                ShowBlizzyButton();
+
+            // Add hooks for showing/hiding on F2
+            GameEvents.onShowUI.Add(showUI);
+            GameEvents.onHideUI.Add(hideUI);
+            GameEvents.OnGameSettingsApplied.Add(OnGameSettingsApplied);
 
             mainWindow = new Rect((Screen.width - MAIN_WIDTH - 40), 50, MAIN_WIDTH, MAIN_HEIGHT);
             logEntryWindow = new Rect((Screen.width - LOGENTRY_WIDTH) / 2, (Screen.height - LOGENTRY_HEIGHT) / 2, LOGENTRY_WIDTH, LOGENTRY_HEIGHT);
@@ -468,7 +500,7 @@ namespace KaptainsLogNamespace
         public void OnDestroy()
         {
             Log.Info("OnDestroy");
-            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
+            if (kaptainsLogStockButton != null)
             {
                 GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
                 GameEvents.onGameStateCreated.Remove(onGameStateCreated);
@@ -476,10 +508,10 @@ namespace KaptainsLogNamespace
                 if (this.kaptainsLogStockButton != null)
                 {
                     ApplicationLauncher.Instance.RemoveModApplication(this.kaptainsLogStockButton);
-                    this.kaptainsLogStockButton = null;
+                    kaptainsLogStockButton = null;
                 }
             }
-            else
+            if (kaptainsLogIButton != null)
             {
                 kaptainsLogIButton.Destroy();
                 kaptainsLogIButton = null;
@@ -493,17 +525,20 @@ namespace KaptainsLogNamespace
             Log.Info("OnGUIAppLauncherReady");
             // Setup PW Stock Toolbar button
             bool hidden = false;
-            if (ApplicationLauncher.Ready && (kaptainsLogStockButton == null || !ApplicationLauncher.Instance.Contains(kaptainsLogStockButton, out hidden)))
+            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
             {
-                kaptainsLogStockButton = ApplicationLauncher.Instance.AddModApplication(
-                    ToggleToolbarButton,
-                    ToggleToolbarButton,
-                    null, null, null, null,
-                    ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW |
-                    ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
+                if (ApplicationLauncher.Ready && (kaptainsLogStockButton == null || !ApplicationLauncher.Instance.Contains(kaptainsLogStockButton, out hidden)))
+                {
+                    kaptainsLogStockButton = ApplicationLauncher.Instance.AddModApplication(
+                        ToggleToolbarButton,
+                        ToggleToolbarButton,
+                        null, null, null, null,
+                        ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW |
+                        ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
 
-                    (Texture)GameDatabase.Instance.GetTexture(StockToolbarIconInactive, false));
+                        (Texture)GameDatabase.Instance.GetTexture(StockToolbarIconInactive, false));
 
+                }
             }
         }
 
@@ -513,6 +548,8 @@ namespace KaptainsLogNamespace
             if (kaptainsLogStockButton != null)
             {
                 ApplicationLauncher.Instance.RemoveModApplication(kaptainsLogStockButton);
+                GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
+                GameEvents.onGUIApplicationLauncherDestroyed.Remove(OnGUIAppLauncherDestroyed);
                 kaptainsLogStockButton = null;
             }
         }
@@ -520,14 +557,13 @@ namespace KaptainsLogNamespace
         // Toggles plugin visibility.
         private void ToggleToolbarButton()
         {
-            Log.Info("Toggle");
             visibleByToolbar = !visibleByToolbar;
             if (!visibleByToolbar)
             {
                 FreeImgCache();
                 SaveWindowPositions();
 
-                visibleByToolbar = false;
+               
                 notesEntry = false;
                 manualEntry = false;
                 imageSelection = false;
@@ -537,9 +573,17 @@ namespace KaptainsLogNamespace
                 displayHTMLTemplate = false;
 
             }
-            if (!ToolbarManager.ToolbarAvailable)
+            if (!ToolbarManager.ToolbarAvailable  || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
             {
-                kaptainsLogStockButton.SetTexture((Texture)GameDatabase.Instance.GetTexture(visibleByToolbar ? StockToolbarIconActive : StockToolbarIconInactive, false));
+                if (!visibleByToolbar)
+                {
+                    // This odd code is needed because sometimes this is called by methds other than the depresing of the button
+                    // So we set the button false, but that then triggers a call to this function, so we then set it false again to un
+                    // what Unity did.
+                    kaptainsLogStockButton.SetFalse();
+                    visibleByToolbar = false;
+                }
+                kaptainsLogStockButton.SetTexture((Texture)GameDatabase.Instance.GetTexture(visibleByToolbar ? StockToolbarIconActive : StockToolbarIconInactive, false));                
             }
             else
             {
@@ -585,7 +629,7 @@ namespace KaptainsLogNamespace
             // The PauseMenu intercepts the escape key, so we first check to see if it is open, if so, then assume
             // that the escape key was pressed, otherwise, check the key (since the pause menu won't open if the game
             // is paused already, as it is when the  notesentry window is open
-
+#if false
             if (!notesEntry && pms == PauseMenuState.hidden && GameSettings.PAUSE.GetKeyDown() &&
                 PauseMenu.exists && PauseMenu.isOpen && HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().overridePause && HighLogic.LoadedSceneIsFlight)
             {
@@ -593,6 +637,7 @@ namespace KaptainsLogNamespace
                 PauseMenu.Close();
             }
             else
+#endif
             {
                 //if (e.isKey )
                 //    escapePressed = (e.keyCode == KeyCode.Escape && e.type == UnityEngine.EventType.KeyDown);
@@ -923,7 +968,7 @@ namespace KaptainsLogNamespace
             }
 
 
-
+#if false
             if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().overridePause && HighLogic.LoadedSceneIsFlight)
             {
                 switch (pms)
@@ -987,6 +1032,7 @@ namespace KaptainsLogNamespace
                         break;
                 }
             }
+#endif
         }
 
         bool eventScreenshot(LogEntry le)
@@ -1065,8 +1111,7 @@ namespace KaptainsLogNamespace
         {
             if (originalMenu == null)
                 originalMenu = GameObject.FindObjectOfType(typeof(PauseMenu)) as PauseMenu;
-            Log.Info("FixedUpdfate 1");
-
+            
             if (utils.le == null || utils.leQ == null)
                 return;
 
@@ -1094,7 +1139,7 @@ namespace KaptainsLogNamespace
                     return;
                 }
             }
-            Log.Info("FixedUpdfate 3");
+            
             if (logEntryComplete)
                 return;
 
@@ -1104,7 +1149,7 @@ namespace KaptainsLogNamespace
                 doScreenshot = eventScreenshot(utils.le);
                 Log.Info("FixedUpdate 3.1, event: " + utils.le.eventType.ToString() + ", doScreenshot: " + doScreenshot.ToString());
             }
-            Log.Info("FixedUpdfate 4");
+            
             Log.Info("Fixed update, utils.le.eventType: " + utils.le.eventType.ToString() + ",  doScreenshot: " + doScreenshot.ToString() + ",   screenshot: " + HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().screenshot.ToString() +
                 ", snapshotInProgress: " + utils.snapshotInProgress.ToString() + ",   screenshotAfter: " + screenshotAfter.ToString() + ",  UT: " + Planetarium.GetUniversalTime().ToString()
                 );

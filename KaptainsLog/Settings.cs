@@ -34,8 +34,8 @@ namespace KaptainsLogNamespace
             toolTip ="Prevents windows from being dragged to be off-screen, even partially")]
         public bool keepOnScreen = true;
 
-        [GameParameters.CustomParameterUI("Override Pause menu in Flight scene")]
-        public bool overridePause = true;
+        //[GameParameters.CustomParameterUI("Override Pause menu in Flight scene")]
+        //public bool overridePause = true;
 
         [GameParameters.CustomParameterUI("Screenshot at log entry",
             toolTip ="See the Event Screenshot Settings to set screenshot options for specific events (in Kaptain's Log 2 section)")]
@@ -299,6 +299,31 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("Log on Progress Completion")]
         public bool logOnProgressComplete = true;
 
+        [GameParameters.CustomParameterUI("Log on Science Changed")]
+        public bool logOnScienceChanged = true;
+
+        [GameParameters.CustomParameterUI("Log on Science Received")]
+        public bool logOnScienceReceived = true;
+
+        [GameParameters.CustomParameterUI("Log on Orbital Survey Completed")]
+        public bool logOnOrbitalSurveyCompleted = true;
+
+
+
+        [GameParameters.CustomParameterUI("Log on reputation changed")]
+        public bool logOnReputationChanged = true;
+
+        [GameParameters.CustomParameterUI("Log on triggered data transmission")]
+        public bool logOnTriggeredDataTransmission = true;
+        [GameParameters.CustomParameterUI("Log on vessel rollout")]
+        public bool logOnVesselRollout = true;
+        [GameParameters.CustomParameterUI("Log on part upgrade purchased")]
+        public bool logOnPartUpgradePurchased = true;
+        [GameParameters.CustomParameterUI("Log on part purchase")]
+        public bool logOnPartPurchased = true;
+        [GameParameters.CustomParameterUI("Log on funds changed")]
+        public bool logOnFundsChanged = true;
+
 
 
 
@@ -321,7 +346,9 @@ namespace KaptainsLogNamespace
             logOnDominantBodyChange = true;
             logOnFlagPlant = true;
             logOnCrewOnEVA = true;
-
+            logOnScienceChanged = true;
+            logOnScienceReceived = true;
+            logOnOrbitalSurveyCompleted = true;
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)

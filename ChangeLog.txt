@@ -34,3 +34,18 @@
 		Clicking on a thumbnail now brings up an image viewer of the image, scalable 
 		Now deletes screenshots and thumbnails when last log item referring to them is deleted.
 		Added buttons for individual filters onto main screen
+
+0.0.1.7
+		Removed option to override the Pause menu (for now)
+		Blizzy toolbar button now working
+		Text added to all events logging
+		Added more events which don't have either "pause" or "screenshot" optoins:
+				Log on science changed
+				Log on science received
+				Log on orbital survey completed
+				Log on Reputation Changed
+				Log on Triggered Data Transmission
+				Log on Vessel Rollout
+				Log on Part Upgrade Purchased
+				Log on Part Purchased
+				Log on Funds Changed
