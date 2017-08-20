@@ -149,7 +149,7 @@ namespace KaptainsLogNamespace
                 //buttonOnStyle.active.background = greenButtonTexture;
                 //buttonOnStyle.focused.background = greenButtonTexture;
 
-                filterListWindow = GUILayout.Window(logentryWindowId, filterListWindow, DisplayLogEntryWindow, "Kaptain's Log Entry"); //, KaptainsLog.windowStyle);
+                KaptainsLog.Instance.logEntryWindow = GUILayout.Window(logentryWindowId, filterListWindow, DisplayLogEntryWindow, "Kaptain's Log Entry"); //, KaptainsLog.windowStyle);
             }
         }
 

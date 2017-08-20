@@ -128,6 +128,14 @@ namespace KaptainsLogNamespace
         public override bool HasPresets { get { return true; } }
 
 
+        [GameParameters.CustomParameterUI("Pause on all events")]
+        public bool pauseOnAllEvents = false;
+
+        [GameParameters.CustomParameterUI("Unset all screenshot settings")]
+        public bool unsetSettings = false;
+
+
+
         [GameParameters.CustomParameterUI("Pause on crash or splashdown")]
         public bool pauseOnCrashSplashdown = false;
 
@@ -201,9 +209,29 @@ namespace KaptainsLogNamespace
             pauseOnDominantBodyChange = false;
             pauseOnFlagPlant = false;
             pauseOnCrewOnEVA = false;
-
+            pauseOnVesselOrbitEscaped = false;
         }
-
+        void enableAllPause()
+        {
+            pauseOnCrashSplashdown = true;
+            pauseOnVesselRecovered = true;
+            pauseOnLaunch = true;
+            pauseOnStageSeparation = true;
+            pauseOnStageActivate = true;
+            pauseOnPartDie = true;
+            pauseOnDisconnectedPartDie = true;
+            pauseOnPartCouple = true;
+            pauseOnVesselWasModified = true;
+            pauseOnVesselCrewWasModified = true;
+            pauseOnVesselOrbitClosed = true;
+            pauseOnVesselOrbitEscaped = true;
+            pauseOnCrewKilled = true;
+            pauseOnCrewTransferred = true;
+            pauseOnDominantBodyChange = true;
+            pauseOnFlagPlant = true;
+            pauseOnCrewOnEVA = true;
+            pauseOnVesselOrbitEscaped = true;
+        }
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
             try
@@ -214,7 +242,33 @@ namespace KaptainsLogNamespace
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
-            return true;
+            if (member.Name == "pauseOnAllEvents") //This Field must always be Interactible.
+                return true;
+            if (pauseOnAllEvents)
+                enableAllPause();
+            if (unsetSettings)
+            {
+                pauseOnCrashSplashdown = false;
+                pauseOnVesselRecovered = false;
+                pauseOnLaunch = false;
+                pauseOnStageSeparation = false;
+                pauseOnStageActivate = false;
+                pauseOnPartDie = false;
+                pauseOnDisconnectedPartDie = false;
+                pauseOnPartCouple = false;
+                pauseOnVesselWasModified = false;
+                pauseOnVesselCrewWasModified = false;
+                pauseOnVesselOrbitClosed = false;
+                pauseOnVesselOrbitEscaped = false;
+                pauseOnCrewKilled = false;
+                pauseOnCrewTransferred = false;
+                pauseOnDominantBodyChange = false;
+                pauseOnFlagPlant = false;
+                pauseOnCrewOnEVA = false;
+                pauseOnVesselOrbitEscaped = false;
+                unsetSettings = false;
+            }
+            return !pauseOnAllEvents;
             //            return true; //otherwise return true
         }
 
@@ -233,6 +287,11 @@ namespace KaptainsLogNamespace
         public override string DisplaySection { get { return "Kaptain's Log 2"; } }
         public override int SectionOrder { get { return 2; } }
         public override bool HasPresets { get { return true; } }
+
+        [GameParameters.CustomParameterUI("Log all events")]
+        public bool logAllEvents = true;
+        [GameParameters.CustomParameterUI("Unset all event log settings")]
+        public bool unsetSettings = false;
 
 
         [GameParameters.CustomParameterUI("Log on crash or splashdown")]
@@ -285,6 +344,9 @@ namespace KaptainsLogNamespace
 
         [GameParameters.CustomParameterUI("Log on Crew EVA")]
         public bool logOnCrewOnEVA = true;
+
+        [GameParameters.CustomStringParameterUI("Record-only Events Below", autoPersistance = true, lines = 2, title = "Record-only Events Below", toolTip = "")]
+        public string UIstring = "";
 
         /* Following don't have equivilent Pause options */
         [GameParameters.CustomParameterUI("Log on Kerbal passed out from G-force")]
@@ -349,6 +411,16 @@ namespace KaptainsLogNamespace
             logOnScienceChanged = true;
             logOnScienceReceived = true;
             logOnOrbitalSurveyCompleted = true;
+            logOnReputationChanged = true;
+            logOnTriggeredDataTransmission = true;
+            logOnVesselRollout = true;
+            logOnPartUpgradePurchased = true;
+            logOnPartPurchased = true;
+            logOnFundsChanged = true;
+            logOnKerbalPassedOutFromGeeForce = true;
+            logOnFlightLogRecorded = true;
+            logOnProgressAchieve = true;
+            logOnProgressComplete = true;
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
@@ -361,8 +433,46 @@ namespace KaptainsLogNamespace
         }
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
-        {
-            return true;
+        {// logAllEvents
+            if (member.Name == "logAllEvents") //This Field must always be Interactible.
+                return true;
+            if (logAllEvents)
+                SetDifficultyPreset(GameParameters.Preset.Normal);
+            if (unsetSettings)
+            {
+                logOnCrashSplashdown = false;
+                logOnVesselRecovered = false;
+                logOnLaunch = false;
+                logOnStageSeparation = false;
+                logOnStageActivate = false;
+                logOnPartDie = false;
+                logOnDisconnectedPartDie = false;
+                logOnPartCouple = false;
+                logOnVesselWasModified = false;
+                logOnVesselCrewWasModified = false;
+                logOnVesselOrbitClosed = false;
+                logOnVesselOrbitEscaped = false;
+                logOnCrewKilled = false;
+                logOnCrewTransferred = false;
+                logOnDominantBodyChange = false;
+                logOnFlagPlant = false;
+                logOnCrewOnEVA = false;
+                logOnScienceChanged = false;
+                logOnScienceReceived = false;
+                logOnOrbitalSurveyCompleted = false;
+                logOnReputationChanged = false;
+                logOnTriggeredDataTransmission = false;
+                logOnVesselRollout = false;
+                logOnPartUpgradePurchased = false;
+                logOnPartPurchased = false;
+                logOnFundsChanged = false;
+                logOnKerbalPassedOutFromGeeForce = false;
+                logOnFlightLogRecorded = false;
+                logOnProgressAchieve = false;
+                logOnProgressComplete = false;
+                unsetSettings = false;
+            }
+            return !logAllEvents;
             //            return true; //otherwise return true
         }
 
@@ -447,9 +557,6 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("Screenshot on Kerbal passed out from G-force")]
         public bool screenshotOnKerbalPassedOutFromGeeForce = true;
 
-        [GameParameters.CustomParameterUI("Screenshot on Flight Screenshot Recorded")]
-        public bool screenshotOnFlightScreenshotRecorded = true;
-
         [GameParameters.CustomParameterUI("Screenshot on Progress Achievement")]
         public bool screenshotOnProgressAchieve = true;
 
@@ -479,6 +586,9 @@ namespace KaptainsLogNamespace
             screenshotOnFlagPlant = true;
             screenshotOnCrewOnEVA = true;
 
+            screenshotOnKerbalPassedOutFromGeeForce = true;
+            screenshotOnProgressAchieve = true;
+            screenshotOnProgressComplete = true;
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
@@ -516,6 +626,11 @@ namespace KaptainsLogNamespace
                 screenshotOnDominantBodyChange = false;
                 screenshotOnFlagPlant = false;
                 screenshotOnCrewOnEVA = false;
+
+                screenshotOnKerbalPassedOutFromGeeForce = false;
+                screenshotOnProgressAchieve = false;
+                screenshotOnProgressComplete = false;
+
             }
             return !screenshotOnAllEvents;
             //            return true; //otherwise return true

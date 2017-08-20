@@ -77,7 +77,7 @@ namespace KaptainsLogNamespace
         }
 
 
-        int? deleteItem, editItem;
+        int? deleteItem, editItem, editNewItem;
 
         void DisplayMainWindow(int id)
         {
@@ -145,7 +145,7 @@ namespace KaptainsLogNamespace
                 }
                 if (GUILayout.Button(GameDatabase.Instance.GetTexture(PencilIcon, false), GUILayout.Height(21), GUILayout.Width(21)))
                 {
-                    editItem = i;
+                    editNewItem = i;
                 }
                 for (int d = 0; d < displayFields.Count; d++)
                 {
@@ -327,11 +327,16 @@ namespace KaptainsLogNamespace
 
                
             }
-            if (editItem != null && !notesEntry)
+            if (editNewItem != null)
             {
-                utils.le = kaptainsLogList[editItem.Value];
+                if (editItem != null)
+                    SaveEditItem();
+
+                utils.le = kaptainsLogList[editNewItem.Value];
                 notesEntry = true;
                 notesText = utils.le.notes;
+                editItem = editNewItem;
+                editNewItem = null;
             }
         }
     }

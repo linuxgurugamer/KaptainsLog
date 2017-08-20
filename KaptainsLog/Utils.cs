@@ -177,7 +177,7 @@ namespace KaptainsLogNamespace
         {
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnVesselRollout)
                 return;
-            string s = "Vessel [" + sc.shipName + "] rolled out of " + sc.shipFacility;
+            string s = "Vessel \"" + sc.shipName + "\" rolled out of " + sc.shipFacility;
             CreateLogEntry(Events.OnVesselRollout, false, s, "");
         }
 
@@ -204,10 +204,17 @@ namespace KaptainsLogNamespace
                 return;
 
             string s;
+            bool expense = (tr == TransactionReasons.ContractDecline ||
+                tr == TransactionReasons.ContractPenalty ||
+                tr == TransactionReasons.CrewRecruited ||
+                tr == TransactionReasons.RnDPartPurchase ||
+                tr == TransactionReasons.VesselRollout) ;
+            if (expense && f > 0)
+                f = -f;
             if (f > 0)
-                s = "Funds increased by " + f.ToString("D1") + " because " + GetTransReason(tr);
+                s = "Funds increased by " + f.ToString("N1") + " because " + GetTransReason(tr);
             else
-                s = "Funds decreased by " + f.ToString("D1") + " because " + GetTransReason(tr);
+                s = "Funds decreased by " + f.ToString("N1") + " because " + GetTransReason(tr);
             CreateLogEntry(Events.OnFundsChanged, false, s, "");
         }
 
@@ -289,7 +296,7 @@ namespace KaptainsLogNamespace
 
         void onScienceReceived(float f, ScienceSubject ss, ProtoVessel pv, bool b)
         {
-            string s = f.ToString() + "received for " + ss.title + ", transmitted by " + pv.vesselName;
+            string s = f.ToString() + " science received for " + ss.title + ", transmitted by " + pv.vesselName;
             CreateLogEntry(Events.OnScienceReceived, false, s, "");
         }
 
@@ -410,7 +417,7 @@ namespace KaptainsLogNamespace
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_3>().logOnVesselRecovered)
                 return;
             recoveryRequested = false;
-            CreateLogEntry(Events.VesselRecovered, false, "Vessel recovered: " + pv.vesselName, pv.vesselName);
+            CreateLogEntry(Events.VesselRecovered, false, "Recovered vessel  \"" + pv.vesselName + "\"", pv.vesselName);
         }
 
         public string getCurrentCrew(Vessel v = null)
@@ -460,7 +467,7 @@ namespace KaptainsLogNamespace
                 return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnStageActivate)
             //    klw.activatePause();
-            CreateLogEntry(Events.StageActivate, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnStageActivate, "Stage Activation");
+            CreateLogEntry(Events.StageActivate, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnStageActivate, "Activated stage #" + stage.ToString());
         }
 
         void onPartDie(Part p)
@@ -586,7 +593,7 @@ namespace KaptainsLogNamespace
             if (fe != null)
             {
                 Log.Info("Flight Log type: " + fe.type);
-                CreateLogEntry(Events.FlightLogRecorded, false, "At " + GetKerbinTime(fe.flight).ToString() + ", " + fe.type + " at " + fe.target);
+                CreateLogEntry(Events.FlightLogRecorded, false, fe.type + " at " + fe.target);
             }
         }
 
@@ -598,7 +605,7 @@ namespace KaptainsLogNamespace
             // report.sender
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnCrewKilled)
             //    klw.activatePause();
-            CreateLogEntry(Events.CrewKilled, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnCrewKilled, "Crew killed: " + report.sender);
+            CreateLogEntry(Events.CrewKilled, HighLogic.CurrentGame.Parameters.CustomParams<KL_2>().pauseOnCrewKilled, report.sender + " killed");
         }
 
         bool kerbalGoingEVA = false;
@@ -742,6 +749,7 @@ namespace KaptainsLogNamespace
                 }
                 else
                 {
+                    Log.Info("node.Id: " + node.Id);
                     progressStandard s = progressParser.getStandardNode(node.Id);
 
                     if (s != null)
@@ -788,13 +796,18 @@ namespace KaptainsLogNamespace
                                 }
                                 else
                                 {
+#if false
                                     string note = Localizer.Format(progressParser.crewNameFromNode(node));
 
                                     if (string.IsNullOrEmpty(note))
                                         note = Localizer.Format(progressParser.vesselNameFromNode(node));
+#endif
+                                    string sn = body.bodyDisplayName; //.TrimEnd('\r', '\n');
+                                    if (sn.EndsWith("^N"))
+                                        sn = sn.Substring(0, sn.LastIndexOf("^N"));
+                                    logtext = Localizer.Format(sb.Descriptor).Replace("<<1>>", sn); // + " " +  note;
 
-                                    logtext = note;
-
+#if false
                                     try
                                     {
                                         t = (double)node.GetType().GetField("AchieveDate", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(node);
@@ -804,6 +817,7 @@ namespace KaptainsLogNamespace
                                     {
                                         Log.Warning("Error In Detecting Progress Node Achievement Date\n" + e);
                                     }
+#endif
                                 }
                             }
                         }
@@ -816,7 +830,7 @@ namespace KaptainsLogNamespace
         //
         // End of methods adapted from ProgressParser mod
         //
-        #endregion
+#endregion
 
         public bool uiVisible = true;
         private void onShowUI()

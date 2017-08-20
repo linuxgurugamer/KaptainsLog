@@ -91,7 +91,7 @@ namespace KaptainsLogNamespace
         public double lastNoteTime = 0;
 
         Rect mainWindow;
-        Rect logEntryWindow;
+        public Rect logEntryWindow;
         Rect filterSelectionWindow;
         Rect colSelectWindow;
         Rect saveWindow;
@@ -1126,11 +1126,11 @@ namespace KaptainsLogNamespace
                 if (utils.leQ.Count == 0)
                     cancelManualEntry = false;
             }
-            if (manualEntry || (!logEntryComplete && !utils.snapshotInProgress && utils.leQ.Count > 0))
+            if (utils.le.manualEntryRequired && (!logEntryComplete && !utils.snapshotInProgress && utils.leQ.Count > 0))
             {
                 Log.Info("FixedUpdate 2");
 
-                if (manualEntry || pauseActivated || HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().delayBeforePause + lastPauseTime < Planetarium.GetUniversalTime())
+                if (utils.le.manualEntryRequired || pauseActivated || HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().delayBeforePause + lastPauseTime < Planetarium.GetUniversalTime())
                 {
                     Log.Info("FixedUpdate 2.1, setting notestentry to true,  manualEntry: " + manualEntry.ToString() + ",   pauseActivate: " + pauseActivated.ToString());
                     pauseActivated = false;

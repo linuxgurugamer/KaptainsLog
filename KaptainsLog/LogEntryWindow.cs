@@ -25,9 +25,19 @@ namespace KaptainsLogNamespace
             notesEntryComplete = true;
 
             editItem = null;
+            
             FlightDriver.SetPause(false);
         }
 
+        internal void SaveEditItem()
+        {
+            Log.Info("Saving editItem: " + editItem.Value.ToString());
+            if (!escapePressed || notesText != "")
+                utils.le.notes = notesText;
+            kaptainsLogList[editItem.Value] = utils.le;
+            DisplayLogEntryExitCleanup();
+
+        }
         void DisplayLogEntryWindow(int id)
         {
             //Log.Info("DisplayLogEntryWindow");
@@ -129,10 +139,7 @@ namespace KaptainsLogNamespace
 
                 if (editItem != null)
                 {
-                    Log.Info("Saving editItem: " + editItem.Value.ToString());
-                    if (!escapePressed || notesText != "")    
-                        utils.le.notes = notesText;
-                    kaptainsLogList[editItem.Value] = utils.le;
+                    SaveEditItem();
                 }
                 else
                 {

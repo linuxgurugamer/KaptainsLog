@@ -49,3 +49,10 @@
 				Log on Part Upgrade Purchased
 				Log on Part Purchased
 				Log on Funds Changed
+
+0.0.1.8
+		Added option to enable/disable all logging events
+		Fixed option for enabling/disabling all screenshot settings
+		Removed unnecessary option: screenshotOnFlightScreenshotRecorded
+		Added option th enable/disable all pause events
+		Fixed problem with editing a second log entry while the first log entry was still open in an edit window
