@@ -156,7 +156,7 @@ namespace KaptainsLogNamespace
                 s = "Reputation increased by ";
             else
                 s = "Reputation dropped by ";
-            s += f.ToString("D1");
+            s += f.ToString("N1");
 
             CreateLogEntry(Events.OnReputationChanged, false, s, "");
         }

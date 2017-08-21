@@ -56,3 +56,6 @@
 		Removed unnecessary option: screenshotOnFlightScreenshotRecorded
 		Added option th enable/disable all pause events
 		Fixed problem with editing a second log entry while the first log entry was still open in an edit window
+
+0.0.1.9
+		Fixed performance issue where the log was being spammed with file io errors

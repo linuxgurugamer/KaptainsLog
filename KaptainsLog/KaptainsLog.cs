@@ -1188,9 +1188,12 @@ namespace KaptainsLogNamespace
                             Texture2D screenshot = MakeThumbnailFrom(utils.le.pngName, HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().thumbnailSize);
 
                             byte[] bytes = screenshot.EncodeToPNG();
-                            System.IO.File.WriteAllBytes(utils.le.pngThumbnailName, bytes);
-                            utils.ConvertToJPG(utils.le.pngThumbnailName, utils.le.jpgThumbnailName);
-                            System.IO.File.Delete(utils.le.pngThumbnailName);
+                            if (utils.le.pngThumbnailName != "")
+                            {
+                                System.IO.File.WriteAllBytes(utils.le.pngThumbnailName, bytes);
+                                utils.ConvertToJPG(utils.le.pngThumbnailName, utils.le.jpgThumbnailName);
+                                System.IO.File.Delete(utils.le.pngThumbnailName);
+                            }
                             logEntryComplete = true;
                             utils.le.pngThumbnailName = "";
                             Destroy(screenshot);
