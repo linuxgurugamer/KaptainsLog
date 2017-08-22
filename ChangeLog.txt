@@ -59,3 +59,10 @@
 
 0.0.1.9
 		Fixed performance issue where the log was being spammed with file io errors
+
+0.0.1.10
+		Fixed problem with Messages window not draggable
+		Moved the HTMLTemplates folder into the PluginData folder to keep ModuleManager
+			from rebuilding if a template is changed
+		Moved the UnusedHTMLTemplates into PluginData for the same reason
+		Added a couple of debug statements to the Start() and Awake() methods

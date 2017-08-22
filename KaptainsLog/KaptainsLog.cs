@@ -203,7 +203,7 @@ namespace KaptainsLogNamespace
         double largestUniTime = 0;
 
         string screenshotPath = ROOT_PATH + "Screenshots/";
-        string htmlTemplatePath = MOD_FOLDER + "HTMLTemplates/";
+        string htmlTemplatePath = MOD_FOLDER + "PluginData/HTMLTemplates/";
         string[] fileEntries;
         string[] dirEntries;
         Fields entryField = Fields.none;
@@ -313,7 +313,7 @@ namespace KaptainsLogNamespace
 
         private void Awake()
         {
-            Log.Info("Awake");
+            Log.Warning("Awake");
             Instance = this;
         }
         List<DisplayField> displayFields;
@@ -399,7 +399,7 @@ namespace KaptainsLogNamespace
         // Start toolbar if present.
         private void Start()
         {
-            Log.Info("Start");
+            Log.Warning("Start");
             DontDestroyOnLoad(this);
 
 
@@ -1311,7 +1311,7 @@ namespace KaptainsLogNamespace
             SaveWinPos(settings, "entryFieldWindow", entryFieldWindow);
             SaveWinPos(settings, "htmlTemplateSelectWindow", htmlTemplateSelectWindow);
 
-            SaveWinPos(settings, "filterListWindow", ScreenMessagesLog.Instance.filterListWindow);
+            SaveWinPos(settings, "ScrnMsgsWindow", ScreenMessagesLog.Instance.ScrnMsgsWindow);
 
             settingsFile.Save(PLUGINDATA);
             ScreenMessages.PostScreenMessage("Window Positions Saved");
@@ -1357,7 +1357,7 @@ namespace KaptainsLogNamespace
                 htmlTemplateSelectWindow = GetWinPos(settings, "htmlTemplateSelectWindow", HTML_TEMPLATE_SEL_WIDTH, HTML_TEMPLATE_SEL_HEIGHT);
 
                 if (ScreenMessagesLog.Instance != null)
-                    ScreenMessagesLog.Instance.filterListWindow = GetWinPos(settings, "filterListWindow", ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
+                    ScreenMessagesLog.Instance.ScrnMsgsWindow = GetWinPos(settings, "ScrnMsgsWindow", ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
 
             }
         }

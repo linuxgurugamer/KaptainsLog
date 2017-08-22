@@ -4,10 +4,11 @@ TODO list
 
 	If possible, log messages/mission completions. (may be there)
 
-	Log nesting (with expandable lists) by ship/UTC (i.e. day 1/2/3 events, ship x/y/z events...). Or make a more immediate UI for Filtering (i.e. in the same window?)
+	Log nesting (with expandable lists) by ship/UTC (i.e. day 1/2/3 events, ship x/y/z events...).
 
 	Ability to identify and mark accordingly (in the ship name/description) KRASH simulations. (i.e. "Ship 123 - SIM")
 
 	Ability to customize template for entries similar to the intro quote. Example: "Kaptain's log. [value] [value2], [value3]. End of log."
 
 	Create new Settings Screens, which aren't tied into games
+

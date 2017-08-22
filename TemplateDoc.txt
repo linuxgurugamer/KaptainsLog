@@ -1,5 +1,7 @@
 Template Documentation
 
+Template files are located in the KaptainsLog/PluginData/HTMLTemplates folder
+
 Templates consist of up to four files, one of which is required and the others are specified inside this file:
 
 	templateConfig.cfg - Required

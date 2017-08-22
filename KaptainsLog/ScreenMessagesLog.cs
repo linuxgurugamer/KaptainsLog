@@ -22,7 +22,7 @@ namespace KaptainsLogNamespace
 
         Queue<ScreenMessage> scrnMsgLog = new Queue<ScreenMessage>();
         bool visible = false;
-        public Rect filterListWindow;
+        internal Rect ScrnMsgsWindow;
         int logentryWindowId = GUIUtility.GetControlID(FocusType.Native);
         Vector2 displayScrollVector;
 
@@ -53,7 +53,7 @@ namespace KaptainsLogNamespace
             UnityEngine.Debug.Log("ScreenMessagesLog.Awake");
             Instance = this;
             DontDestroyOnLoad(this);
-            filterListWindow = new Rect((Screen.width - 400) / 2, (Screen.height - 400) / 2, 400, 400);
+            ScrnMsgsWindow = new Rect((Screen.width - 400) / 2, (Screen.height - 400) / 2, 400, 400);
         }
 
         void Start()
@@ -149,7 +149,7 @@ namespace KaptainsLogNamespace
                 //buttonOnStyle.active.background = greenButtonTexture;
                 //buttonOnStyle.focused.background = greenButtonTexture;
 
-                KaptainsLog.Instance.logEntryWindow = GUILayout.Window(logentryWindowId, filterListWindow, DisplayLogEntryWindow, "Kaptain's Log Entry"); //, KaptainsLog.windowStyle);
+                ScrnMsgsWindow = GUILayout.Window(logentryWindowId, ScrnMsgsWindow, DisplayScreenMsgsWindow, "Kaptain's Log Entry"); //, KaptainsLog.windowStyle);
             }
         }
 
@@ -158,7 +158,7 @@ namespace KaptainsLogNamespace
         bool upperLeftFilter = true;
         bool upperRightFilter = true;
 
-        void DisplayLogEntryWindow(int id)
+        void DisplayScreenMsgsWindow(int id)
         {
             
 #if false
@@ -279,20 +279,20 @@ namespace KaptainsLogNamespace
             }
             GUILayout.FlexibleSpace();
 
-            if (filterListWindow.width != NARROW_WIDTH)
+            if (ScrnMsgsWindow.width != NARROW_WIDTH)
             {
                 if (GUILayout.Button("Narrow"))
-                    filterListWindow.width = NARROW_WIDTH;
+                    ScrnMsgsWindow.width = NARROW_WIDTH;
             }
-            if (filterListWindow.width != MED_WIDTH)
+            if (ScrnMsgsWindow.width != MED_WIDTH)
             {
                 if (GUILayout.Button("Medium"))
-                    filterListWindow.width = MED_WIDTH;
+                    ScrnMsgsWindow.width = MED_WIDTH;
             }
-            if (filterListWindow.width != WIDE_WIDTH)
+            if (ScrnMsgsWindow.width != WIDE_WIDTH)
             {
                 if (GUILayout.Button("Wide"))
-                    filterListWindow.width = WIDE_WIDTH;
+                    ScrnMsgsWindow.width = WIDE_WIDTH;
             }
             GUILayout.EndHorizontal();
 
