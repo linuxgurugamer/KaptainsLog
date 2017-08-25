@@ -283,7 +283,7 @@ namespace KaptainsLogNamespace
             notesEntry = false;
             manualEntry = false;
             imageSelection = false;
-            escapePressed = false;
+            //escapePressed = false;
             displayFilterWindow = false;
             displayColSelectWindow = false;
             displayExportWindow = false;
@@ -486,7 +486,7 @@ namespace KaptainsLogNamespace
             manualEntry = true;
             visibleByToolbar = false;
             pauseActivated = true;
-            escapePressed = false;
+            //escapePressed = false;
             utils.CreateLogEntry(Events.ManualEntry, true);
         }
 
@@ -615,7 +615,7 @@ namespace KaptainsLogNamespace
             }
         }
 
-        bool escapePressed = false;
+       // bool escapePressed = false;
         bool cancelManualEntry = false;
 
         public void OnGUI()
@@ -642,7 +642,7 @@ namespace KaptainsLogNamespace
                 //if (e.isKey )
                 //    escapePressed = (e.keyCode == KeyCode.Escape && e.type == UnityEngine.EventType.KeyDown);
                 // Log.Info("escapePressed: " + escapePressed.ToString());
-                escapePressed = GameSettings.PAUSE.GetKeyDown();
+               // escapePressed = GameSettings.PAUSE.GetKeyDown();
             }
 
 

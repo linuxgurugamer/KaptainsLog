@@ -21,7 +21,7 @@ namespace KaptainsLogNamespace
             notesText = "";
             notesEntry = false;
             manualEntry = false;
-            escapePressed = false;
+           // escapePressed = false;
             notesEntryComplete = true;
 
             editItem = null;
@@ -32,8 +32,9 @@ namespace KaptainsLogNamespace
         internal void SaveEditItem()
         {
             Log.Info("Saving editItem: " + editItem.Value.ToString());
-            if (!escapePressed || notesText != "")
-                utils.le.notes = notesText;
+            //if (!escapePressed || notesText != "")
+            if (notesText != "")
+                    utils.le.notes = notesText;
             kaptainsLogList[editItem.Value] = utils.le;
             DisplayLogEntryExitCleanup();
 
@@ -48,17 +49,17 @@ namespace KaptainsLogNamespace
             // Check escapePressed here because otherwise the event is swallowed by Unity
             //
 
-            if (Event.current.type == UnityEngine.EventType.KeyDown)
-                escapePressed = (Event.current.keyCode == KeyCode.Escape);
+//if (Event.current.type == UnityEngine.EventType.KeyDown)
+//    escapePressed = (Event.current.keyCode == KeyCode.Escape);
 
-
+#if false
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             labelStyle.normal.textColor = Color.red;
             GUILayout.Label("Hit Escape to close", labelStyle);
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
-
+#endif
             GUILayout.BeginHorizontal();
             GUILayout.Label("Vessel: ");
             GUILayout.TextField(utils.le.vesselName);
@@ -97,16 +98,19 @@ namespace KaptainsLogNamespace
             }
             GUILayout.FlexibleSpace();
             var b1 = GUILayout.Button("Cancel", GUILayout.Width(90));
-            if (b1 || (escapePressed && notesText == ""))
+            //if (b1 || (escapePressed && notesText == ""))
+            if (b1 || notesText == "")
             {
-                Log.Info("LogEntryWindow b1, escapePressed: " + escapePressed.ToString());
+               // Log.Info("LogEntryWindow b1, escapePressed: " + escapePressed.ToString());
                 pms = PauseMenuState.hidden;
+#if false
                 if (escapePressed)
                 {
                     Log.Info("escapePressed, setting pms = PauseMenuState.KLEntry");
                     pms = PauseMenuState.KLEntry;
                     cancelManualEntry = true;
                 }
+#endif
                 DisplayLogEntryExitCleanup();
                
                 //if (visibleByToolbar)
@@ -116,7 +120,7 @@ namespace KaptainsLogNamespace
                 }
                 kaptainsLogStockButton.SetFalse();
                 notesText = "";
-                escapePressed = false;
+                //escapePressed = false;
             }
             if (editItem == null)
             {
@@ -127,15 +131,18 @@ namespace KaptainsLogNamespace
             GUILayout.FlexibleSpace();
             
             var b = GUILayout.Button("OK", GUILayout.Width(120));
-            if (escapePressed || b)
+            //if (escapePressed || b)
+            if (b)
             {
-                
+
                 pms = PauseMenuState.hidden;
+#if false
                 if (escapePressed)
                 {
                     Log.Info("LogEntryWindow b, escapePressed: " + escapePressed.ToString());
                     pms = PauseMenuState.KLEntry;
-                }
+       }
+#endif
 
                 if (editItem != null)
                 {
@@ -143,7 +150,8 @@ namespace KaptainsLogNamespace
                 }
                 else
                 {
-                    if (!escapePressed || notesText != "")
+                    //if (!escapePressed || notesText != "")
+                    if (notesText != "")
                     {
                         utils.le.notes = notesText;
                         if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().screenshot)

@@ -66,3 +66,6 @@
 			from rebuilding if a template is changed
 		Moved the UnusedHTMLTemplates into PluginData for the same reason
 		Added a couple of debug statements to the Start() and Awake() methods
+
+0.0.1.11
+		Removed all access of the escape key
