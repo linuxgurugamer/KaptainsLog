@@ -23,7 +23,7 @@ namespace KaptainsLogNamespace
 
             GUILayout.BeginHorizontal();
             if (entryField == Fields.altitude || entryField == Fields.missionTime || entryField == Fields.speed ||
-    entryField == Fields.universalTime || entryField == Fields.utcTime)
+                entryField == Fields.universalTime || entryField == Fields.utcTime)
             {
                 float oldFloat;
                 switch (entryField)
@@ -105,7 +105,7 @@ namespace KaptainsLogNamespace
                 GUILayout.FlexibleSpace();
                 GUILayout.BeginHorizontal();
                 GUILayout.FlexibleSpace();
-                
+
             }
             else
             {

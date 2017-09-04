@@ -52,7 +52,7 @@ namespace KaptainsLogNamespace
                 if (screenshotPrefix == fileName.Substring(0, screenshotPrefix.Length))
                     continue;
                 GUIContent content = new GUIContent();
-                content.image = MakeThumbnailFrom(fileName, HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().thumbnailSize);
+                content.image = MakeThumbnailFrom(fileName, HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().thumbnailSize);
                 content.text = fileName.Substring(fileName.LastIndexOf('/') + 1);
                 imgSelList.Add(content);
             }

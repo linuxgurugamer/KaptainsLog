@@ -22,6 +22,7 @@ Functionality
 	Ability to filter on any of the fields
 	Export to CSV
 	Export to HTML using template files
+	Export a single row (QuickExport)
 	Attach selected image to a manual log entry
 
 Events Recorded

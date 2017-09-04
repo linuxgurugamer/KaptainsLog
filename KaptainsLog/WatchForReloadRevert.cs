@@ -23,24 +23,46 @@ using UnityEngine.UI;
 
 namespace KaptainsLogNamespace
 {
-    [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
+    [KSPAddon(KSPAddon.Startup.AllGameScenes, true)]
     public class WatchForReloadRevert : MonoBehaviour
     {
-        static WatchForReloadRevert Instance;
+        //static WatchForReloadRevert Instance;
+
+#if false
         private IEnumerator coroutine;
 
         string lastGameTitle;
         double lastUT;
 
         const float WAITTIME = 2f;
-
+#endif
         private void Awake()
         {
             UnityEngine.Debug.Log("WatchForReloadRevert.Awake");
-            Instance = this;
-            DontDestroyOnLoad(this);        
+            //Instance = this;
+            DontDestroyOnLoad(this);
+
+            GameEvents.onGameStateCreated.Add(onGameStateCreated);
+            GameEvents.onGameStateLoad.Add(onGameStateLoad);
+            GameEvents.onGameStatePostLoad.Add(onGameStatePostLoad);
         }
 
+        void onGameStateCreated(Game g)
+        {
+            Log.Info("onGameStateCreated");
+        }
+        void onGameStateLoad(ConfigNode n)
+        {
+            Log.Info("onGameStateLoad");
+            GlobalSettings.LoadGlobalSettings();
+        }
+        void onGameStatePostLoad(ConfigNode n)
+        {
+            Log.Info("onGameStatePostLoad");
+            KaptainsLog.utils.CreateLogEntry(Events.Revert, false, "Game reverted to " + KaptainsLog.utils.GetKerbinTime(Planetarium.GetUniversalTime(), false).ToString(), "");
+        }
+
+#if false
         void Start()
         {
             lastGameTitle = HighLogic.CurrentGame.Title;
@@ -84,6 +106,6 @@ namespace KaptainsLogNamespace
             }
 
         }
-
+#endif
     }
 }

@@ -25,30 +25,55 @@ namespace KaptainsLogNamespace
         public CrewMember()
         { }
     }
+
     public enum Events
     {
-        FlightLogRecorded, ScreenMsgRecord, PartDied, Launch, StageSeparation, PartCouple, VesselModified,
-        StageActivate, OrbitClosed, OrbitEscaped, VesselRecovered, Landed, CrewModified, ProgressRecord,
-        KerbalPassedOutFromGeeForce, Revert,
-        CrewKilled, CrewTransferred, DominantBodyChange, FlagPlant, CrewOnEVA,
-        OnScienceChanged, OnScienceReceived, OnOrbitalSurveyCompleted,
-
-        OnReputationChanged, OnTechnologyResearched, OnTriggeredDataTransmission, OnVesselRollout, OnPartUpgradePurchased, OnPartPurchased,
+        CrewKilled,
+        CrewModified,
+        CrewOnEVA,
+        CrewTransferred,
+        DominantBodyChange,
+        FinalFrontier,
+        FlagPlant,
+        FlightLogRecorded,
+        KerbalPassedOutFromGeeForce,
+        Landed,
+        Launch,
+        ManualEntry,
+        MiscExternal,
         OnFundsChanged,
+        OnOrbitalSurveyCompleted,
+        OnPartPurchased,
+        OnPartUpgradePurchased,
+        OnReputationChanged,
+        OnScienceChanged,
+        OnScienceReceived,
+        OnTechnologyResearched,
+        OnTriggeredDataTransmission,
+        OnVesselRollout,
+        OrbitClosed,
+        OrbitEscaped,
+        PartCouple,
+        PartDied,
+        ProgressRecord,
+        Revert,
+        ScreenMsgRecord,
+        StageActivate,
+        StageSeparation,
+        VesselModified,
+        VesselRecovered
 
-        FinalFrontier, MiscExternal,
-        ManualEntry
     };
-
-    public enum Fields { none, vesselName, universalTime, utcTime, missionTime,
+    public enum Fields { none, index, vesselId, vesselName, universalTime, utcTime, missionTime,
         vesselSituation, controlLevel, mainBody, altitude, speed,
         eventType, notes, thumbnail, screenshot, lastItem };
 
     public enum PrintType { noPrint, print, screenshotPrint};
-    public class LogEntry
+    public class LogEntry : IComparable<LogEntry>
     {
+        public int index = 0;
         public string vesselName = "";
-        public string id = "";
+        public string vesselId = "";
         public double universalTime;
         public DateTime utcTime;
         public double missionTime;
@@ -80,6 +105,10 @@ namespace KaptainsLogNamespace
             {
                 case Fields.none:
                     return "None";
+                case Fields.index:
+                    return "Entry order";
+                case Fields.vesselId:
+                    return "Vessel ID";
                 case Fields.vesselName:
                     return "Vessel";
                 case Fields.universalTime:
@@ -205,6 +234,86 @@ namespace KaptainsLogNamespace
                     return "Partial/Unmanned";
             }
             return vcl.ToString();
+        }
+
+        public static Fields sortField = Fields.index;
+        public static bool sortReverse = false;
+
+         public int CompareTo(LogEntry y)
+        {
+            int rc = 0;
+            switch (sortField)
+            {
+                case Fields.index:
+                    rc = index - y.index;
+                    break;
+
+                case Fields.vesselId:
+                    rc = String.Compare(vesselId, y.vesselId);
+                    break;
+                case Fields.vesselName:
+                    rc = String.Compare(vesselName, y.vesselName);
+                    break;
+                case Fields.universalTime:
+                    if (universalTime < y.universalTime) rc = -1;
+                    else
+                        if (universalTime > y.universalTime) rc = 1;
+                    break;
+                case Fields.utcTime:
+                    if (utcTime < y.utcTime) rc = -1;
+                    else
+                       if (utcTime > y.utcTime) rc = 1;
+                    break;
+                case Fields.missionTime:
+                    if (missionTime < y.missionTime) rc = -1;
+                    else
+                      if (missionTime > y.missionTime) rc = 1;
+                    break;
+                case Fields.vesselSituation:
+                    if (vesselSituation < y.vesselSituation) rc = -1;
+                    else
+                     if (vesselSituation > y.vesselSituation) rc = 1;
+                    break;
+                case Fields.controlLevel:
+                    if (controlLevel < y.controlLevel) rc = -1;
+                    else
+                     if (missionTime > y.missionTime) rc = 1;
+                    break;
+                case Fields.mainBody:
+                    rc = String.Compare(vesselMainBody, y.vesselMainBody);
+                    break;
+                case Fields.altitude:
+                    if (altitude < y.altitude) rc = -1;
+                    else
+                     if (altitude > y.altitude) rc = 1;
+                    break;
+                case Fields.speed:
+                    if (speed < y.speed) rc = -1;
+                    else
+                     if (speed > y.speed) rc = 1;
+                    break;
+                case Fields.eventType:
+                    if (eventType < y.eventType) rc = -1;
+                    else
+                     if (eventType > y.eventType) rc = 1;
+                    break;
+            }
+            if (rc == 0)
+            {
+                if (sortField != Fields.universalTime)
+                {
+                    if (universalTime < y.universalTime) rc = -1;
+                    else
+                            if (universalTime > y.universalTime) rc = 1;
+                }
+                else
+                {
+                    rc = String.Compare(vesselId, y.vesselId);
+                }
+            }
+            if (sortReverse)
+                return -rc;
+            return rc;
         }
     }
 }

@@ -54,7 +54,7 @@
 		Added option to enable/disable all logging events
 		Fixed option for enabling/disabling all screenshot settings
 		Removed unnecessary option: screenshotOnFlightScreenshotRecorded
-		Added option th enable/disable all pause events
+		Added option to enable/disable all pause events
 		Fixed problem with editing a second log entry while the first log entry was still open in an edit window
 
 0.0.1.9
@@ -69,3 +69,23 @@
 
 0.0.1.11
 		Removed all access of the escape key
+
+0.0.1.12
+		Changed default option for "Hide UI for screenshot" setting to be false
+		Changed method of getting screen messages, now using callbacks
+		Added Intro window
+		Added initial sort window, currently only sorts when selected, will eventually always keep in current specified sort order
+			Secondary sort is always universal time, except when sorting by universal time; when primary sort is Universal time, secondsry sort is vessel id
+
+0.0.1.13
+		Added code to keep list sorted when adding new rows
+		Added reverse sort
+		Added export button to image display screen, to export a single entry (not functional yet)
+		Added new flag for template file to indicate it's for a quickExport only
+
+		Added multiple buttons to Intro Window for each section
+			(still need to take pic and add images)
+		Added new class to save/load global settings
+		Added new option to specify if global settings should be used for all settings
+		Added option to each settings sections about global settings for that section
+		Fixed message icon filters for upper center

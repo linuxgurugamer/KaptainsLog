@@ -24,8 +24,74 @@ namespace KaptainsLogNamespace
         string exportHeaderTitle, exportFooterTitle;
         string exportHeaderImage, exportFooterImage;
         int pagenum = 0;
+        bool exportSingle = false;
 
-        void EnableExportWindow()
+        internal ExportSettings exportSettings = new ExportSettings("regular");
+        internal ExportSettings quickExport = new ExportSettings("quick");
+        const string EXPORTSETTINGSNAME = "ExportSettings";
+
+        public class ExportSettings
+        {
+            bool csv = false;
+            bool html = false;
+            bool openInBrowser = true;
+            string saveFile = "";
+            string htmlTemplate = "";
+
+            string exportHeaderTitle = "";
+            string exportFooterTitle = "";
+            string exportHeaderImage = "";
+            string exportFooterImage = "";
+            int pagenum = 0;
+            bool exportSingle = false;
+
+            string exportType;
+            public ExportSettings(string type)
+            {
+                exportType = type;
+            }
+
+            ConfigNode SaveExportSettings()
+            {
+                //ConfigNode settingsFile = new ConfigNode();
+                ConfigNode settings = new ConfigNode(exportType);
+
+                //settingsFile.SetNode(EXPORTSETTINGSNAME, settings, true);
+
+                settings.AddValue("csv", csv);
+                settings.AddValue("html", html);
+                settings.AddValue("openInBrowser", openInBrowser);
+                settings.AddValue("saveFile", saveFile);
+                settings.AddValue("htmlTemplate", htmlTemplate);
+
+                settings.AddValue("exportHeaderTitle", exportHeaderTitle);
+                settings.AddValue("exportFooterTitle", exportFooterTitle);
+                settings.AddValue("exportHeaderImage", exportHeaderImage);
+                settings.AddValue("exportFooterImage", exportFooterImage);
+                settings.AddValue("pagenum", pagenum);
+                settings.AddValue("exportSingle", exportSingle);
+
+                return settings;
+            }
+            void LoadExportSettings(ConfigNode settings)
+            {
+                csv = Boolean.Parse(Utils.SafeLoad(settings.GetValue("csv"), "false"));
+                html = Boolean.Parse(Utils.SafeLoad(settings.GetValue("html"), "false"));
+                openInBrowser = Boolean.Parse(Utils.SafeLoad(settings.GetValue("openInBrowser"), "false"));
+
+                saveFile = Utils.SafeLoad(settings.GetValue("saveFile"), "");
+                htmlTemplate = Utils.SafeLoad(settings.GetValue("htmlTemplate"), "");
+                exportHeaderTitle = Utils.SafeLoad(settings.GetValue("exportHeaderTitle"), "");
+                exportFooterTitle = Utils.SafeLoad(settings.GetValue("exportFooterTitle"), "");
+                exportHeaderImage = Utils.SafeLoad(settings.GetValue("exportHeaderImage"), "");
+                exportFooterImage = Utils.SafeLoad(settings.GetValue("exportFooterImage"), "");
+
+                pagenum = Int32.Parse(Utils.SafeLoad(settings.GetValue("pagenum"), "0"));
+                exportSingle = Boolean.Parse(Utils.SafeLoad(settings.GetValue("exportSingle"), "false"));
+            }
+        }
+
+        internal void EnableExportWindow(bool single = false)
         {
             displayExportWindow = true;
             exportHeaderImage = "";
@@ -33,6 +99,7 @@ namespace KaptainsLogNamespace
             exportHeaderTitle = "";
             exportFooterTitle = "";
             pagenum = 1;
+            exportSingle = single;
         }
 
         void SaveAsCSV(string fname)
@@ -212,6 +279,7 @@ namespace KaptainsLogNamespace
         }
 
         bool isHtml;
+        bool isQuickExport;
         int entriesPerPage;
         string fileSuffix;
         string headerTmpl, detailTmpl, footerTmpl;
@@ -243,10 +311,9 @@ namespace KaptainsLogNamespace
                 templateCfg = templateCfgFile.GetNode("TemplateConfig");
             if (templateCfg != null)
             {
-                var isHtmlStr = templateCfg.GetValue("isHtml");
+                isHtml = Boolean.Parse(Utils.SafeLoad(templateCfg.GetValue("isHtml"), "false"));
+                isQuickExport = Boolean.Parse(Utils.SafeLoad(templateCfg.GetValue("isQuickExport"), "false"));
 
-                if (isHtmlStr == "true" || isHtmlStr == "True" || isHtmlStr == "TRUE")
-                    isHtml = true;
                 entriesPerPage = Int32.Parse(Utils.SafeLoad(templateCfg.GetValue("entriesPerPage"), entriesPerPage));
                 fileSuffix = Utils.SafeLoad(templateCfg.GetValue("fileSuffix"), fileSuffix);
                 headerTmpl = Utils.SafeLoad(templateCfg.GetValue("header"), headerTmpl);
@@ -270,15 +337,21 @@ namespace KaptainsLogNamespace
             
             string header = ProcessTemplate(htmlTemplate + "/" + headerTmpl);
             string detail = "";
-
-            for (int i = 0; i < kaptainsLogList.Count; i++)
+            if (exportSingle)
             {
+                detail = ProcessTemplate(htmlTemplate + "/" + detailTmpl, leToDisplay);
+            }
+            else
+            {
+                for (int i = 0; i < kaptainsLogList.Count; i++)
+                {
 
-                var le = kaptainsLogList[i];
-                if (!le.leSelected || le.printFlag == PrintType.noPrint)
-                    continue;
+                    var le = kaptainsLogList[i];
+                    if (!le.leSelected || le.printFlag == PrintType.noPrint)
+                        continue;
 
-                detail += ProcessTemplate(htmlTemplate + "/" + detailTmpl, le);
+                    detail += ProcessTemplate(htmlTemplate + "/" + detailTmpl, le);
+                }
             }
             string footer = ProcessTemplate(htmlTemplate + "/" + footerTmpl);
 

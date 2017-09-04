@@ -165,10 +165,9 @@ namespace KaptainsLogNamespace
                                 if (GUILayout.Button(imgCacheList[i].image, GUIStyle.none, GUILayout.Width(imgCacheList[i].image.width), GUILayout.Height(imgCacheList[i].image.height)))
                                 {
                                     displayScreenshot = true;
-                                    imageToDisplay = utils.getDisplayString(le1, Fields.screenshot);
-                                    Log.Info("imageToDisplay: " + imageToDisplay);
+                                    leToDisplay = le1;
+                                    newLeToDisplay = true;
                                 }
-                                    //GUILayout.Box(imgCacheList[i].image, GUILayout.ExpandWidth(false));
                             }
                             else
                                 GUILayout.Box("n/a", GUILayout.Width(colWidth[d]));
@@ -231,15 +230,20 @@ namespace KaptainsLogNamespace
 
             if (displayFilterWindow || displayColSelectWindow)
                 GUI.enabled = false;
-            if (GUILayout.Button("Export All"))
+            if (GUILayout.Button("Select All"))
             {
                 SelectAllExport(PrintType.print);
             }
-            if (GUILayout.Button("Export None"))
+            if (GUILayout.Button("Select None"))
             {
                 SelectAllExport(PrintType.noPrint);
             }
 
+            GUILayout.FlexibleSpace();
+            if (GUILayout.Button("Sort", GUILayout.Width(90)))
+            {
+                displaySortWindow = true;                
+            }
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Filters", GUILayout.Width(90)))
             {

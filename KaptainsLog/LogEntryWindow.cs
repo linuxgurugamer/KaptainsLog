@@ -154,7 +154,7 @@ namespace KaptainsLogNamespace
                     if (notesText != "")
                     {
                         utils.le.notes = notesText;
-                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().screenshot)
+                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().screenshot)
                         {
                             if (utils.le.screenshotName == null || utils.le.screenshotName == "")
                             {
@@ -165,7 +165,7 @@ namespace KaptainsLogNamespace
                         }
 
                         lastPauseTime = Planetarium.GetUniversalTime();
-                        lastNoteTime = Planetarium.GetUniversalTime() + HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().minTime;
+                        lastNoteTime = Planetarium.GetUniversalTime() + HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().minTime;
                     }
                 }
 

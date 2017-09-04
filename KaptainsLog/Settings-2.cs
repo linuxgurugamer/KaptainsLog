@@ -11,14 +11,18 @@ using UnityEngine;
 
 namespace KaptainsLogNamespace
 {
-    public class KL_5 : GameParameters.CustomParameterNode
+    public class KL_12 : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Initial Display Columns"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "Kaptain's Log"; } }
         public override string DisplaySection { get { return "Kaptain's Log"; } }
         public override int SectionOrder { get { return 2; } }
-        public override bool HasPresets { get { return true; } }
+        public override bool HasPresets { get { return false; } }
+
+        [GameParameters.CustomParameterUI("Use global settings for initial display columns")]
+        public bool useGlobalSettings4InitialDisplay = true;
+
 
         [GameParameters.CustomParameterUI("Vessel name")]
         public bool vesselName = true;
@@ -50,7 +54,56 @@ namespace KaptainsLogNamespace
         public bool screenshot = false;
         public bool lastItem = false;
 
+        public void SaveGlobalSettingsNode()
+        {
+            Log.Info("KL_12 SaveGlobalSettingsNode");
 
+            ConfigNode settings = new ConfigNode("KL_12");
+
+            settings.AddValue("vesselName", vesselName);
+            settings.AddValue("universalTime", universalTime);
+            settings.AddValue("utcTime", utcTime);
+            settings.AddValue("missionTime", missionTime);
+            settings.AddValue("vesselSituation", vesselSituation);
+            settings.AddValue("controlLevel", controlLevel);
+            settings.AddValue("mainBody", mainBody);
+            settings.AddValue("altitude", altitude);
+            settings.AddValue("speed", speed);
+            settings.AddValue("eventType", eventType);
+            settings.AddValue("notes", notes);
+            settings.AddValue("thumbnail", thumbnail);
+            settings.AddValue("screenshot", screenshot);
+            settings.AddValue("lastItem", lastItem);
+
+            GlobalSettings.UpdateNode("KL_12", settings);
+
+        }
+        public void LoadGlobalSettingsNode()
+        {
+            Log.Info("KL_12.LoadGlobalSettingsNode");
+            var settings = GlobalSettings.FetchNode("KL_12");
+            if (settings == null)
+            {
+                Log.Info("Unable to load KL_12 settings");
+                return;
+            }
+
+
+            vesselName = Boolean.Parse(Utils.SafeLoad(settings.GetValue("vesselName"), "true"));
+            universalTime = Boolean.Parse(Utils.SafeLoad(settings.GetValue("universalTime"), "true"));
+            utcTime = Boolean.Parse(Utils.SafeLoad(settings.GetValue("utcTime"), "true"));
+            missionTime = Boolean.Parse(Utils.SafeLoad(settings.GetValue("missionTime"), "true"));
+            vesselSituation = Boolean.Parse(Utils.SafeLoad(settings.GetValue("vesselSituation"), "true"));
+            controlLevel = Boolean.Parse(Utils.SafeLoad(settings.GetValue("controlLevel"), "true"));
+            mainBody = Boolean.Parse(Utils.SafeLoad(settings.GetValue("mainBody"), "true"));
+            altitude = Boolean.Parse(Utils.SafeLoad(settings.GetValue("altitude"), "true"));
+            speed = Boolean.Parse(Utils.SafeLoad(settings.GetValue("speed"), "true"));
+            eventType = Boolean.Parse(Utils.SafeLoad(settings.GetValue("eventType"), "true"));
+            notes = Boolean.Parse(Utils.SafeLoad(settings.GetValue("notes"), "true"));
+            thumbnail = Boolean.Parse(Utils.SafeLoad(settings.GetValue("thumbnail"), "true"));
+            screenshot = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshot"), "true"));
+            lastItem = Boolean.Parse(Utils.SafeLoad(settings.GetValue("lastItem"), "true"));
+        }
 
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
@@ -59,11 +112,25 @@ namespace KaptainsLogNamespace
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
-            return true;
+            if (useGlobalSettings4InitialDisplay && !MMCheck.useGlobalSettings4InitialDisplay)
+            {
+                LoadGlobalSettingsNode();
+                useGlobalSettings4InitialDisplay = true;
+            }
+            MMCheck.useGlobalSettings4InitialDisplay = useGlobalSettings4InitialDisplay;
+            
+            return MMCheck.EnabledForSave;
         }
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
+            if (MMCheck.atMainMenu && MMCheck.useGlobalSettings4All)
+                return false;
+            if (member.Name == "useGlobalSettings4InitialDisplay")
+                return true;
+            if (MMCheck.atMainMenu && MMCheck.useGlobalSettings4InitialDisplay)
+                    return false;
+            
             return true;
         }
 
@@ -72,14 +139,18 @@ namespace KaptainsLogNamespace
             return null;
         }
     }
-    public class KL_6 : GameParameters.CustomParameterNode
+    public class KL_13 : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Misc"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "Kaptain's Log"; } }
         public override string DisplaySection { get { return "Kaptain's Log"; } }
         public override int SectionOrder { get { return 3; } }
-        public override bool HasPresets { get { return true; } }
+        public override bool HasPresets { get { return false; } }
+
+
+        [GameParameters.CustomParameterUI("Use global settings for misc settings")]
+        public bool useGlobalSettings4Misc = true;
 
 
         [GameParameters.CustomStringParameterUI("Filter Limits", autoPersistance = true, lines = 2, title = "Filter Limits", toolTip = "Specifiy limits on some filters")]
@@ -92,8 +163,12 @@ namespace KaptainsLogNamespace
         public double speedFilterMax = 2500;
 
 
-        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "\n\nScreen Message Log\n", toolTip = "Options for the screen messages")]
+        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "")]
         public string UIstring2 = "";
+        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "Screen Message Log", toolTip = "Options for the screen messages")]
+        public string UIstring3 = "";
+        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "")]
+        public string UIstring4 = "";
 
 
         [GameParameters.CustomIntParameterUI("Max screen messages to display", minValue = 1, maxValue = 50,
@@ -109,6 +184,37 @@ namespace KaptainsLogNamespace
         public bool hideWhenNoMsgs = false;
 
 
+        public void SaveGlobalSettingsNode()
+        {
+            Log.Info("KL_13 SaveGlobalSettingsNode");
+
+            ConfigNode settings = new ConfigNode("KL_13");
+
+            settings.AddValue("altitudeFilterMax", altitudeFilterMax);
+            settings.AddValue("speedFilterMax", speedFilterMax);
+            settings.AddValue("maxMsgs", maxMsgs);
+            settings.AddValue("expireMsgsAfter", expireMsgsAfter);
+            settings.AddValue("hideWhenNoMsgs", hideWhenNoMsgs);
+
+            GlobalSettings.UpdateNode("KL_13", settings);
+
+        }
+        public void LoadGlobalSettingsNode()
+        {
+            Log.Info("KL_13.LoadGlobalSettingsNode");
+            var settings = GlobalSettings.FetchNode("KL_13");
+            if (settings == null)
+            {
+                Log.Info("Unable to load KL_13 settings");
+                return;
+            }
+
+            altitudeFilterMax = Double.Parse(Utils.SafeLoad(settings.GetValue("altitudeFilterMax"), "300000"));
+            speedFilterMax = Double.Parse(Utils.SafeLoad(settings.GetValue("speedFilterMax"), "2500"));
+            maxMsgs = Int32.Parse(Utils.SafeLoad(settings.GetValue("maxMsgs"), "20"));
+            expireMsgsAfter = Int32.Parse(Utils.SafeLoad(settings.GetValue("expireMsgsAfter"), "20"));
+            hideWhenNoMsgs = Boolean.Parse(Utils.SafeLoad(settings.GetValue("hideWhenNoMsgs"), "false"));
+        }
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
@@ -116,11 +222,25 @@ namespace KaptainsLogNamespace
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
-            return true;
+            if (useGlobalSettings4Misc && !MMCheck.useGlobalSettings4Misc)
+            {
+                LoadGlobalSettingsNode();
+                useGlobalSettings4Misc = true;
+            }
+            MMCheck.useGlobalSettings4Misc = useGlobalSettings4Misc;
+
+            return MMCheck.EnabledForSave;
         }
 
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
+            if (MMCheck.atMainMenu && MMCheck.useGlobalSettings4All)
+                return false;
+            if (member.Name == "useGlobalSettings4Misc")
+                return true;
+            if (MMCheck.atMainMenu && MMCheck.useGlobalSettings4Misc)
+                    return false;
+            
             return true;
         }
 

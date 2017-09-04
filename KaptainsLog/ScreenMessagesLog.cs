@@ -6,13 +6,34 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using KSP.UI;
 using KSP.UI.Screens;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.Events;
 
 namespace KaptainsLogNamespace
 {
+
+    public class OneWindow_ScreenMessageListener : MonoBehaviour
+    {
+        private ScreenMessagesText text;
+
+        private void Start()
+        {
+            text = GetComponent<ScreenMessagesText>();
+
+            if (text != null)
+                ScreenMessagesLog.OnScreenMessageAwake.Invoke(text);
+        }
+
+        private void OnDestroy()
+        {
+            if (text != null)
+                ScreenMessagesLog.OnScreenMessageDestroy.Invoke(text);
+        }
+    }
+
     [KSPAddon(KSPAddon.Startup.SpaceCentre, true)]
     public class ScreenMessagesLog : MonoBehaviour
     {
@@ -47,18 +68,43 @@ namespace KaptainsLogNamespace
         const string UROffIcon = "KaptainsLog/Icons/UR_Off";
         const string UROnIcon = "KaptainsLog/Icons/UR_On";
 
+        private IEnumerator WaitForScreenMessages()
+        {
+            Log.Info("WaitForScreenMessages");
+            while (ScreenMessages.Instance == null)
+            {
+                Log.Info("Waiting for ScreenMessages.Instance to be not null");
+                yield return null;
+            }
+
+            UpdateMessage.AddListener(new UnityAction<ScreenMessagesText>(MessageUpdate));
+            OnScreenMessageAwake.AddListener(new UnityAction<ScreenMessagesText>(NewMessageText));
+           // OnScreenMessageDestroy.AddListener(new UnityAction<ScreenMessagesText>(DestroyMessageText));
+            ScreenMessages.Instance.textPrefab.gameObject.AddOrGetComponent<OneWindow_ScreenMessageListener>();
+        }
 
         private void Awake()
         {
-            UnityEngine.Debug.Log("ScreenMessagesLog.Awake");
+            Log.Info("ScreenMessagesLog.Awake");
             Instance = this;
             DontDestroyOnLoad(this);
             ScrnMsgsWindow = new Rect((Screen.width - 400) / 2, (Screen.height - 400) / 2, 400, 400);
         }
 
+        public class OnCreateScreenMessage : UnityEvent<ScreenMessagesText> { }
+        public class ScreenMessageTextAwake : UnityEvent<ScreenMessagesText> { }
+        public class ScreenMessageTextDestroy : UnityEvent<ScreenMessagesText> { }
+
+        public static ScreenMessageTextAwake OnScreenMessageAwake = new ScreenMessageTextAwake();
+        public static ScreenMessageTextDestroy OnScreenMessageDestroy = new ScreenMessageTextDestroy();
+        public static OnCreateScreenMessage UpdateMessage = new OnCreateScreenMessage();
+
         void Start()
         {
-            coroutine = MonitorScreenMessages(0.25f);
+            Log.Info("ScreenMessagesLog.Start");
+            StartCoroutine(WaitForScreenMessages());
+
+            coroutine = ExpireScreenMessages(5f);
             LoadFilterList();
             StartCoroutine(coroutine);
 
@@ -67,14 +113,79 @@ namespace KaptainsLogNamespace
             greenButtonTexture.SetPixel(0, 1, Color.green);
             greenButtonTexture.SetPixel(1, 0, Color.green);
             greenButtonTexture.SetPixel(1, 1, Color.green);
+
+            GameEvents.onGameSceneLoadRequested.Add(SceneLoad);
+
         }
         private void OnDestroy()
         {
             this.StopAllCoroutines();
+
+            UpdateMessage.RemoveListener(new UnityAction<ScreenMessagesText>(MessageUpdate));
+            OnScreenMessageAwake.RemoveListener(new UnityAction<ScreenMessagesText>(NewMessageText));
+            //OnScreenMessageDestroy.RemoveListener(new UnityAction<ScreenMessagesText>(DestroyMessageText));
+            GameEvents.onGameSceneLoadRequested.Remove(SceneLoad);
         }
 
+        private void SceneLoad(GameScenes scene)
+        {
+            if (ScreenMessages.Instance == null)
+                return;
+        }
+        
+       // private Dictionary<ScreenMessagesText, ScreenMessagesText> _messages = new Dictionary<ScreenMessagesText, ScreenMessagesText>();
 
-        IEnumerator MonitorScreenMessages(float waitTime)
+        private void MessageUpdate(ScreenMessagesText message)
+        {
+            Log.Info("MessageTextUpdate, message: " + message.text.text);
+#if false
+            var enumerator = _messages.GetEnumerator();
+
+            //Logging("Checking for text update: {0}", message.text.text);
+
+            while (enumerator.MoveNext())
+            {
+                var pair = enumerator.Current;
+
+                if (pair.Key == message && pair.Value.Message != message.text.text)
+                {
+                    //Logging("Updating message text: {0}", message.text.text);
+                    pair.Value.UpdateText(message.text.text);
+                    break;
+                }
+            }
+#endif
+        }
+
+        private void NewMessageText(ScreenMessagesText message)
+        {
+            // Even though the message is passed in, it isn't the full message, only the text, so
+            // grab the complete message from the first entry in the ActiveMessages() list
+            //
+            Log.Info("NewMessageText, message: " + message.text.text);
+            var t = ScreenMessages.Instance.ActiveMessages.First(); //  [ScreenMessages.Instance.ActiveMessages.Count - 1];
+            Log.Info("NewMessageText, message2, msgCnt: " + ScreenMessages.Instance.ActiveMessages.Count.ToString() + ",    : " + t.message);
+
+            bool filtered = false;
+            if (filterList.Count > 0 && filterList.Contains(ScreenMessages.Instance.ActiveMessages.First().message))
+            {
+                Log.Info("filtered: " + ScreenMessages.Instance.ActiveMessages.First().message);
+                filtered = true;
+            }
+            if (!filtered)
+                scrnMsgLog.Enqueue(ScreenMessages.Instance.ActiveMessages.First()); //[ScreenMessages.Instance.ActiveMessages.Count - 1]);
+        }
+#if false
+        private void DestroyMessageText(ScreenMessagesText message)
+        {
+            Log.Info("DestroyMessageText, message: " + message.text);
+        }
+#endif
+
+
+
+
+        IEnumerator ExpireScreenMessages(float waitTime)
         {
             while (true)
             {
@@ -84,6 +195,7 @@ namespace KaptainsLogNamespace
                 int numToCheck = Math.Min(numActiveMsgs, scrnMsgLog.Count);
                 if (numActiveMsgs > 0)
                 {
+#if false
                     for (int cnt = 0; cnt < numActiveMsgs; cnt++)
                     {
                         bool copied = false;
@@ -105,19 +217,19 @@ namespace KaptainsLogNamespace
 
                         }
 
-                        if (!copied)
-                            scrnMsgLog.Enqueue(ScreenMessages.Instance.ActiveMessages[cnt]);
+                        //if (!copied)
+                        //    scrnMsgLog.Enqueue(ScreenMessages.Instance.ActiveMessages[cnt]);
                     }
-
+#endif
                     // Remove expired messages here
-                    while (scrnMsgLog.Count > HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().maxMsgs)
+                    while (scrnMsgLog.Count > HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().maxMsgs)
                     {
                         scrnMsgLog.Dequeue();
                     }
-                    while (scrnMsgLog.Count > 0 && scrnMsgLog.LastOrDefault().startTime + 60 * HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().expireMsgsAfter < Time.realtimeSinceStartup)
+                    while (scrnMsgLog.Count > 0 && scrnMsgLog.LastOrDefault().startTime + 60 * HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().expireMsgsAfter < Time.realtimeSinceStartup)
                     {
                         scrnMsgLog.Dequeue();
-                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().hideWhenNoMsgs && scrnMsgLog.Count == 0)
+                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().hideWhenNoMsgs && scrnMsgLog.Count == 0)
                             ShowWin(false);
 
                     }
@@ -170,7 +282,7 @@ namespace KaptainsLogNamespace
                 upperLeftFilter = !upperLeftFilter;
             if (GUILayout.Button(GameDatabase.Instance.GetTexture(upperRightFilter ? UROnIcon : UROffIcon, false), GUIStyle.none, GUILayout.Height(32), GUILayout.Width(32)))
                 upperRightFilter = !upperRightFilter;
-#endif   
+#endif
             GUILayout.BeginHorizontal();
             string newfilter = "";
             displayScrollVector = GUILayout.BeginScrollView(displayScrollVector);
@@ -181,7 +293,7 @@ namespace KaptainsLogNamespace
                 bool notFiltered = false;
 
                 notFiltered = notFiltered |(scrnMsg.style == ScreenMessageStyle.LOWER_CENTER & lowerCenterFilter) ;
-                notFiltered = notFiltered | (scrnMsg.style == ScreenMessageStyle.UPPER_CENTER & upperRightFilter);
+                notFiltered = notFiltered | (scrnMsg.style == ScreenMessageStyle.UPPER_CENTER & upperCenterFilter);
                 notFiltered = notFiltered | (scrnMsg.style == ScreenMessageStyle.UPPER_LEFT & upperLeftFilter);
                 notFiltered = notFiltered | (scrnMsg.style == ScreenMessageStyle.UPPER_RIGHT & upperRightFilter);
                 

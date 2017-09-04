@@ -32,6 +32,9 @@ namespace KaptainsLogNamespace
         static internal bool logsLoaded = false;
         static internal bool imgCacheFilled = false;
 
+        [Persistent]
+        public int logIdx = 0;
+
         public void DoInit()
         {
             dirtyFilter = true;

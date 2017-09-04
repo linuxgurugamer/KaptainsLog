@@ -11,15 +11,16 @@ namespace KaptainsLogNamespace
 {
     public class ImageViewer
     {
-        private Texture2D _image;
-        private WWW _imagetex;
+        private static Texture2D _image;
+        private static bool visible = false;
+        static bool updateSize = false;
+        private static string _imagefile;
+
         private Rect _windowRect;
         private Rect _windowRect2 = new Rect(Screen.width / 2 - 150f, Screen.height / 2 - 75f, 260f, 390f);
         bool resetSize = false;
-        bool updateSize = false;
-        string _imagefile;
-        public bool visible = false;
-        bool everVisible = false;
+        
+        bool everVisible = false; // Not static on purpose
 
         ~ImageViewer()
         {
@@ -33,25 +34,37 @@ namespace KaptainsLogNamespace
             
         }
 
-        public void LoadImage(string fname)
+        public static bool IsVisible { get { return visible; } }
+
+        public static Texture2D LoadImage(string fname, int width = 0, int height = 0)
         {
             if (System.IO.File.Exists(fname))
             {
                 _imagefile = "file://" + fname;
-                ImageOrig();
-                visible = true;                
+                
+                ImageOrig(width, height);
+                visible = true;
+                updateSize = false;
+                return _image;
             }
             else
+            {
                 Log.Info("File does not exist");
+                return null;
+            }
+  
         }
 
-        private void ImageOrig()
+        private static void ImageOrig(int width = 0, int height = 0)
         {
-            _imagetex = new WWW(_imagefile);
+            var _imagetex = new WWW(_imagefile);
             _image = _imagetex.texture;
             _imagetex.Dispose();
 
-          
+            if (width == 0)
+                width = Screen.width / 2;
+            if (height == 0)
+                height = Screen.height / 2;
 
             if (_image.width > Screen.width/2 || _image.height > Screen.height/2)
             {
@@ -145,6 +158,14 @@ namespace KaptainsLogNamespace
                     ImageZp();
                 }
                 GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Quick Export"))
+                {
+                    KaptainsLog.Instance.EnableExportWindow(true);
+                }
+                if (GUILayout.Button("Export"))
+                {
+                    KaptainsLog.Instance.EnableExportWindow(true);
+                }
                 if (GUILayout.Button("Close"))
                     Toggle();
                 GUILayout.EndHorizontal();

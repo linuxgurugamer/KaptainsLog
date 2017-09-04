@@ -14,6 +14,7 @@ The template.cfg file is in the standed KSP config file format, and can contain 
 	TemplateConfig
 	{
 		isHtml = true			// True if this is an HTML template, false otherwise
+		isQuickExport = false	// True if this is a template for the Quick Export, false otherwise
 		entriesPerPage = ##		// Specifies how many entries are put on each page.  If not there, then no paging is done.
 		fileSuffix = html		// Optional file suffix
 		header = header.tmpl	//

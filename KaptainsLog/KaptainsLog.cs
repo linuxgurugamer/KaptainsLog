@@ -22,6 +22,7 @@ namespace KaptainsLogNamespace
         static Dictionary<Vessel.ControlLevel, ControlLevel> controlLevels = new Dictionary<Vessel.ControlLevel, ControlLevel>();
         static Dictionary<Events, EventType> eventTypes = new Dictionary<Events, EventType>();
         static Dictionary<string, BodyName> bodiesList = new Dictionary<string, BodyName>();
+        //internal GlobalSettings globalSettings;
 
         public class BodyName
         {
@@ -57,7 +58,7 @@ namespace KaptainsLogNamespace
         private const string PencilIcon = "KaptainsLog/Icons/pencil";
         public const string screenshotPrefix = "KL_";
 
-       
+
 
 
 
@@ -69,12 +70,15 @@ namespace KaptainsLogNamespace
         bool manualEntry = false;
         bool imageSelection = false;
         bool displayFilterWindow = false;
+        bool displaySortWindow = false;
         bool displayColSelectWindow = false;
         bool displayExportWindow = false;
         bool displayHTMLTemplate = false;
         public bool displayScreenshot = false;
         ImageViewer iv = null;
-        string imageToDisplay;
+        //string imageToDisplay;
+        LogEntry leToDisplay;
+        bool newLeToDisplay = false;
 
         bool filterPosInitted = false;
         Vector2 filterSelOffset;
@@ -96,9 +100,10 @@ namespace KaptainsLogNamespace
         Rect colSelectWindow;
         Rect saveWindow;
         Rect imageSelectionWindow;
+        Rect sortSelectionWindow;
         Rect entryFieldWindow;
         Rect htmlTemplateSelectWindow;
-        
+
 
         int mainWindowId = GUIUtility.GetControlID(FocusType.Native);
         int logentryWindowId = GUIUtility.GetControlID(FocusType.Native);
@@ -159,30 +164,11 @@ namespace KaptainsLogNamespace
         string PLUGINDATA = MOD_FOLDER + "PluginData/KaptainsLogSettings.cfg";
 
         public string NODENAME = "KaptainsLog";
-        string SETTINGSNAME = "KaptainsLogSettings";
+       // string SETTINGSNAME = "KaptainsLogSettings";
+        const string WINDOWPOS = "WindowPositions";
         public string CREWNODE = "CrewMember";
 
-#if false
-        DisplayField[] displayFields = new DisplayField[(int)Fields.lastItem]
-        {
-            new DisplayField(true, Fields.vesselName),
-            new DisplayField(true, Fields.universalTime ),
-            new DisplayField(false, Fields.utcTime ),
-            new DisplayField(true, Fields.missionTime ),
-            new DisplayField( true, Fields.vesselSituation),
-            new DisplayField(true,  Fields.mainBody ),
-            new DisplayField(false,  Fields.controlLevel ),
-            new DisplayField(true, Fields.altitude ),
-            new DisplayField(true, Fields.speed ),
-            new DisplayField(true, Fields.eventType ),
-            new DisplayField(true, Fields.thumbnail ),
-            new DisplayField(false, Fields.notes ),
-            new DisplayField(false, Fields.none ),
-            new DisplayField(false, Fields.none )
-        };
-#endif
-
-        float[] colWidth = new float[(int)Fields.lastItem] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        float[] colWidth = new float[(int)Fields.lastItem] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
         // public bool Shelter.dirtyFilter = true;
         //public bool Shelter.dirtyColSel = true;
@@ -207,6 +193,7 @@ namespace KaptainsLogNamespace
         string[] fileEntries;
         string[] dirEntries;
         Fields entryField = Fields.none;
+
         int lastSelectedImage = 0;
         GUIStyle labelStyle = new GUIStyle(HighLogic.Skin.label);
 
@@ -323,7 +310,7 @@ namespace KaptainsLogNamespace
             //Log.Info("onGameStateCreated");
             utils.LoadLogs();
             Shelter.logsLoaded = true;
-           // InitDisplayFields();
+            // InitDisplayFields();
 
             visibleByToolbar = false;
             showStdPauseMenu = false;
@@ -335,6 +322,7 @@ namespace KaptainsLogNamespace
             utils.snapshotInProgress = false;
             utils.leQ.Clear();
         }
+
         void InitDisplayFields()
         {
             Log.Info("InitDisplayFields");
@@ -343,8 +331,10 @@ namespace KaptainsLogNamespace
             else
                 displayFields = new List<DisplayField>();
 
-            KL_5 kl4 = HighLogic.CurrentGame.Parameters.CustomParams<KL_5>();
+            KL_12 kl4 = HighLogic.CurrentGame.Parameters.CustomParams<KL_12>();
 
+            displayFields.Add(new DisplayField(false, Fields.index));
+            displayFields.Add(new DisplayField(false, Fields.vesselId));
             displayFields.Add(new DisplayField(kl4.vesselName, Fields.vesselName));
             displayFields.Add(new DisplayField(kl4.universalTime, Fields.universalTime));
             displayFields.Add(new DisplayField(kl4.utcTime, Fields.utcTime));
@@ -378,9 +368,9 @@ namespace KaptainsLogNamespace
 
         internal void OnGameSettingsApplied()
         {
-            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy != blizzyButtonActive)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy != blizzyButtonActive)
             {
-                if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
+                if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
                 {
                     if (kaptainsLogIButton != null)
                     {
@@ -395,6 +385,9 @@ namespace KaptainsLogNamespace
                     ShowBlizzyButton();
                 }
             }
+            
+            GlobalSettings.SaveGlobalSettings();
+            
         }
         // Start toolbar if present.
         private void Start()
@@ -403,17 +396,13 @@ namespace KaptainsLogNamespace
             DontDestroyOnLoad(this);
 
 
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().EnabledForSave)
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().EnabledForSave)
                 return;
-            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
+            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
                 ShowStockToolbarButton();
             else
                 ShowBlizzyButton();
 
-            // Add hooks for showing/hiding on F2
-            GameEvents.onShowUI.Add(showUI);
-            GameEvents.onHideUI.Add(hideUI);
-            GameEvents.OnGameSettingsApplied.Add(OnGameSettingsApplied);
 
             mainWindow = new Rect((Screen.width - MAIN_WIDTH - 40), 50, MAIN_WIDTH, MAIN_HEIGHT);
             logEntryWindow = new Rect((Screen.width - LOGENTRY_WIDTH) / 2, (Screen.height - LOGENTRY_HEIGHT) / 2, LOGENTRY_WIDTH, LOGENTRY_HEIGHT);
@@ -421,11 +410,19 @@ namespace KaptainsLogNamespace
             colSelectWindow = new Rect((Screen.width - COLSEL_WIDTH) / 2, (Screen.height - COLSEL_HEIGHT) / 2, COLSEL_WIDTH, COLSEL_HEIGHT);
             entryFieldWindow = new Rect((Screen.width - ENTRY_FIELD_WIDTH) / 2, (Screen.height - ENTRY_FIELD_HEIGHT) / 2, ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
             imageSelectionWindow = new Rect((Screen.width - IMAGE_SEL_WIDTH) / 2, (Screen.height - IMAGE_SEL_HEIGHT) / 2, IMAGE_SEL_WIDTH, IMAGE_SEL_HEIGHT);
+            sortSelectionWindow = new Rect((Screen.width - ENTRY_FIELD_WIDTH) / 2, (Screen.height - ENTRY_FIELD_HEIGHT) / 2, ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
             saveWindow = new Rect((Screen.width - SAVE_WIDTH) / 2, (Screen.height - SAVE_HEIGHT) / 2, SAVE_WIDTH, SAVE_HEIGHT);
             htmlTemplateSelectWindow = new Rect((Screen.width - HTML_TEMPLATE_SEL_WIDTH) / 2, (Screen.height - HTML_TEMPLATE_SEL_HEIGHT) / 2, HTML_TEMPLATE_SEL_WIDTH, HTML_TEMPLATE_SEL_HEIGHT);
 
+            //globalSettings = new GlobalSettings();
+            GlobalSettings.LoadSettings();
             LoadWindowPositions();
 
+
+            // Add hooks for showing/hiding on F2
+            GameEvents.onShowUI.Add(showUI);
+            GameEvents.onHideUI.Add(hideUI);
+            GameEvents.OnGameSettingsApplied.Add(OnGameSettingsApplied);
             GameEvents.onGameStateCreated.Add(onGameStateCreated);
 
             utils = new Utils(this);
@@ -525,7 +522,7 @@ namespace KaptainsLogNamespace
             Log.Info("OnGUIAppLauncherReady");
             // Setup PW Stock Toolbar button
             bool hidden = false;
-            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
+            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
             {
                 if (ApplicationLauncher.Ready && (kaptainsLogStockButton == null || !ApplicationLauncher.Instance.Contains(kaptainsLogStockButton, out hidden)))
                 {
@@ -563,7 +560,7 @@ namespace KaptainsLogNamespace
                 FreeImgCache();
                 SaveWindowPositions();
 
-               
+
                 notesEntry = false;
                 manualEntry = false;
                 imageSelection = false;
@@ -573,7 +570,7 @@ namespace KaptainsLogNamespace
                 displayHTMLTemplate = false;
 
             }
-            if (!ToolbarManager.ToolbarAvailable  || !HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBlizzy)
+            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
             {
                 if (!visibleByToolbar)
                 {
@@ -583,7 +580,7 @@ namespace KaptainsLogNamespace
                     kaptainsLogStockButton.SetFalse();
                     visibleByToolbar = false;
                 }
-                kaptainsLogStockButton.SetTexture((Texture)GameDatabase.Instance.GetTexture(visibleByToolbar ? StockToolbarIconActive : StockToolbarIconInactive, false));                
+                kaptainsLogStockButton.SetTexture((Texture)GameDatabase.Instance.GetTexture(visibleByToolbar ? StockToolbarIconActive : StockToolbarIconInactive, false));
             }
             else
             {
@@ -615,7 +612,7 @@ namespace KaptainsLogNamespace
             }
         }
 
-       // bool escapePressed = false;
+        // bool escapePressed = false;
         bool cancelManualEntry = false;
 
         public void OnGUI()
@@ -631,7 +628,7 @@ namespace KaptainsLogNamespace
             // is paused already, as it is when the  notesentry window is open
 #if false
             if (!notesEntry && pms == PauseMenuState.hidden && GameSettings.PAUSE.GetKeyDown() &&
-                PauseMenu.exists && PauseMenu.isOpen && HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().overridePause && HighLogic.LoadedSceneIsFlight)
+                PauseMenu.exists && PauseMenu.isOpen && HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().overridePause && HighLogic.LoadedSceneIsFlight)
             {
                 escapePressed = true;
                 PauseMenu.Close();
@@ -642,13 +639,13 @@ namespace KaptainsLogNamespace
                 //if (e.isKey )
                 //    escapePressed = (e.keyCode == KeyCode.Escape && e.type == UnityEngine.EventType.KeyDown);
                 // Log.Info("escapePressed: " + escapePressed.ToString());
-               // escapePressed = GameSettings.PAUSE.GetKeyDown();
+                // escapePressed = GameSettings.PAUSE.GetKeyDown();
             }
 
 
             if (visibleByToolbar)
             {
-                if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().keepOnScreen)
+                if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().keepOnScreen)
                 {
                     int buttonWidth = 40;
                     if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
@@ -671,6 +668,10 @@ namespace KaptainsLogNamespace
             if (imageSelection)
             {
                 imageSelectionWindow = GUILayout.Window(imgSelWindowId, imageSelectionWindow, DisplayImageSelectionWindow, "Kaptain's Log Image Selection", windowStyle);
+            }
+            if (displaySortWindow)
+            {
+                sortSelectionWindow = GUILayout.Window(imgSelWindowId, sortSelectionWindow, DisplaySortSelWindow, "Kaptain's Log Sort Selection", windowStyle);
             }
             if (displayFilterWindow)
             {
@@ -696,10 +697,17 @@ namespace KaptainsLogNamespace
             if (displayScreenshot)
             {
                 if (iv == null)
-                    iv = new ImageViewer(imageToDisplay);
+                    iv = new ImageViewer(utils.getDisplayString(leToDisplay, Fields.screenshot));
                 else
-                    if (!iv.visible)
-                        iv.LoadImage(imageToDisplay);
+                    if (!ImageViewer.IsVisible)
+                {
+                    ImageViewer.LoadImage(utils.getDisplayString(leToDisplay, Fields.screenshot));
+                } else
+                {
+                    if (newLeToDisplay)
+                        ImageViewer.LoadImage(utils.getDisplayString(leToDisplay, Fields.screenshot));               
+                }
+                newLeToDisplay = false;
                 Log.Info("displayScreenshot");
                 iv.OnGUI();
             }
@@ -751,7 +759,7 @@ namespace KaptainsLogNamespace
 
             float h = (float)screenshot.height / (float)screenshot.width * thumbnailsize;
 
-            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().useBilinear)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBilinear)
                 TextureScale.Bilinear(screenshot, (int)thumbnailsize, (int)h);
             else
                 TextureScale.Point(screenshot, (int)thumbnailsize, (int)h);
@@ -790,15 +798,15 @@ namespace KaptainsLogNamespace
             {
                 var le1 = kaptainsLogList[i];
 
-                highestAltitude = Math.Min(Math.Max(highestAltitude, le1.altitude + 1), HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().altitudeFilterMax);
+                highestAltitude = Math.Min(Math.Max(highestAltitude, le1.altitude + 1), HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().altitudeFilterMax);
                 largestTime = Math.Max(largestTime, le1.missionTime); // allow filter to be 2 hours later than newest mission time.
-                highestSpeed = Math.Min(Math.Max(highestSpeed, le1.speed + 1), HighLogic.CurrentGame.Parameters.CustomParams<KL_6>().speedFilterMax);
+                highestSpeed = Math.Min(Math.Max(highestSpeed, le1.speed + 1), HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().speedFilterMax);
                 largestUniTime = Math.Max(largestUniTime, le1.universalTime + 1);
 
-                if (!allVessels.ContainsKey(le1.id))
+                if (!allVessels.ContainsKey(le1.vesselId))
                 {
-                    vesselId vid = new vesselId(le1.vesselName, le1.id);
-                    allVessels.Add(le1.id, vid);
+                    vesselId vid = new vesselId(le1.vesselName, le1.vesselId);
+                    allVessels.Add(le1.vesselId, vid);
                 }
                 for (int d = 0; d < displayFields.Count; d++)
                 {
@@ -851,7 +859,7 @@ namespace KaptainsLogNamespace
                     switch (f)
                     {
                         case Fields.vesselName:
-                            if (allVessels.ContainsKey(le.id) && !allVessels[le.id].selected)
+                            if (allVessels.ContainsKey(le.vesselId) && !allVessels[le.vesselId].selected)
                             {
                                 Log.Info("filtered vesselName");
                                 return;
@@ -969,7 +977,7 @@ namespace KaptainsLogNamespace
 
 
 #if false
-            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().overridePause && HighLogic.LoadedSceneIsFlight)
+            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().overridePause && HighLogic.LoadedSceneIsFlight)
             {
                 switch (pms)
                 {
@@ -1044,62 +1052,62 @@ namespace KaptainsLogNamespace
                 case Events.ScreenMsgRecord: break;
                 case Events.Revert: break;
                 case Events.PartDied:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnPartDie;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnPartDie;
                     break;
                 case Events.Launch:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnLaunch;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnLaunch;
                     Log.Info("Events.Launch, doScreenshot: " + doScreenshot.ToString());
                     break;
                 case Events.StageSeparation:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnStageSeparation;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnStageSeparation;
                     break;
                 case Events.PartCouple:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnPartCouple;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnPartCouple;
                     break;
                 case Events.VesselModified:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnVesselWasModified;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselWasModified;
                     break;
                 case Events.StageActivate:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnStageActivate;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnStageActivate;
                     break;
                 case Events.OrbitClosed:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnVesselOrbitClosed;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselOrbitClosed;
                     break;
                 case Events.OrbitEscaped:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnVesselOrbitEscaped;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselOrbitEscaped;
                     break;
                 case Events.VesselRecovered:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnVesselRecovered;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselRecovered;
                     break;
                 case Events.Landed:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnCrashSplashdown;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrashSplashdown;
                     break;
                 case Events.CrewModified:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnVesselCrewWasModified;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselCrewWasModified;
                     break;
                 case Events.ProgressRecord:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnProgressAchieve;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnProgressAchieve;
                     break;
                 case Events.ManualEntry: doScreenshot = false; break;
                 case Events.FinalFrontier: doScreenshot = false; break;
                 case Events.MiscExternal: doScreenshot = false; break;
                 case Events.CrewKilled:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnCrewKilled;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrewKilled;
                     break;
                 case Events.CrewOnEVA:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnCrewOnEVA;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrewOnEVA;
                     break;
                 case Events.CrewTransferred:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnCrewTransferred;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrewTransferred;
                     break;
                 case Events.DominantBodyChange:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnDominantBodyChange;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnDominantBodyChange;
                     break;
                 case Events.FlagPlant:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnFlagPlant;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnFlagPlant;
                     break;
                 case Events.KerbalPassedOutFromGeeForce:
-                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_4>().screenshotOnKerbalPassedOutFromGeeForce;
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnKerbalPassedOutFromGeeForce;
                     break;
             }
             return doScreenshot;
@@ -1111,7 +1119,7 @@ namespace KaptainsLogNamespace
         {
             if (originalMenu == null)
                 originalMenu = GameObject.FindObjectOfType(typeof(PauseMenu)) as PauseMenu;
-            
+
             if (utils.le == null || utils.leQ == null)
                 return;
 
@@ -1130,7 +1138,7 @@ namespace KaptainsLogNamespace
             {
                 Log.Info("FixedUpdate 2");
 
-                if (utils.le.manualEntryRequired || pauseActivated || HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().delayBeforePause + lastPauseTime < Planetarium.GetUniversalTime())
+                if (utils.le.manualEntryRequired || pauseActivated || HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().delayBeforePause + lastPauseTime < Planetarium.GetUniversalTime())
                 {
                     Log.Info("FixedUpdate 2.1, setting notestentry to true,  manualEntry: " + manualEntry.ToString() + ",   pauseActivate: " + pauseActivated.ToString());
                     pauseActivated = false;
@@ -1139,7 +1147,7 @@ namespace KaptainsLogNamespace
                     return;
                 }
             }
-            
+
             if (logEntryComplete)
                 return;
 
@@ -1149,12 +1157,12 @@ namespace KaptainsLogNamespace
                 doScreenshot = eventScreenshot(utils.le);
                 Log.Info("FixedUpdate 3.1, event: " + utils.le.eventType.ToString() + ", doScreenshot: " + doScreenshot.ToString());
             }
-            
-            Log.Info("Fixed update, utils.le.eventType: " + utils.le.eventType.ToString() + ",  doScreenshot: " + doScreenshot.ToString() + ",   screenshot: " + HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().screenshot.ToString() +
+
+            Log.Info("Fixed update, utils.le.eventType: " + utils.le.eventType.ToString() + ",  doScreenshot: " + doScreenshot.ToString() + ",   screenshot: " + HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().screenshot.ToString() +
                 ", snapshotInProgress: " + utils.snapshotInProgress.ToString() + ",   screenshotAfter: " + screenshotAfter.ToString() + ",  UT: " + Planetarium.GetUniversalTime().ToString()
                 );
             Log.Info("Fixed update pngName: " + utils.le.pngName);
-            if (doScreenshot && HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().screenshot)
+            if (doScreenshot && HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().screenshot)
             {
                 Log.Info("FixedUpdate 4.1, snapshotInProgress: " + utils.snapshotInProgress.ToString() + ", screenshotAfter: " + screenshotAfter.ToString() + ", UT: " + Planetarium.GetUniversalTime().ToString() +
                     ", snapshotInProgress: " + utils.snapshotInProgress.ToString() + ",   screenshotAfter: " + screenshotAfter.ToString() + ",  UT: " + Planetarium.GetUniversalTime().ToString()
@@ -1177,7 +1185,7 @@ namespace KaptainsLogNamespace
                     {
                         if (utils.snapshotTaken > 0)
                         {
-                            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().hideUIforScreenshot)
+                            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().hideUIforScreenshot)
                                 GameEvents.onHideUI.Fire();
                             utils.snapshotTaken--;
                             if (utils.snapshotTaken == 0)
@@ -1185,7 +1193,7 @@ namespace KaptainsLogNamespace
                         }
                         if (System.IO.File.Exists(utils.le.pngName))
                         {
-                            Texture2D screenshot = MakeThumbnailFrom(utils.le.pngName, HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().thumbnailSize);
+                            Texture2D screenshot = MakeThumbnailFrom(utils.le.pngName, HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().thumbnailSize);
 
                             byte[] bytes = screenshot.EncodeToPNG();
                             if (utils.le.pngThumbnailName != "")
@@ -1199,10 +1207,10 @@ namespace KaptainsLogNamespace
                             Destroy(screenshot);
                         }
 
-                        if (System.IO.File.Exists(utils.le.pngName) && utils.wasUIVisible && HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().hideUIforScreenshot)
+                        if (System.IO.File.Exists(utils.le.pngName) && utils.wasUIVisible && HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().hideUIforScreenshot)
                             GameEvents.onShowUI.Fire();
 
-                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().saveAsJPEG)
+                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().saveAsJPEG)
                         {
                             Log.Info("pngToConvert: " + utils.le.pngName);
                             if (System.IO.File.Exists(utils.le.pngName))
@@ -1210,7 +1218,7 @@ namespace KaptainsLogNamespace
                                 Log.Info("Converting screenshot to JPG. New name: " + utils.le.jpgName);
                                 utils.ConvertToJPG(utils.le.pngName, utils.le.jpgName);
 
-                                if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().keepPNG)
+                                if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().keepPNG)
                                 {
                                     System.IO.FileInfo file = new System.IO.FileInfo(utils.le.pngName);
                                     Log.Info("Delete PNG file");
@@ -1241,10 +1249,11 @@ namespace KaptainsLogNamespace
                 if (utils.leQ.Count > 0)
                 {
                     // add to list here
-                    
+
                     Log.Info("Adding log entry to list, queue count: " + utils.leQ.Count.ToString());
 
-                    kaptainsLogList.Add(utils.le);
+                    ListExt.AddSorted<LogEntry>(kaptainsLogList, utils.le);
+                    //kaptainsLogList.Add(utils.le);
 
                     utils.leQ.Dequeue();
                     Shelter.dirtyFilter = true;
@@ -1260,8 +1269,8 @@ namespace KaptainsLogNamespace
                             utils.wasUIVisible = utils.uiVisible;
                             utils.snapshotInProgress = true;
                             notesEntryComplete = false;
-                           
-                            screenshotAfter = Planetarium.GetUniversalTime() + HighLogic.CurrentGame.Parameters.CustomParams<KL_1>().delayBeforePause;
+
+                            screenshotAfter = Planetarium.GetUniversalTime() + HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().delayBeforePause;
                             utils.snapshotTaken = 1;
                             break;
                         }
@@ -1269,7 +1278,8 @@ namespace KaptainsLogNamespace
                         utils.le.screenshotName = screenshotName;
                         utils.le.pngThumbnailName = pngThumbnailName;
                         utils.le.jpgThumbnailName = jpgThumbnailName;
-                        kaptainsLogList.Add(utils.le);
+                        ListExt.AddSorted<LogEntry>(kaptainsLogList, utils.le);
+                        //kaptainsLogList.Add(utils.le);
                     }
                     if (utils.leQ.Count == 0)
                         cancelManualEntry = false;
@@ -1297,11 +1307,8 @@ namespace KaptainsLogNamespace
         }
         void SaveWindowPositions()
         {
-            ConfigNode settingsFile = new ConfigNode();
             ConfigNode settings = new ConfigNode();
-
-            settingsFile.SetNode(SETTINGSNAME, settings, true);
-
+            
             SaveWinPos(settings, "mainWindow", mainWindow);
             SaveWinPos(settings, "logEntryWindow", logEntryWindow);
             SaveWinPos(settings, "filterSelectionWindow", filterSelectionWindow);
@@ -1313,16 +1320,15 @@ namespace KaptainsLogNamespace
 
             SaveWinPos(settings, "ScrnMsgsWindow", ScreenMessagesLog.Instance.ScrnMsgsWindow);
 
-            settingsFile.Save(PLUGINDATA);
             ScreenMessages.PostScreenMessage("Window Positions Saved");
+
+            GlobalSettings.UpdateNode(WINDOWPOS, settings);
         }
 
         Rect GetWinPos(ConfigNode settings, string winName, float width, float height)
         {
             double x = (Screen.width - width) / 2;
-            double y = (Screen.height - height) / 2;
-
-            //le.universalTime = Double.Parse(SafeLoad(entry.GetValue("universalTime"), 0));
+            double y = (Screen.height - height) / 2;            
 
             x = Double.Parse(Utils.SafeLoad(settings.GetValue(winName + "X"), x));
             y = Double.Parse(Utils.SafeLoad(settings.GetValue(winName + "Y"), y));
@@ -1332,34 +1338,31 @@ namespace KaptainsLogNamespace
         }
         void LoadWindowPositions()
         {
-            ConfigNode settingsFile;
             ConfigNode settings;
 
-            Log.Info("Loading settings file: " + PLUGINDATA);
-            settingsFile = ConfigNode.Load(PLUGINDATA);
-            if (settingsFile != null)
+            settings = GlobalSettings.FetchNode(WINDOWPOS);
+            if (settings == null)
             {
-                settings = settingsFile.GetNode(SETTINGSNAME);
-                if (settings == null)
-                    return;
-
-
-                mainWindow = GetWinPos(settings, "mainWindow", MAIN_WIDTH, MAIN_HEIGHT);
-                logEntryWindow = GetWinPos(settings, "logEntryWindow", LOGENTRY_WIDTH, LOGENTRY_HEIGHT);
-                filterSelectionWindow = GetWinPos(settings, "filterSelectionWindow", FILTERSEL_WIDTH, FILTERSEL_HEIGHT);
-                filterPosInitted = true;
-                colSelectWindow = GetWinPos(settings, "colSelectWindow", COLSEL_WIDTH, COLSEL_HEIGHT);
-                colselPosInitted = true;
-                saveWindow = GetWinPos(settings, "saveWindow", SAVE_WIDTH, SAVE_HEIGHT);
-                imageSelectionWindow = GetWinPos(settings, "imageSelectionWindow", IMAGE_SEL_WIDTH, IMAGE_SEL_HEIGHT);
-                entryFieldWindow = GetWinPos(settings, "entryFieldWindow", ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
-                entryFieldPosInitted = true;
-                htmlTemplateSelectWindow = GetWinPos(settings, "htmlTemplateSelectWindow", HTML_TEMPLATE_SEL_WIDTH, HTML_TEMPLATE_SEL_HEIGHT);
-
-                if (ScreenMessagesLog.Instance != null)
-                    ScreenMessagesLog.Instance.ScrnMsgsWindow = GetWinPos(settings, "ScrnMsgsWindow", ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
-
+                Log.Info("Unable to load window positions");
+                return;
             }
+
+            mainWindow = GetWinPos(settings, "mainWindow", MAIN_WIDTH, MAIN_HEIGHT);
+            logEntryWindow = GetWinPos(settings, "logEntryWindow", LOGENTRY_WIDTH, LOGENTRY_HEIGHT);
+            filterSelectionWindow = GetWinPos(settings, "filterSelectionWindow", FILTERSEL_WIDTH, FILTERSEL_HEIGHT);
+            filterPosInitted = true;
+            colSelectWindow = GetWinPos(settings, "colSelectWindow", COLSEL_WIDTH, COLSEL_HEIGHT);
+            colselPosInitted = true;
+            saveWindow = GetWinPos(settings, "saveWindow", SAVE_WIDTH, SAVE_HEIGHT);
+            imageSelectionWindow = GetWinPos(settings, "imageSelectionWindow", IMAGE_SEL_WIDTH, IMAGE_SEL_HEIGHT);
+            entryFieldWindow = GetWinPos(settings, "entryFieldWindow", ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
+            entryFieldPosInitted = true;
+            htmlTemplateSelectWindow = GetWinPos(settings, "htmlTemplateSelectWindow", HTML_TEMPLATE_SEL_WIDTH, HTML_TEMPLATE_SEL_HEIGHT);
+
+            if (ScreenMessagesLog.Instance != null)
+                ScreenMessagesLog.Instance.ScrnMsgsWindow = GetWinPos(settings, "ScrnMsgsWindow", ENTRY_FIELD_WIDTH, ENTRY_FIELD_HEIGHT);
+
+
         }
     }
 }
