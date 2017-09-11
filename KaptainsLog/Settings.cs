@@ -82,9 +82,9 @@ namespace KaptainsLogNamespace
         //[GameParameters.CustomParameterUI("Override Pause menu in Flight scene")]
         //public bool overridePause = true;
 
-        [GameParameters.CustomParameterUI("Screenshot at log entry",
-            toolTip = "See the Event Screenshot Settings to set screenshot options for specific events (in Kaptain's Log 2 section)")]
-        public bool screenshot = true;
+        //[GameParameters.CustomParameterUI("Screenshot at log entry",
+        //    toolTip = "See the Event Screenshot Settings to set screenshot options for specific events (in Kaptain's Log 2 section)")]
+        //public bool screenshot = true;
 
         [GameParameters.CustomParameterUI("Save images in save folder",
             toolTip = "The screenshots and thumbnails will be saved in a folder called 'KaptainsLogScreenshots' in the save folder")]
@@ -95,9 +95,9 @@ namespace KaptainsLogNamespace
         public bool saveThumbnailsInSubFolder = true;
 
 
-        [GameParameters.CustomParameterUI("Hide UI for screenshot",
-            toolTip = "The screen will flicker when the screenshot is taken if this is enabled")]
-        public bool hideUIforScreenshot = false;
+        //[GameParameters.CustomParameterUI("Hide UI for screenshot",
+        //    toolTip = "The screen will flicker when the screenshot is taken if this is enabled")]
+        //public bool hideUIforScreenshot = false;
 
         [GameParameters.CustomParameterUI("Save screenshot as JPG",
             toolTip = "Screenshots are saved as PNG files, select this to convert it to JPG")]
@@ -132,10 +132,10 @@ namespace KaptainsLogNamespace
             settings.AddValue("useBlizzy", useBlizzy);
             settings.AddValue("keepOnScreen", keepOnScreen);
 
-            settings.AddValue("screenshot", screenshot);
+            //settings.AddValue("screenshot", screenshot);
             settings.AddValue("saveScreenshotsInSaveFolder", saveScreenshotsInSaveFolder);
             settings.AddValue("saveThumbnailsInSubFolder", saveThumbnailsInSubFolder);
-            settings.AddValue("hideUIforScreenshot", hideUIforScreenshot);
+            //settings.AddValue("hideUIforScreenshot", hideUIforScreenshot);
             settings.AddValue("saveAsJPEG", saveAsJPEG);
             settings.AddValue("keepPNG", keepPNG);
             settings.AddValue("thumbnailSize", thumbnailSize);
@@ -159,10 +159,10 @@ namespace KaptainsLogNamespace
             showIntroAtStartup = Boolean.Parse(Utils.SafeLoad(settings.GetValue("showIntroAtStartup"), "true"));
             useBlizzy = Boolean.Parse(Utils.SafeLoad(settings.GetValue("useBlizzy"), "false"));
             keepOnScreen = Boolean.Parse(Utils.SafeLoad(settings.GetValue("keepOnScreen"), "true"));
-            screenshot = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshot"), "true"));
+            //screenshot = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshot"), "true"));
             saveScreenshotsInSaveFolder = Boolean.Parse(Utils.SafeLoad(settings.GetValue("saveScreenshotsInSaveFolder"), "true"));
             saveThumbnailsInSubFolder = Boolean.Parse(Utils.SafeLoad(settings.GetValue("saveThumbnailsInSubFolder"), "true"));
-            hideUIforScreenshot = Boolean.Parse(Utils.SafeLoad(settings.GetValue("hideUIforScreenshot"), "true"));
+//            hideUIforScreenshot = Boolean.Parse(Utils.SafeLoad(settings.GetValue("hideUIforScreenshot"), "true"));
             saveAsJPEG = Boolean.Parse(Utils.SafeLoad(settings.GetValue("saveAsJPEG"), "true"));
             keepPNG = Boolean.Parse(Utils.SafeLoad(settings.GetValue("keepPNG"), "true"));
             thumbnailSize = Int32.Parse(Utils.SafeLoad(settings.GetValue("thumbnailSize"), "120"));
@@ -179,8 +179,8 @@ namespace KaptainsLogNamespace
             keepOnScreen = true;
             EnabledForSave = true;      // is enabled for this save file
             useBlizzy = false;
-            screenshot = true;
-            hideUIforScreenshot = false;
+            //screenshot = true;
+            //hideUIforScreenshot = false;
             saveAsJPEG = false;
             keepPNG = true;
             thumbnailSize = 120;
@@ -777,9 +777,16 @@ namespace KaptainsLogNamespace
     }
 
     /////////////////////////////
-
+    public enum ScreenshotOptions { No_Screenshot, With_Gui, Without_Gui };
     public class KL_23 : GameParameters.CustomParameterNode
     {
+        // following to be used if I add the ability to specify the gui status for each specific screenshow
+       
+        // Example code using an enum
+        //[GameParameters.CustomParameterUI("Screenshot Option")]
+        //public ScreenshotOptions MyEnum = ScreenshotOptions.With_Gui;
+
+
         public override string Title { get { return "Event Screenshot Settings"; } }
         public override GameParameters.GameMode GameMode { get { return GameParameters.GameMode.ANY; } }
         public override string Section { get { return "Kaptain's Log 2"; } }
@@ -790,74 +797,81 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("Use global settings for event screenshots")]
         public bool useGlobalSettings4EventScreenshots = true;
 
-        [GameParameters.CustomParameterUI("Screenshot on all events")]
-        public bool screenshotOnAllEvents = true;
-
-        [GameParameters.CustomParameterUI("Unset all screenshot settings")]
-        public bool unsetSettings = false;
 
 
-        [GameParameters.CustomParameterUI("Screenshot on landing, splashdown or crash")]
-        public bool screenshotOnCrashSplashdown = true;
+        [GameParameters.CustomParameterUI("Screenshot on all events (with GUI)",
+            toolTip = "All screenshot settings will be set to With_GUI.")]
+        public bool screenshotOnAllEventsWithGUI = false;
 
-        [GameParameters.CustomParameterUI("Screenshot on vessel recovered")]
-        public bool screenshotOnVesselRecovered = true;
+        [GameParameters.CustomParameterUI("Screenshot on all events (without GUI)",
+            toolTip = "Please be warned that the screen will flicker every time a screenshot is taken with these settings.")]
+        public bool screenshotWithoutGUIOnAllEvents = false;
 
-        [GameParameters.CustomParameterUI("Screenshot on launch")]
-        public bool screenshotOnLaunch = true;
+        [GameParameters.CustomParameterUI("Disable all screenshots")]
+        public bool disableAllScreenshots = false;
 
-        [GameParameters.CustomParameterUI("Screenshot on stage separation")]
-        public bool screenshotOnStageSeparation = true;
 
-        [GameParameters.CustomParameterUI("Screenshot on stage activate")]
-        public bool screenshotOnStageActivate = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Land, splashdown, crash</b></color>")]
+        public ScreenshotOptions screenshotOnCrashSplashdown = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on part dying",
+        [GameParameters.CustomParameterUI("<color=yellow><b>Vessel recovered</b></color>")]
+        public ScreenshotOptions screenshotOnVesselRecovered = ScreenshotOptions.With_Gui;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Launch</b></color>")]
+        public ScreenshotOptions screenshotOnLaunch = ScreenshotOptions.With_Gui;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Stage separation</b></color>")]
+        public ScreenshotOptions screenshotOnStageSeparation = ScreenshotOptions.With_Gui;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Stage activate</b></color>")]
+        public ScreenshotOptions screenshotOnStageActivate = ScreenshotOptions.With_Gui;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Part dying</b></color>",
             toolTip = "This applies to both connected and disconnected parts")]
-        public bool screenshotOnPartDie = true;
+        public ScreenshotOptions screenshotOnPartDie = ScreenshotOptions.With_Gui;
 
         // [GameParameters.CustomParameterUI("Screenshot on disconnected part dying")]
         // public bool screenshotOnDisconnectedPartDie = true;
 
-        [GameParameters.CustomParameterUI("Screenshot on part couple (docking)")]
-        public bool screenshotOnPartCouple = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Part couple (docking)</b></color>")]
+        public ScreenshotOptions screenshotOnPartCouple = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on vessel was modified")]
-        public bool screenshotOnVesselWasModified = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Vessel was modified</b></color>")]
+        public ScreenshotOptions screenshotOnVesselWasModified = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on crew modified (EVA)")]
-        public bool screenshotOnVesselCrewWasModified = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Crew modified (EVA)</b></color>")]
+        public ScreenshotOptions screenshotOnVesselCrewWasModified = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on closing into orbit")]
-        public bool screenshotOnVesselOrbitClosed = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Closing into orbit</b></color>")]
+        public ScreenshotOptions screenshotOnVesselOrbitClosed = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on escaping orbit")]
-        public bool screenshotOnVesselOrbitEscaped = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Escaping orbit</b></color>")]
+        public ScreenshotOptions screenshotOnVesselOrbitEscaped = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on crew killed")]
-        public bool screenshotOnCrewKilled = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Crew killed</b></color>")]
+        public ScreenshotOptions screenshotOnCrewKilled = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on crew transferred")]
-        public bool screenshotOnCrewTransferred = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Crew transferred</b></color>")]
+        public ScreenshotOptions screenshotOnCrewTransferred = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on SOI change")]
-        public bool screenshotOnDominantBodyChange = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>SOI change</b></color>")]
+        public ScreenshotOptions screenshotOnDominantBodyChange = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on flag plant")]
-        public bool screenshotOnFlagPlant = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Flag plant</b></color>")]
+        public ScreenshotOptions screenshotOnFlagPlant = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on Crew EVA")]
-        public bool screenshotOnCrewOnEVA = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Crew EVA</b></color>")]
+        public ScreenshotOptions screenshotOnCrewOnEVA = ScreenshotOptions.With_Gui;
 
         /* Following don't have equivilent Pause options */
-        [GameParameters.CustomParameterUI("Screenshot on Kerbal passed out from G-force")]
-        public bool screenshotOnKerbalPassedOutFromGeeForce = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Kerbal passed out (G-force)</b></color>")]
+        public ScreenshotOptions screenshotOnKerbalPassedOutFromGeeForce = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on Progress Achievement")]
-        public bool screenshotOnProgressAchieve = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Progress Achievement</b></color>")]
+        public ScreenshotOptions screenshotOnProgressAchieve = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("Screenshot on Progress Completion")]
-        public bool screenshotOnProgressComplete = true;
+        [GameParameters.CustomParameterUI("<color=yellow><b>Progress Completion</b></color>")]
+        public ScreenshotOptions screenshotOnProgressComplete = ScreenshotOptions.With_Gui;
 
         public void SaveGlobalSettingsNode()
         {
@@ -865,7 +879,7 @@ namespace KaptainsLogNamespace
 
             ConfigNode settings = new ConfigNode("KL_23");
 
-            settings.AddValue("screenshotOnAllEvents", screenshotOnAllEvents);
+            //settings.AddValue("screenshotOnAllEvents", screenshotOnAllEvents);
             settings.AddValue("screenshotOnCrashSplashdown", screenshotOnCrashSplashdown);
             settings.AddValue("screenshotOnVesselRecovered", screenshotOnVesselRecovered);
             settings.AddValue("screenshotOnLaunch", screenshotOnLaunch);
@@ -901,53 +915,55 @@ namespace KaptainsLogNamespace
             }
 
 
-            screenshotOnAllEvents = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnAllEvents"), "true"));
-            screenshotOnCrashSplashdown = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnCrashSplashdown"), "true"));
-            screenshotOnVesselRecovered = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnVesselRecovered"), "true"));
-            screenshotOnLaunch = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnLaunch"), "true"));
-            screenshotOnStageSeparation = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnStageSeparation"), "true"));
-            screenshotOnStageActivate = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnStageActivate"), "true"));
-            screenshotOnPartDie = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnPartDie"), "true"));
-            screenshotOnPartCouple = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnPartCouple"), "true"));
-            screenshotOnVesselWasModified = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnVesselWasModified"), "true"));
-            screenshotOnVesselCrewWasModified = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnVesselCrewWasModified"), "true"));
-            screenshotOnVesselOrbitClosed = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnVesselOrbitClosed"), "true"));
-            screenshotOnVesselOrbitEscaped = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnVesselOrbitEscaped"), "true"));
-            screenshotOnCrewKilled = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnCrewKilled"), "true"));
-            screenshotOnCrewTransferred = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnCrewTransferred"), "true"));
-            screenshotOnDominantBodyChange = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnDominantBodyChange"), "true"));
-            screenshotOnFlagPlant = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnFlagPlant"), "true"));
-            screenshotOnCrewOnEVA = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnCrewOnEVA"), "true"));
-            screenshotOnKerbalPassedOutFromGeeForce = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnKerbalPassedOutFromGeeForce"), "true"));
-            screenshotOnProgressAchieve = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnProgressAchieve"), "true"));
-            screenshotOnProgressComplete = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnProgressComplete"), "true"));
+            //screenshotOnAllEvents = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnAllEvents"), "true"));
+            screenshotOnCrashSplashdown = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnCrashSplashdown"), "With_Gui"));
+            screenshotOnVesselRecovered = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnVesselRecovered"), "With_Gui"));
+            screenshotOnLaunch = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnLaunch"), "With_Gui"));
+            screenshotOnStageSeparation = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnStageSeparation"), "With_Gui"));
+            screenshotOnStageActivate = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnStageActivate"), "With_Gui"));
+            screenshotOnPartDie = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnPartDie"), "With_Gui"));
+            screenshotOnPartCouple = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnPartCouple"), "With_Gui"));
+            screenshotOnVesselWasModified = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnVesselWasModified"), "With_Gui"));
+            screenshotOnVesselCrewWasModified = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnVesselCrewWasModified"), "With_Gui"));
+            screenshotOnVesselOrbitClosed = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnVesselOrbitClosed"), "With_Gui"));
+            screenshotOnVesselOrbitEscaped = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnVesselOrbitEscaped"), "With_Gui"));
+            screenshotOnCrewKilled = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnCrewKilled"), "With_Gui"));
+            screenshotOnCrewTransferred = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnCrewTransferred"), "With_Gui"));
+            screenshotOnDominantBodyChange = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnDominantBodyChange"), "With_Gui"));
+            screenshotOnFlagPlant = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnFlagPlant"), "With_Gui"));
+            screenshotOnCrewOnEVA = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnCrewOnEVA"), "With_Gui"));
+            screenshotOnKerbalPassedOutFromGeeForce = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnKerbalPassedOutFromGeeForce"), "With_Gui"));
+            screenshotOnProgressAchieve = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnProgressAchieve"), "With_Gui"));
+            screenshotOnProgressComplete = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnProgressComplete"), "With_Gui"));
         }
 
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
+        { }
+        void SetAllScreenshotOptions(ScreenshotOptions s)
         {
-            screenshotOnAllEvents = true;
-            screenshotOnCrashSplashdown = true;
-            screenshotOnVesselRecovered = true;
-            screenshotOnLaunch = true;
-            screenshotOnStageSeparation = true;
-            screenshotOnStageActivate = true;
-            screenshotOnPartDie = true;
+            //screenshotOnAllEvents = true;
+            screenshotOnCrashSplashdown = s;
+            screenshotOnVesselRecovered = s;
+            screenshotOnLaunch = s;
+            screenshotOnStageSeparation = s;
+            screenshotOnStageActivate = s;
+            screenshotOnPartDie = s;
             //screenshotOnDisconnectedPartDie = true; // need to implement
-            screenshotOnPartCouple = true;
-            screenshotOnVesselWasModified = true;
-            screenshotOnVesselCrewWasModified = true;
-            screenshotOnVesselOrbitClosed = true;
-            screenshotOnVesselOrbitEscaped = true;
-            screenshotOnCrewKilled = true;
-            screenshotOnCrewTransferred = true;
-            screenshotOnDominantBodyChange = true;
-            screenshotOnFlagPlant = true;
-            screenshotOnCrewOnEVA = true;
+            screenshotOnPartCouple = ScreenshotOptions.With_Gui;
+            screenshotOnVesselWasModified = s;
+            screenshotOnVesselCrewWasModified = s;
+            screenshotOnVesselOrbitClosed = s;
+            screenshotOnVesselOrbitEscaped = s;
+            screenshotOnCrewKilled = s;
+            screenshotOnCrewTransferred = s;
+            screenshotOnDominantBodyChange = s;
+            screenshotOnFlagPlant = s;
+            screenshotOnCrewOnEVA = s;
 
-            screenshotOnKerbalPassedOutFromGeeForce = true;
-            screenshotOnProgressAchieve = true;
-            screenshotOnProgressComplete = true;
+            screenshotOnKerbalPassedOutFromGeeForce = ScreenshotOptions.With_Gui;
+            screenshotOnProgressAchieve = ScreenshotOptions.With_Gui;
+            screenshotOnProgressComplete = ScreenshotOptions.With_Gui;
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
@@ -972,38 +988,47 @@ namespace KaptainsLogNamespace
             if (MMCheck.atMainMenu && MMCheck.useGlobalSettings4EventScreenshots)
                 return false;
 
-            if (member.Name == "screenshotOnAllEvents")
-                return true;
+            
 
-            if (screenshotOnAllEvents)
-                SetDifficultyPreset(GameParameters.Preset.Normal);
-            if (unsetSettings)
+            if (screenshotOnAllEventsWithGUI)
             {
-                unsetSettings = false;
-                screenshotOnCrashSplashdown = false;
-                screenshotOnVesselRecovered = false;
-                screenshotOnLaunch = false;
-                screenshotOnStageSeparation = false;
-                screenshotOnStageActivate = false;
-                screenshotOnPartDie = false;
+                SetAllScreenshotOptions(ScreenshotOptions.With_Gui);
+                screenshotOnAllEventsWithGUI = false;
+            }
+            if (screenshotWithoutGUIOnAllEvents)
+            {
+                SetAllScreenshotOptions(ScreenshotOptions.Without_Gui);
+                screenshotWithoutGUIOnAllEvents = false;
+            }
+            if (member.Name == "screenshotOnAllEvents" || member.Name == "screenshotWithutGUIOnAllEvents")
+                return true;
+            if (disableAllScreenshots)
+            {
+                disableAllScreenshots = false;
+                screenshotOnCrashSplashdown = ScreenshotOptions.No_Screenshot;
+                screenshotOnVesselRecovered = ScreenshotOptions.No_Screenshot;
+                screenshotOnLaunch = ScreenshotOptions.No_Screenshot;
+                screenshotOnStageSeparation = ScreenshotOptions.No_Screenshot;
+                screenshotOnStageActivate = ScreenshotOptions.No_Screenshot;
+                screenshotOnPartDie = ScreenshotOptions.No_Screenshot;
                 //screenshotOnDisconnectedPartDie = false;
-                screenshotOnPartCouple = false;
-                screenshotOnVesselWasModified = false;
-                screenshotOnVesselCrewWasModified = false;
-                screenshotOnVesselOrbitClosed = false;
-                screenshotOnVesselOrbitEscaped = false;
-                screenshotOnCrewKilled = false;
-                screenshotOnCrewTransferred = false;
-                screenshotOnDominantBodyChange = false;
-                screenshotOnFlagPlant = false;
-                screenshotOnCrewOnEVA = false;
+                screenshotOnPartCouple = ScreenshotOptions.No_Screenshot;
+                screenshotOnVesselWasModified = ScreenshotOptions.No_Screenshot;
+                screenshotOnVesselCrewWasModified = ScreenshotOptions.No_Screenshot;
+                screenshotOnVesselOrbitClosed = ScreenshotOptions.No_Screenshot;
+                screenshotOnVesselOrbitEscaped = ScreenshotOptions.No_Screenshot;
+                screenshotOnCrewKilled = ScreenshotOptions.No_Screenshot;
+                screenshotOnCrewTransferred = ScreenshotOptions.No_Screenshot;
+                screenshotOnDominantBodyChange = ScreenshotOptions.No_Screenshot;
+                screenshotOnFlagPlant = ScreenshotOptions.No_Screenshot;
+                screenshotOnCrewOnEVA = ScreenshotOptions.No_Screenshot;
 
-                screenshotOnKerbalPassedOutFromGeeForce = false;
-                screenshotOnProgressAchieve = false;
-                screenshotOnProgressComplete = false;
+                screenshotOnKerbalPassedOutFromGeeForce = ScreenshotOptions.No_Screenshot;
+                screenshotOnProgressAchieve = ScreenshotOptions.No_Screenshot;
+                screenshotOnProgressComplete = ScreenshotOptions.No_Screenshot;
 
             }
-            return !screenshotOnAllEvents;
+            return !screenshotOnAllEventsWithGUI;
             //            return true; //otherwise return true
         }
 

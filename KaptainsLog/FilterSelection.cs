@@ -47,7 +47,7 @@ namespace KaptainsLogNamespace
                     displayFields[d].filter = GUILayout.Toggle(displayFields[d].filter, "");
                     GUI.enabled = displayFields[d].filter;
                     if (oldFilter != displayFields[d].filter)
-                        Shelter.dirtyFilter = true;
+                        KLScenario.dirtyFilter = true;
 
                     if (f == Fields.vesselName || f == Fields.vesselSituation || f == Fields.mainBody || f == Fields.eventType || f == Fields.controlLevel)
                     {
@@ -104,14 +104,14 @@ namespace KaptainsLogNamespace
                                 old = minAlt;
                                 minAlt = GUILayout.HorizontalSlider(minAlt, 0, (float)highestAltitude, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != minAlt)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 GUILayout.EndHorizontal();
                                 GUILayout.BeginHorizontal();
                                 GUILayout.Label(((int)maxAlt).ToString() + ":", GUILayout.Width(LABEL_WIDTH));
                                 old = maxAlt;
                                 maxAlt = GUILayout.HorizontalSlider(maxAlt, 0, (float)highestAltitude, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != maxAlt)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 if (minAlt > maxAlt)
                                     maxAlt = minAlt;
                                 break;
@@ -120,7 +120,7 @@ namespace KaptainsLogNamespace
                                 old = misTimStart;
                                 misTimStart = GUILayout.HorizontalSlider(misTimStart, 0, (float)largestTime, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != misTimStart)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 GUILayout.EndHorizontal();
                                 GUILayout.BeginHorizontal();
 
@@ -129,7 +129,7 @@ namespace KaptainsLogNamespace
                                 
                                 misTimEnd = GUILayout.HorizontalSlider(misTimEnd, 0, (float)Planetarium.GetUniversalTime() + 3600 * 2, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != misTimEnd)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 if (misTimStart > misTimEnd)
                                     misTimEnd = misTimStart;
                                 break;
@@ -138,7 +138,7 @@ namespace KaptainsLogNamespace
                                 old = spdLow;
                                 spdLow = GUILayout.HorizontalSlider(spdLow, 0, (float)highestSpeed, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != spdLow)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 GUILayout.EndHorizontal();
                                 GUILayout.BeginHorizontal();
 
@@ -146,7 +146,7 @@ namespace KaptainsLogNamespace
                                 old = spdHigh;
                                 spdHigh = GUILayout.HorizontalSlider(spdHigh, 0, (float)highestSpeed, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != spdHigh)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 if (spdLow > spdHigh)
                                     spdHigh = spdLow;
                                 break;
@@ -155,7 +155,7 @@ namespace KaptainsLogNamespace
                                 old = uniTimStart;
                                 uniTimStart = GUILayout.HorizontalSlider(uniTimStart, 0, (float)largestUniTime, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != uniTimStart)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 GUILayout.EndHorizontal();
                                 GUILayout.BeginHorizontal();
 
@@ -163,7 +163,7 @@ namespace KaptainsLogNamespace
                                 old = uniTimEnd;
                                 uniTimEnd = GUILayout.HorizontalSlider(uniTimEnd, 0, (float)largestUniTime, GUILayout.Width(SLIDER_WIDTH));
                                 if (old != uniTimEnd)
-                                    Shelter.dirtyFilter = true;
+                                    KLScenario.dirtyFilter = true;
                                 if (uniTimStart > uniTimEnd)
                                     uniTimEnd = uniTimStart;
                                 break;

@@ -63,6 +63,7 @@ Detail templates are used for each line being exported.  The following fields ar
 	[Notes-1]		Second line of notes
 	[Notes]			All the notes
 	[Screenshot]	Screenshots are only printed if selected on the log display 
+	[ScreenshotNoGUI] Screenshots are only printed if the GUI was hidden
 	[Thumbnail]
 	[VesselFlag]
 

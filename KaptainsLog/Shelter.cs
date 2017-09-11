@@ -10,7 +10,7 @@ using UnityEngine;
 
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-
+#if false
 namespace KaptainsLogNamespace
 {
     [KSPScenario(ScenarioCreationOptions.AddToAllGames, new GameScenes[] {
@@ -25,15 +25,15 @@ namespace KaptainsLogNamespace
         public static Shelter Instance;
         public static bool inited = false;
 
-        static internal List<LogEntry> kaptainsLogList = new List<LogEntry>();
-        static internal Queue<ScreenMessage> scrnMsgLog = new Queue<ScreenMessage>();
+        //static internal List<LogEntry> kaptainsLogList = new List<LogEntry>();
+        //static internal Queue<ScreenMessage> scrnMsgLog = new Queue<ScreenMessage>();
         static internal bool dirtyFilter = true;
         static internal bool dirtyColSel = true;
         static internal bool logsLoaded = false;
         static internal bool imgCacheFilled = false;
 
-        [Persistent]
-        public int logIdx = 0;
+        //[Persistent]
+        //public int logIdx = 0;
 
         public void DoInit()
         {
@@ -54,3 +54,4 @@ namespace KaptainsLogNamespace
     }
 
 }
+#endif

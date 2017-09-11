@@ -115,10 +115,10 @@ namespace KaptainsLogNamespace
                         utils.le.screenshotName = fileEntries[lastSelectedImage];
                         break;
                     case ImageSelectionFor.ExportHeader:
-                        exportHeaderImage = fileEntries[lastSelectedImage];
+                        activeExportSettings.exportHeaderImage = fileEntries[lastSelectedImage];
                         break;
                     case ImageSelectionFor.ExportFooter:
-                        exportFooterImage = fileEntries[lastSelectedImage];
+                        activeExportSettings.exportFooterImage = fileEntries[lastSelectedImage];
                         break;
                 }
                 DisableImageSelection();

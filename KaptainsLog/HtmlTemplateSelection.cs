@@ -16,13 +16,17 @@ namespace KaptainsLogNamespace
     partial class KaptainsLog
     {
         int lastSelectedHtmlTemplate = 0;
+        int lastSelectedQuickHtmlTemplate = 0;
         void DisplayHtmlTemplateSelectionWindow(int id)
         {
             // Log.Info("DisplayHtmlTemplateSelectionWindow");
             GUIStyle toggleStyle = new GUIStyle(HighLogic.Skin.label);
 
             GUILayout.BeginHorizontal();
-            GUILayout.Label("Select HTML Template:");
+            if (displayQuickHTMLTemplate)
+                GUILayout.Label("Select Quick HTML Template:");
+            else
+                GUILayout.Label("Select HTML Template:");
             GUILayout.EndHorizontal();
 
             GUILayout.BeginHorizontal();
@@ -31,13 +35,16 @@ namespace KaptainsLogNamespace
             foreach (string fileName in dirEntries)
             {
                 GUILayout.BeginHorizontal();
-                if (lastSelectedHtmlTemplate != cnt)
+                if ((exportSingle? lastSelectedQuickHtmlTemplate: lastSelectedHtmlTemplate) != cnt)
                     toggleStyle.normal.textColor = Color.red;
                 else
                     toggleStyle.normal.textColor = Color.green;
                 if (GUILayout.Button(fileName.Substring(fileName.LastIndexOf('/') + 1), toggleStyle))
                 {
-                    lastSelectedHtmlTemplate = cnt;
+                    if (exportSingle)
+                        lastSelectedQuickHtmlTemplate = cnt;
+                    else
+                        lastSelectedHtmlTemplate = cnt;
                 }
                 cnt++;
                 GUILayout.EndHorizontal();
@@ -49,15 +56,19 @@ namespace KaptainsLogNamespace
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("OK", GUILayout.Width(90)))
             {
-
-                htmlTemplate = dirEntries[lastSelectedHtmlTemplate];
+                if (exportSingle)
+                    activeExportSettings.htmlTemplate = dirEntries[lastSelectedQuickHtmlTemplate];
+                else
+                    activeExportSettings.htmlTemplate = dirEntries[lastSelectedHtmlTemplate];
                 displayHTMLTemplate = false;
-                loadTemplateConfig(htmlTemplate);
+                displayQuickHTMLTemplate = false;
+                loadTemplateConfig(activeExportSettings.htmlTemplate);
             }
             GUILayout.FlexibleSpace();
             if (GUILayout.Button("Cancel", GUILayout.Width(90)))
             {
                 displayHTMLTemplate = false;
+                displayQuickHTMLTemplate = false;
             }
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();

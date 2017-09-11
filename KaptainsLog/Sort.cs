@@ -36,10 +36,10 @@ namespace KaptainsLogNamespace
                 @this.Insert(0, item);
                 return;
             }
-            int index = @this.BinarySearch(item);
-            if (index < 0)
-                index = ~index;
-            @this.Insert(index, item);
+            int idx = @this.BinarySearch(item);
+            if (idx < 0)
+                idx = ~idx;
+            @this.Insert(idx, item);
         }
     }
     partial class KaptainsLog
@@ -50,113 +50,7 @@ namespace KaptainsLogNamespace
 
         void SortLog()
         {
-#if false
-            // This uses Linq
-            List<LogEntry> newList = null;
-
-            switch (sortField)
-            {
-                case Fields.vesselName:
-                    newList = kaptainsLogList.OrderBy(l => l.vesselName).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.universalTime:
-                    newList = kaptainsLogList.OrderBy(l => l.universalTime).ThenBy(l => l.vesselName).ToList(); break;
-                case Fields.utcTime:
-                    newList = kaptainsLogList.OrderBy(l => l.utcTime).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.missionTime:
-                    newList = kaptainsLogList.OrderBy(l => l.missionTime).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.vesselSituation:
-                    newList = kaptainsLogList.OrderBy(l => l.vesselSituation).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.controlLevel:
-                    newList = kaptainsLogList.OrderBy(l => l.controlLevel).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.mainBody:
-                    newList = kaptainsLogList.OrderBy(l => l.vesselMainBody).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.altitude:
-                    newList = kaptainsLogList.OrderBy(l => l.altitude).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.speed:
-                    newList = kaptainsLogList.OrderBy(l => l.speed).ThenBy(l => l.universalTime).ToList(); break;
-                case Fields.eventType:
-                    newList = kaptainsLogList.OrderBy(l => l.eventType).ThenBy(l => l.universalTime).ToList(); break;
-            }
-            if (newList != null)
-                kaptainsLogList = newList;
-#else
-            
             kaptainsLogList.Sort();
-#if false
-            kaptainsLogList.Sort(delegate (LogEntry x, LogEntry y)
-            {
-                int rc = 0;
-                switch (sortField)
-                {
-                    case Fields.index:
-                        rc = x.index - y.index;
-                        break;
-
-                    case Fields.vesselId:
-                        rc = String.Compare(x.vesselId, y.vesselId);
-                        break;
-                    case Fields.vesselName:
-                        rc = String.Compare(x.vesselName, y.vesselName);
-                        break;
-                    case Fields.universalTime:
-                        if (x.universalTime < y.universalTime) rc = -1;
-                        else
-                            if (x.universalTime > y.universalTime) rc = 1;
-                        break;
-                    case Fields.utcTime:
-                        if (x.utcTime < y.utcTime) rc = -1;
-                        else
-                           if (x.utcTime > y.utcTime) rc = 1;
-                        break;
-                    case Fields.missionTime:
-                        if (x.missionTime < y.missionTime) rc = -1;
-                        else
-                          if (x.missionTime > y.missionTime) rc = 1;
-                        break;
-                    case Fields.vesselSituation:
-                        if (x.vesselSituation < y.vesselSituation) rc = -1;
-                        else
-                         if (x.vesselSituation > y.vesselSituation) rc = 1;
-                        break;
-                    case Fields.controlLevel:
-                        if (x.controlLevel < y.controlLevel) rc = -1;
-                        else
-                         if (x.missionTime > y.missionTime) rc = 1;
-                        break;
-                    case Fields.mainBody:
-                        rc = String.Compare(x.vesselMainBody, y.vesselMainBody);
-                        break;
-                    case Fields.altitude:
-                        if (x.altitude < y.altitude) rc = -1;
-                        else
-                         if (x.altitude > y.altitude) rc = 1;
-                        break;
-                    case Fields.speed:
-                        if (x.speed < y.speed) rc = -1;
-                        else
-                         if (x.speed > y.speed) rc = 1;
-                        break;
-                    case Fields.eventType:
-                        if (x.eventType < y.eventType) rc = -1;
-                        else
-                         if (x.eventType > y.eventType) rc = 1;
-                        break;
-                }
-                if (rc != 0)
-                    return rc;
-                if (sortField != Fields.universalTime)
-                {
-                    if (x.universalTime < y.universalTime) rc = -1;
-                    else
-                            if (x.universalTime > y.universalTime) rc = 1;
-                } else
-                {
-                    rc = String.Compare(x.vesselId, y.vesselId);
-                }
-                return rc;
-            });
-#endif
-#endif
         }
         bool sortImmediate = false;
         

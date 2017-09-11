@@ -1,20 +1,15 @@
 TODO list
 
-Finish Quick Export
-Log nesting
 
-	Be able to bulk delete some entries (manual selection, or based on filter)
+future updates
+	Move intro window into KSPedia
 
-	If possible, log messages/mission completions. (may be there)
 
-	Log nesting (with expandable lists) by ship/UTC (i.e. day 1/2/3 events, ship x/y/z events...).
+	If possible, log messages/mission completions.  Ie:  Contract Complete, Contract Parameter Complete, World First Milestones
+		somehow need to intercept internals of ProgressNode (AwardProgressStandard), may need to poll
+	Contract Completion canbe gotten from FinePrint.Contracts OnFinished, look at contract.dateFinished, contract.dateAccepted, may need to poll
 			
 	Ability to identify and mark accordingly (in the ship name/description) KRASH simulations. (i.e. "Ship 123 - SIM")
 
-	Ability to customize template for entries similar to the intro quote. Example: "Kaptain's log. [value] [value2], [value3]. End of log."
-	Ability to print single entry with single click, using preselected template???
-		maybe from image viewer screen
-
-	Create new Settings Screens, which aren't tied into games
-
-	Move Main window filter buttons to column headers
+	
+	

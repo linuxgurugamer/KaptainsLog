@@ -18,6 +18,8 @@ namespace KaptainsLogNamespace
         
         public static string NODENAME = "KaptainsLog";
 
+        
+
 #if false
         public GlobalSettings()
         {
@@ -87,10 +89,10 @@ namespace KaptainsLogNamespace
         }
 
 
-
         public static void SaveGlobalSettings()
         {
             Log.Info("SaveGlobalSettings");
+            //allSettings.AddValue("screenshotCnt", screenshotCnt);
             if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useGlobalSettings4All || HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useGlobalSettings4General)
                 HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().SaveGlobalSettingsNode();
             if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useGlobalSettings4All || HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().useGlobalSettings4EventPause)
@@ -110,6 +112,7 @@ namespace KaptainsLogNamespace
         {
             Log.Info("LoadGlobalSettings");
             LoadSettings();
+            //screenshotCnt = Int32.Parse(Utils.SafeLoad(allSettings.GetValue("screenshotCnt"), "0"));
             if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useGlobalSettings4All || HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useGlobalSettings4General)
                 HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().LoadGlobalSettingsNode();
 

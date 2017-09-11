@@ -68,6 +68,7 @@ namespace KaptainsLogNamespace
         const string UROffIcon = "KaptainsLog/Icons/UR_Off";
         const string UROnIcon = "KaptainsLog/Icons/UR_On";
 
+
         private IEnumerator WaitForScreenMessages()
         {
             Log.Info("WaitForScreenMessages");

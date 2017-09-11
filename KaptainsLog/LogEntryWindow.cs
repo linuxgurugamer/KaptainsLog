@@ -154,7 +154,8 @@ namespace KaptainsLogNamespace
                     if (notesText != "")
                     {
                         utils.le.notes = notesText;
-                        if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().screenshot)
+                        //if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().screenshot)
+                        if (eventScreenshot(utils.le) != ScreenshotOptions.No_Screenshot)
                         {
                             if (utils.le.screenshotName == null || utils.le.screenshotName == "")
                             {

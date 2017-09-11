@@ -382,15 +382,15 @@ namespace KaptainsLogNamespace
         //bool firstLoad = true;
         private void onLevelWasLoaded(GameScenes scene)
         {
-            if (!Shelter.logsLoaded && (scene == GameScenes.SPACECENTER || scene == GameScenes.TRACKSTATION || scene == GameScenes.EDITOR || scene == GameScenes.FLIGHT))
+            if (!KLScenario.logsLoaded && (scene == GameScenes.SPACECENTER || scene == GameScenes.TRACKSTATION || scene == GameScenes.EDITOR || scene == GameScenes.FLIGHT))
             {
                 // LoadLogs();
-                // Shelter.logsLoaded = true;
+                // KLScenario.logsLoaded = true;
             }
 
             if (scene == GameScenes.MAINMENU)
             {
-                Shelter.logsLoaded = false;
+                KLScenario.logsLoaded = false;
             }
         }
 
@@ -479,6 +479,8 @@ namespace KaptainsLogNamespace
             Log.Info("onPartDie");
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnPartDie)
                 return;
+            if (p.vessel.vesselType == VesselType.Debris)
+                return;
             string s;
             if (p.vessel.rootPart != p)
                 s = p.vessel.name + ", " + p.partInfo.name + " was destroyed";
@@ -524,7 +526,7 @@ namespace KaptainsLogNamespace
             //Log.Info("onVesselWasModified, v.GetComponent<KerbalEVA>(): " + v.GetComponent<KerbalEVA>().ToString());
 
 
-            if (v.vesselType == VesselType.Flag)
+            if (v.vesselType == VesselType.Flag || v.vesselType == VesselType.Debris)
                 return;
             Log.Info("onVesselWasModified");
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnVesselWasModified)
@@ -859,7 +861,7 @@ namespace KaptainsLogNamespace
                 return;
             }
             Log.Info("CreateLogEntry");
-            Shelter.dirtyColSel = true;
+            KLScenario.dirtyColSel = true;
             LogEntry leLocal = new LogEntry();
             if (noActiveVessel == null)
             {
@@ -878,7 +880,7 @@ namespace KaptainsLogNamespace
 
                 leLocal.altitude = FlightGlobals.ActiveVessel.altitude;
                 leLocal.speed = FlightGlobals.ActiveVessel.speed;
-                leLocal.index = Shelter.Instance.logIdx++;
+                leLocal.index = KLScenario.logIdx++;
 
                 foreach (ProtoCrewMember kerbal in FlightGlobals.ActiveVessel.GetVesselCrew())
                 {
@@ -911,7 +913,7 @@ namespace KaptainsLogNamespace
                 Log.Info("vesselName: " + leLocal.vesselName + ", situation: " + leLocal.displayVesselSituation() + ", eventType: " + leLocal.displayEventString() + ", notes: " + leLocal.notes);
                 //klw.notesEntryComplete = true; 
                 //KaptainsLog.kaptainsLogList.Add(leLocal);
-                //Shelter.dirtyFilter = true;
+                //KLScenario.dirtyFilter = true;
                 //SaveLogs();
 
                 queueScreenshot(ref leLocal);
@@ -984,13 +986,10 @@ namespace KaptainsLogNamespace
 
                     leLocal.index = Int32.Parse(SafeLoad(entry.GetValue("index"), -1));
                     if (leLocal.index == -1)
-                    {
-                        leLocal.index = Shelter.Instance.logIdx++;
-                    }
-                    else
-                    {
-                        Shelter.Instance.logIdx = Math.Max(Shelter.Instance.logIdx, leLocal.index);                           
-                    }
+                        leLocal.index = KLScenario.logIdx++;
+                    // Check the logidx to be sure the max number is ok, otherwise fix it
+                    if (KLScenario.logIdx <= leLocal.index)
+                        KLScenario.logIdx = leLocal.index + 1;
                     leLocal.universalTime = Double.Parse(SafeLoad(entry.GetValue("universalTime"), 0));
                     leLocal.missionTime = Double.Parse(SafeLoad(entry.GetValue("missionTime"), 0));
                     leLocal.utcTime = DateTime.Parse(SafeLoad(entry.GetValue("utcTime"), DateTime.UtcNow));
@@ -1014,6 +1013,9 @@ namespace KaptainsLogNamespace
                     }
 
                     leLocal.vesselFlagURL = SafeLoad(entry.GetValue("vesselFlagURL"), "");
+
+                    entry.AddValue("guiHidden", leLocal.guiHidden);
+                    leLocal.guiHidden = Boolean.Parse(SafeLoad(entry.GetValue("guiHidden"), "false"));
                     leLocal.screenshotName = SafeLoad(entry.GetValue("screenshotName"), "");
                     leLocal.pngThumbnailName = SafeLoad(entry.GetValue("pngThumbnailName"), "");
                     leLocal.jpgThumbnailName = SafeLoad(entry.GetValue("jpgThumbnailName"), "");
@@ -1043,7 +1045,7 @@ namespace KaptainsLogNamespace
                         );
                     ListExt.AddSorted<LogEntry>(KaptainsLog.kaptainsLogList, leLocal);
                     //KaptainsLog.kaptainsLogList.Add(leLocal);
-                    Shelter.dirtyFilter = true;
+                    KLScenario.dirtyFilter = true;
                 }
             }
         }
@@ -1094,6 +1096,7 @@ namespace KaptainsLogNamespace
                 }
 
                 entry.AddValue("vesselFlagURL", leLocal.vesselFlagURL);
+                entry.AddValue("guiHidden", leLocal.guiHidden);
                 entry.AddValue("screenshotName", leLocal.screenshotName);
                 entry.AddValue("pngThumbnailName", leLocal.pngThumbnailName);
                 entry.AddValue("jpgThumbnailName", leLocal.jpgThumbnailName);
@@ -1105,7 +1108,7 @@ namespace KaptainsLogNamespace
             // following line for debugging only
             //logFile.Save(KSP_DIR + "/" + LOG_DIR + "/" + logFileName);
             logFile.Save(klw.SAVE_PATH + "/" + klw.logFileName);
-            ScreenMessages.PostScreenMessage("Log Entry Saved");
+            //ScreenMessages.PostScreenMessage("Log Entry Saved");
         }
 
         private static string GetTime(double time, double secondsPerMinute, double minutesPerHour,

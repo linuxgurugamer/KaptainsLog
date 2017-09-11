@@ -86,6 +86,7 @@ namespace KaptainsLogNamespace
         public string notes;
         public string vesselFlagURL = "";
 
+        public bool guiHidden = false;
         public string screenshotName = "";
         public string pngThumbnailName = "";
         public string jpgThumbnailName = "";

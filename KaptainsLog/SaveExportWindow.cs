@@ -15,14 +15,14 @@ namespace KaptainsLogNamespace
 {
     partial class KaptainsLog
     {
-        bool csv = false;
-        bool html = false;
-        bool openInBrowser = true;
+        //bool activeExportSettings.saveAsCSV = false;
+        //bool activeExportSettings.saveAsHTML = false;
+        //bool activeExportSettings.openInBrowser = true;
         string saveFile = "";
-        string htmlTemplate = "";
+        //string activeExportSettings.htmlTemplate = "";
 
-        string exportHeaderTitle, exportFooterTitle;
-        string exportHeaderImage, exportFooterImage;
+        //string activeExportSettings.exportHeaderTitle, activeExportSettings.exportFooterTitle;
+        //string activeExportSettings.exportHeaderImage, activeExportSettings.exportFooterImage;
         int pagenum = 0;
         bool exportSingle = false;
 
@@ -30,18 +30,20 @@ namespace KaptainsLogNamespace
         internal ExportSettings quickExport = new ExportSettings("quick");
         const string EXPORTSETTINGSNAME = "ExportSettings";
 
+#if false
         public class ExportSettings
         {
             bool csv = false;
             bool html = false;
-            bool openInBrowser = true;
+            bool activeExportSettings.openInBrowser = true;
             string saveFile = "";
-            string htmlTemplate = "";
+            string activeExportSettings.htmlTemplate = "";
 
-            string exportHeaderTitle = "";
-            string exportFooterTitle = "";
-            string exportHeaderImage = "";
-            string exportFooterImage = "";
+            string activeExportSettings.exportHeaderTitle = "";
+            string activeExportSettings.exportFooterTitle = "";
+            string activeExportSettings.exportHeaderImage = "";
+            string activeExportSettings.exportFooterImage = "";
+
             int pagenum = 0;
             bool exportSingle = false;
 
@@ -60,14 +62,14 @@ namespace KaptainsLogNamespace
 
                 settings.AddValue("csv", csv);
                 settings.AddValue("html", html);
-                settings.AddValue("openInBrowser", openInBrowser);
+                settings.AddValue("activeExportSettings.openInBrowser", activeExportSettings.openInBrowser);
                 settings.AddValue("saveFile", saveFile);
-                settings.AddValue("htmlTemplate", htmlTemplate);
+                settings.AddValue("activeExportSettings.htmlTemplate", activeExportSettings.htmlTemplate);
 
-                settings.AddValue("exportHeaderTitle", exportHeaderTitle);
-                settings.AddValue("exportFooterTitle", exportFooterTitle);
-                settings.AddValue("exportHeaderImage", exportHeaderImage);
-                settings.AddValue("exportFooterImage", exportFooterImage);
+                settings.AddValue("activeExportSettings.exportHeaderTitle", activeExportSettings.exportHeaderTitle);
+                settings.AddValue("activeExportSettings.exportFooterTitle", activeExportSettings.exportFooterTitle);
+                settings.AddValue("activeExportSettings.exportHeaderImage", activeExportSettings.exportHeaderImage);
+                settings.AddValue("activeExportSettings.exportFooterImage", activeExportSettings.exportFooterImage);
                 settings.AddValue("pagenum", pagenum);
                 settings.AddValue("exportSingle", exportSingle);
 
@@ -77,29 +79,53 @@ namespace KaptainsLogNamespace
             {
                 csv = Boolean.Parse(Utils.SafeLoad(settings.GetValue("csv"), "false"));
                 html = Boolean.Parse(Utils.SafeLoad(settings.GetValue("html"), "false"));
-                openInBrowser = Boolean.Parse(Utils.SafeLoad(settings.GetValue("openInBrowser"), "false"));
+                activeExportSettings.openInBrowser = Boolean.Parse(Utils.SafeLoad(settings.GetValue("activeExportSettings.openInBrowser"), "false"));
 
                 saveFile = Utils.SafeLoad(settings.GetValue("saveFile"), "");
-                htmlTemplate = Utils.SafeLoad(settings.GetValue("htmlTemplate"), "");
-                exportHeaderTitle = Utils.SafeLoad(settings.GetValue("exportHeaderTitle"), "");
-                exportFooterTitle = Utils.SafeLoad(settings.GetValue("exportFooterTitle"), "");
-                exportHeaderImage = Utils.SafeLoad(settings.GetValue("exportHeaderImage"), "");
-                exportFooterImage = Utils.SafeLoad(settings.GetValue("exportFooterImage"), "");
+                activeExportSettings.htmlTemplate = Utils.SafeLoad(settings.GetValue("activeExportSettings.htmlTemplate"), "");
+                activeExportSettings.exportHeaderTitle = Utils.SafeLoad(settings.GetValue("activeExportSettings.exportHeaderTitle"), "");
+                activeExportSettings.exportFooterTitle = Utils.SafeLoad(settings.GetValue("activeExportSettings.exportFooterTitle"), "");
+                activeExportSettings.exportHeaderImage = Utils.SafeLoad(settings.GetValue("activeExportSettings.exportHeaderImage"), "");
+                activeExportSettings.exportFooterImage = Utils.SafeLoad(settings.GetValue("activeExportSettings.exportFooterImage"), "");
 
                 pagenum = Int32.Parse(Utils.SafeLoad(settings.GetValue("pagenum"), "0"));
                 exportSingle = Boolean.Parse(Utils.SafeLoad(settings.GetValue("exportSingle"), "false"));
             }
         }
+#endif
+        ExportSettings activeExportSettings;
+        void LoadExportSettings(string s)
+        {
+            if (s == "export")
+                activeExportSettings = KLScenario.exportSettings;
+            if (s == "quick")
+                activeExportSettings = KLScenario.quickExportSettings;
+        }
+        void SaveExportSettings(string s)
+        {
+            if (s == "export")
+                KLScenario.exportSettings = activeExportSettings;
+            if (s == "quick")
+                KLScenario.quickExportSettings = activeExportSettings;
+        }
 
         internal void EnableExportWindow(bool single = false)
         {
+            if (single)
+                LoadExportSettings("quick");
+            else
+                LoadExportSettings("export");
             displayExportWindow = true;
-            exportHeaderImage = "";
-            exportFooterImage = "";
-            exportHeaderTitle = "";
-            exportFooterTitle = "";
+#if false
+            activeExportSettings.exportHeaderImage = "";
+            activeExportSettings.exportFooterImage = "";
+            activeExportSettings.exportHeaderTitle = "";
+            activeExportSettings.exportFooterTitle = "";
+            activeExportSettings.saveAsHTML = false;
+#endif
             pagenum = 1;
             exportSingle = single;
+            
         }
 
         void SaveAsCSV(string fname)
@@ -111,7 +137,7 @@ namespace KaptainsLogNamespace
                 for (int i = 0; i < kaptainsLogList.Count; i++)
                 {
                     var le1 = kaptainsLogList[i];
-                    if (Shelter.dirtyFilter)
+                    if (KLScenario.dirtyFilter)
                         ApplyFilters(le1);
                     if (!le1.leSelected)
                         continue;
@@ -196,6 +222,26 @@ namespace KaptainsLogNamespace
 
             return s;
         }
+        void ProcessScreenshot(ref string data, Fields fld, LogEntry le)
+        {
+            if (!exportSingle && fld == Fields.screenshot && le.printFlag != PrintType.screenshotPrint)
+            {
+                data = "";
+            }
+            else
+            {
+                switch (fld)
+                {
+                    case Fields.screenshot:
+                        if (isHtml)
+                            data = formatImgHtml(screenshotHtml, data); break;
+                    case Fields.thumbnail:
+                        if (isHtml)
+                            data = formatImgHtml(thumbnailHtml, data); break;
+
+                }
+            }
+        }
         string ProcessTemplate(string fname, LogEntry le)
         {
             string template = LoadTemplate(fname);
@@ -210,7 +256,15 @@ namespace KaptainsLogNamespace
                 Log.Info("d: " + d.ToString() + ",   fld: " + fld.ToString() + ",   s: " + s + ",   data: " + data);
                 if (fld == Fields.thumbnail || fld == Fields.screenshot)
                 {
-                    if (fld == Fields.screenshot && le.printFlag != PrintType.screenshotPrint)
+                    if (fld == Fields.screenshot && le.guiHidden)
+                    {
+                        s = "[ScreenshotNoGUI]";
+                        ProcessScreenshot(ref data, fld, le);
+                        processData(ref template, s, data);
+                    }
+                    ProcessScreenshot(ref data, fld, le);
+#if false
+                    if (!exportSingle  && fld == Fields.screenshot && le.printFlag != PrintType.screenshotPrint)
                     {
                         data = "";
                     }
@@ -227,6 +281,7 @@ namespace KaptainsLogNamespace
                              
                         }
                     }
+#endif
                 }
                 processData(ref template, s, data);
             }
@@ -257,19 +312,19 @@ namespace KaptainsLogNamespace
             string template = LoadTemplate(fname);
             string data, s;
 
-            s = "[HeaderImg]"; data = exportHeaderImage;
+            s = "[HeaderImg]"; data = activeExportSettings.exportHeaderImage;
             processData(ref template, s, data);
             if (isHtml)
                 data = formatImgHtml(headerImgHtml, data);
-            s = "[FooterImg]"; data = exportFooterImage;
+            s = "[FooterImg]"; data = activeExportSettings.exportFooterImage;
             if (isHtml)
                 data = formatImgHtml(footerImgHtml, data);
             processData(ref template, s, data);
             s = "[Page]"; data = pagenum.ToString();
             processData(ref template, s, data);
-            s = "[HeaderTitle]"; data = exportHeaderTitle;
+            s = "[HeaderTitle]"; data = activeExportSettings.exportHeaderTitle;
             processData(ref template, s, data);
-            s = "[FooterTitle]"; data = exportFooterTitle;
+            s = "[FooterTitle]"; data = activeExportSettings.exportFooterTitle;
             processData(ref template, s, data);
             s = "[Flag]"; data = getFlagURL(HighLogic.CurrentGame.flagURL);
             if (isHtml)
@@ -363,6 +418,8 @@ namespace KaptainsLogNamespace
         }
 
         bool deleteExistingFile = false;
+        
+
         void DisplaySaveWindow(int id)
         {
             GUILayout.BeginHorizontal();
@@ -371,25 +428,38 @@ namespace KaptainsLogNamespace
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(200);
-            csv = GUILayout.Toggle(csv, "Save all fields in CSV file");
+            activeExportSettings.saveAsCSV = GUILayout.Toggle(activeExportSettings.saveAsCSV, "Save all fields in CSV file");
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             GUILayout.Space(200);
-            html = GUILayout.Toggle(html, "Save as HTML file");
+            activeExportSettings.saveAsHTML = GUILayout.Toggle(activeExportSettings.saveAsHTML, "Save as HTML file");
             GUILayout.EndHorizontal();
-            if (html)
+            if (activeExportSettings.saveAsHTML)
                 GUI.enabled = true;
             else
                 GUI.enabled = false;
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Select HTML Template", GUILayout.Width(150)))
+            string s = "";
+            if (exportSingle)
+                s = "Select Quick HTML Template";
+            else
+                s = "Select HTML Template";
+            if (GUILayout.Button(s, GUILayout.Width(175)))
             {
-                dirEntries = Directory.GetDirectories(htmlTemplatePath);
-                displayHTMLTemplate = true;
+                if (exportSingle)
+                {
+                    dirEntries = Directory.GetDirectories(quickHtmlTemplatePath);
+                    displayQuickHTMLTemplate = true;
+                }
+                else
+                {
+                    dirEntries = Directory.GetDirectories(htmlTemplatePath);
+                    displayHTMLTemplate = true;
+                }
             }
             GUILayout.Space(50);
-            GUILayout.TextField(htmlTemplate.Substring(htmlTemplate.LastIndexOf('/') + 1));
+            GUILayout.TextField(activeExportSettings.htmlTemplate.Substring(activeExportSettings.htmlTemplate.LastIndexOf('/') + 1));
             GUILayout.EndHorizontal();
             GUILayout.Box(GUIContent.none, MyGUIStyles.EditorLine, GUILayout.ExpandWidth(true), GUILayout.Height(1f));
             GUILayout.BeginHorizontal();
@@ -398,7 +468,7 @@ namespace KaptainsLogNamespace
             GUILayout.BeginHorizontal();
             GUILayout.Label("Optional title:", GUILayout.Width(150));
             GUILayout.Space(50);
-            exportHeaderTitle = GUILayout.TextField(exportHeaderTitle);
+            activeExportSettings.exportHeaderTitle = GUILayout.TextField(activeExportSettings.exportHeaderTitle);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Optional header image", GUILayout.Width(150)))
@@ -406,7 +476,7 @@ namespace KaptainsLogNamespace
                 EnableImageSelectionFor(ImageSelectionFor.ExportHeader);
             }
             GUILayout.Space(50);
-            GUILayout.TextField(exportHeaderImage.Substring(exportHeaderImage.LastIndexOf('/') + 1));
+            GUILayout.TextField(activeExportSettings.exportHeaderImage.Substring(activeExportSettings.exportHeaderImage.LastIndexOf('/') + 1));
             GUILayout.EndHorizontal();
             GUILayout.Box(GUIContent.none, MyGUIStyles.EditorLine, GUILayout.ExpandWidth(true), GUILayout.Height(1f));
             GUILayout.BeginHorizontal();
@@ -415,7 +485,7 @@ namespace KaptainsLogNamespace
             GUILayout.BeginHorizontal();
             GUILayout.Label("Optional title:", GUILayout.Width(150));
             GUILayout.Space(50);
-            exportFooterTitle = GUILayout.TextField(exportFooterTitle);
+            activeExportSettings.exportFooterTitle = GUILayout.TextField(activeExportSettings.exportFooterTitle);
             GUILayout.EndHorizontal();
             GUILayout.Box(GUIContent.none, MyGUIStyles.EditorLine, GUILayout.ExpandWidth(true), GUILayout.Height(1f));
 
@@ -425,14 +495,14 @@ namespace KaptainsLogNamespace
                 EnableImageSelectionFor(ImageSelectionFor.ExportFooter);
             }
             GUILayout.Space(50);
-            GUILayout.TextField(exportFooterImage.Substring(exportFooterImage.LastIndexOf('/') + 1));
+            GUILayout.TextField(activeExportSettings.exportFooterImage.Substring(activeExportSettings.exportFooterImage.LastIndexOf('/') + 1));
             GUILayout.EndHorizontal();
 
 
 
             GUILayout.BeginHorizontal();
             GUILayout.Space(200);
-            openInBrowser = GUILayout.Toggle(openInBrowser, "Open in browser");
+            activeExportSettings.openInBrowser = GUILayout.Toggle(activeExportSettings.openInBrowser, "Open in browser");
             GUILayout.EndHorizontal();
             GUI.enabled = true;
             GUILayout.Space(20);
@@ -465,7 +535,7 @@ namespace KaptainsLogNamespace
                 displayExportWindow = false;
             }
             GUILayout.FlexibleSpace();
-            if (saveFile == "" || (!csv && !html))
+            if (saveFile == "" || (!activeExportSettings.saveAsCSV && !activeExportSettings.saveAsHTML))
                 GUI.enabled = false;
             else
                 GUI.enabled = true;
@@ -473,14 +543,18 @@ namespace KaptainsLogNamespace
             {
                 displayExportWindow = false;
                 //SAVE_PATH = ROOT_PATH + "saves/" + HighLogic.SaveFolder;
-                if (csv)
+                if (activeExportSettings.saveAsCSV)
                 {
                     SaveAsCSV(saveFile);
                 }
-                if (html)
+                if (activeExportSettings.saveAsHTML)
                 {
-                    SaveAsHtml(htmlTemplate, SAVE_PATH + "/" + saveFile);
+                    SaveAsHtml(activeExportSettings.htmlTemplate, SAVE_PATH + "/" + saveFile);
                 }
+                if (exportSingle)
+                    SaveExportSettings("quick");
+                else
+                    SaveExportSettings("export");                
             }
             GUILayout.FlexibleSpace();
 

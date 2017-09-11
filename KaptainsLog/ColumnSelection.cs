@@ -58,7 +58,7 @@ namespace KaptainsLogNamespace
                     bool b = displayFields[d].visible;
                     displayFields[d].visible = GUILayout.Toggle(displayFields[d].visible, LogEntry.displayFieldName(displayFields[d].f), toggleStyle, GUILayout.Width(w));
                     if (b != displayFields[d].visible)
-                        Shelter.dirtyColSel = true;
+                        KLScenario.dirtyColSel = true;
                     if (d < displayFields.Count)
                     {
                         if (GUILayout.Button(">", GUILayout.Width(20)))

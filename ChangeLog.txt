@@ -89,3 +89,27 @@
 		Added new option to specify if global settings should be used for all settings
 		Added option to each settings sections about global settings for that section
 		Fixed message icon filters for upper center
+
+0.0.1.14
+		Added collapse of display when one of the followiing fields are sorted:
+			VesselID, VesselName, MainBody
+		Added Questionmark icon in upper left of window, it opens the intro/help window when clicked
+		Added Quick Export
+		Added Delete button (to delete all selected rows)
+		Added confirm before mass delete
+		Made global count for screenshots, now saved in global settings
+		Added saving of export settings, & quick export settings
+		Added flag to LogEntry indicating whether the screenshot had the GUI hidden or not
+		Added new template field:  [ScreenshotNoGui], will only show a screenshot if it didn't have the GUI displayed
+		Changed screenshot options to be specific to each, so that some can have screenshots with the GUI, and some without.
+		Removed some options related to screenshots from the general settings since they weren't needed anymore 
+		
+0.0.1.15-rc1
+		Fixed internal index counter
+		Added space between thumbnails
+		Added check on load to be sure the index isn't greater than logIdx, this can happen from a crash, or a revert/exit.  If check fails,
+			sets logIdx to 1 greater than loaded index value
+		Moved permanent screenshotcnt to ScenarioModule
+		Merged both Scenario Modules
+		Disabled the "Log Entry Saved" message
+		Added check to NOT record log entry if debris got modified/destroyed

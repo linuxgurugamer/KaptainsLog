@@ -19,7 +19,9 @@ namespace KaptainsLogNamespace
         private Rect _windowRect;
         private Rect _windowRect2 = new Rect(Screen.width / 2 - 150f, Screen.height / 2 - 75f, 260f, 390f);
         bool resetSize = false;
-        
+
+        public int winId = 0;
+
         bool everVisible = false; // Not static on purpose
 
         ~ImageViewer()
@@ -137,6 +139,7 @@ namespace KaptainsLogNamespace
         }
         public void IvWindow(int windowID)
         {
+            winId = windowID;
             if (_image != null)
             {
                 //_windowRect = new Rect(_windowRect.xMin, _windowRect.yMin, _image.width, _image.height + 20f);
@@ -162,10 +165,12 @@ namespace KaptainsLogNamespace
                 {
                     KaptainsLog.Instance.EnableExportWindow(true);
                 }
+#if false
                 if (GUILayout.Button("Export"))
                 {
                     KaptainsLog.Instance.EnableExportWindow(true);
                 }
+#endif
                 if (GUILayout.Button("Close"))
                     Toggle();
                 GUILayout.EndHorizontal();
@@ -183,6 +188,7 @@ namespace KaptainsLogNamespace
             }
             GUI.DragWindow();
         }
+
         void Toggle()
         {
             KaptainsLog.Instance.displayScreenshot = false;
