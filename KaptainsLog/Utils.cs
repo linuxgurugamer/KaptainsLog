@@ -446,7 +446,7 @@ namespace KaptainsLogNamespace
                 return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnLaunch)
             //    klw.activatePause();
-            CreateLogEntry(Events.Launch, HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnLaunch, "Vessel launched, current cre: " + getCurrentCrew());
+            CreateLogEntry(Events.Launch, HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnLaunch, "Vessel launched, current crew: " + getCurrentCrew());
         }
 
         void onStageSeperation(EventReport evt)
