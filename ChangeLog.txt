@@ -113,3 +113,7 @@
 		Merged both Scenario Modules
 		Disabled the "Log Entry Saved" message
 		Added check to NOT record log entry if debris got modified/destroyed
+
+0.0.1.16-rc2
+		Fixed some typos on the Intro screen
+		Fixed performance issue in SpaceCenter and Editor

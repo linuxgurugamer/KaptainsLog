@@ -27,7 +27,7 @@ namespace KaptainsLogNamespace
 
         void Start()
         {
-            Log.Info("MainMenu.Start");
+            Log.Info("MMCheck.Start");
             atMainMenu = true;
 
             EnabledForSave = true;
@@ -43,7 +43,7 @@ namespace KaptainsLogNamespace
         void OnDestroy()
         {
             atMainMenu = false;
-            Log.Info("MainMenu.OnDestroy");
+            Log.Info("MMCheck.OnDestroy");
         }
 
     }

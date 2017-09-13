@@ -81,7 +81,7 @@ namespace KaptainsLogNamespace
             "You can disable this window from showing up by toggling the option on the first settings page, under General Settings";
 
         string globalSettings = 
-            "There is a setting on the General Settings which says to use global settings forall the settings.  Additionally, " + 
+            "There is a setting on the General Settings which says to use global settings for all the settings.  Additionally, " + 
             "each settings section also has an option to use global settings for that section.\n\n" +
             "This gives you the ability to have some of the options used for all the games, and to " +
             "have customized settings for specific games\n\n" +
@@ -92,27 +92,27 @@ namespace KaptainsLogNamespace
         string generalSettings = "The <color=yellow><B>General Settings</B></color> column in the first settings page contains general options related to the mod as a whole.\n\n" +
             "This is where you can disable this Intro/Help window, as well as select using the Blizzy toolbar if it is available.\n\n" +
             "You also specify the general settings about the screenshots, " +
-            "such as where they should be saved, where the thunbnails should be saved, size of thumbnail, delay before taking the screenshot, etc.\n\n" +
-            "The option  <B>Use Bilinear filtering for thumbnail</b> defaults to on, if your thumbnails aren't clear, try turning it off.\n\n" ;
+            "such as where they should be saved, where the thumbnails should be saved, size of thumbnail, delay before taking the screenshot, etc.\n\n" +
+            "The option <B>Use Bilinear filtering for thumbnail</b> defaults to on, if your thumbnails aren't clear, try turning it off.\n\n" ;
 
         string initialDisplay = "The <color=yellow><B>Initial Display Columns</B></color> column in the first settings page specifies which columns should be displayed in the main window when it is first shown.\n\n" +
-            "You can easily change which columsn are shown during the game, but these are the initial columns shown when starting the game.  You can change which columns are shown at the start on this window.";
+            "You can easily change which columns are shown during the game, but these are the initial columns shown when starting the game.  You can change which columns are shown at the start on this window.";
 
         string misc = "The <color=yellow><B>Misc</B></color> column in the first settings page contains limits on filters, and options for the Screen Messages.\n\n" +
             "The <B>Filter Limits</B> are used as an upper limit when specifying an altitude or speed filter.\n\n" +
             "The <b>Screen Message Log</b> options control the maximum messages which are displayed.  The <B>Keep screen message for</b> specifies how long they are kept before being removed.";
 
         string captureSettings = "The <color=yellow><B>Event Capture Settings</B></color> column in the second settings page specifies which events will be captured and logged.\n\n" +
-            "You can specify <b>Log all events</b> which will enable logging on all the available events.  Selecting the <b>Unset all event log settings</b> will disable all of them.  Note that this button does not stay enabled, once all the events are disabled, this option is also disabled";
+            "You can specify <b>Log all events</b> which will enable logging on all the available events.  Selecting the <b>Unset all event log settings</b> will disable all of them.  Note that this button does not stay enabled; once all the events are disabled, this option is also disabled";
 
 
         string pauseSettings = "The <color=yellow><B>Event Pause Settings</B></color> column in the second settings page specifies which events which, when captured, will pause the game and open a window to add notes.\n\n" +
-            "You can always go in and edit a log entry after it's been logged.  This section has the same options to enable all the pauses, and unset all the pauses as the Capture settings window.  Unless you wish to be constanly interrupt, you should only enable pausing for those events which are especially important";
+            "You can always go in and edit a log entry after it's been logged.  This section has the same options to enable all the pauses, and unset all the pauses as the Capture settings window.  Unless you wish to be constanly interrupt, you should only enable pausing for those events which are especially important.";
 
-        string screenshotSettings = "The <color=yellow><B>Event Screenshot Settings</B></color> column in the second settings page specifies which events which," + 
+        string screenshotSettings = "The <color=yellow><B>Event Screenshot Settings</B></color> column in the second settings page specifies which events which, " + 
             "when captured, will have a screenshot taken.\n\n" +
             "This section has the same options to enable all the screencaptures, and unset all the screencaptures as the Capture settings window.\n\n" + 
-            "There are three possible values for each setting:  <color=yellow><B>No_Screenshot</B></color>, <color=yellow><B>With_GUI</B></color>, and <color=yellow><B>Without_GUI</B></color>\n\n" +
+            "There are three possible values for each setting: <color=yellow><B>No_Screenshot</B></color>, <color=yellow><B>With_GUI</B></color>, and <color=yellow><B>Without_GUI</B></color>\n\n" +
             "At the top are three options to set all the screenshot options, these three will set all the screenshot settings to the same value, and you can then " +
             " change individual settings.\n\n" +
             "When a screenshot is taken without the GUI, the screen flickers while the game hides the GUI, takes the screenshot and then restores the GUI.  This can both be " +

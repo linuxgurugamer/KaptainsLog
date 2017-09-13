@@ -312,7 +312,7 @@ namespace KaptainsLogNamespace
 
         void onGameStateCreated(Game g)
         {
-            //Log.Info("onGameStateCreated");
+            Log.Info("onGameStateCreated");
             utils.LoadLogs();
             KLScenario.logsLoaded = true;
             // InitDisplayFields();
@@ -648,12 +648,12 @@ namespace KaptainsLogNamespace
             }
             else
 #endif
-            {
+            //{
                 //if (e.isKey )
                 //    escapePressed = (e.keyCode == KeyCode.Escape && e.type == UnityEngine.EventType.KeyDown);
                 // Log.Info("escapePressed: " + escapePressed.ToString());
                 // escapePressed = GameSettings.PAUSE.GetKeyDown();
-            }
+            //}
 
 
             if (visibleByToolbar)
@@ -963,7 +963,9 @@ namespace KaptainsLogNamespace
         int pauseCnt = 0;
         //int closeCnt = 0;
 
-        const int PAUSECOUNT = 10;
+
+#if false
+             const int PAUSECOUNT = 10;
 
         PauseMenu originalMenu = null;
 
@@ -973,7 +975,7 @@ namespace KaptainsLogNamespace
                 return;
             if (originalMenu == null)
                 return;
-
+#if false
             if (showStdPauseMenu && pauseCnt > 0)
             {
                 pauseCnt--;
@@ -984,6 +986,7 @@ namespace KaptainsLogNamespace
                 }
                 return;
             }
+
             if (pauseCnt > 0)
             {
                 pauseCnt--;
@@ -997,7 +1000,7 @@ namespace KaptainsLogNamespace
                 }
                 return;
             }
-
+#endif
 
 #if false
             if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().overridePause && HighLogic.LoadedSceneIsFlight)
@@ -1064,8 +1067,9 @@ namespace KaptainsLogNamespace
                 }
             }
 #endif
-        }
 
+        }
+#endif
         ScreenshotOptions eventScreenshot(LogEntry le)
         {
             ScreenshotOptions doScreenshot = ScreenshotOptions.No_Screenshot;
@@ -1140,11 +1144,12 @@ namespace KaptainsLogNamespace
         public double screenshotAfter;
         bool guiHidden4Screenshot = false;
 
-        public void FixedUpdate()
+        public void LateUpdate()
         {
+#if false
             if (originalMenu == null)
                 originalMenu = GameObject.FindObjectOfType(typeof(PauseMenu)) as PauseMenu;
-
+#endif
             if (utils.le == null || utils.leQ == null)
                 return;
 

@@ -961,6 +961,7 @@ namespace KaptainsLogNamespace
         {
             if (HighLogic.SaveFolder == "DestructiblesTest" || HighLogic.SaveFolder == "")
                 return;
+            Log.Info("LoadLogs");
             ConfigNode logFile;
             ConfigNode log;
             klw.SAVE_PATH = KaptainsLog.ROOT_PATH + "saves/" + HighLogic.SaveFolder;
@@ -1052,10 +1053,10 @@ namespace KaptainsLogNamespace
 
         public void SaveLogs()
         {
-            Log.Info("SaveLogs");
             if (HighLogic.SaveFolder == "DestructiblesTest" || HighLogic.SaveFolder == "")
                 return;
 
+            Log.Info("SaveLogs");
             ConfigNode logFile = new ConfigNode();
             ConfigNode log = new ConfigNode();
             logFile.SetNode(klw.NODENAME, log, true);
