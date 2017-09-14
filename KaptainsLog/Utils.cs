@@ -178,7 +178,7 @@ namespace KaptainsLogNamespace
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnVesselRollout)
                 return;
             string s = "Vessel \"" + sc.shipName + "\" rolled out of " + sc.shipFacility;
-            CreateLogEntry(Events.OnVesselRollout, false, s, "");
+            CreateLogEntry(Events.OnVesselRollout, HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnVesselRollout, s, "");
         }
 
         void OnPartUpgradePurchased(PartUpgradeHandler.Upgrade upgrade)
@@ -436,6 +436,18 @@ namespace KaptainsLogNamespace
             return crew;
         }
 
+        public string getCurrentCrew(List<CrewMember> crewList)
+        {
+            string crew = "";
+            foreach (var s in crewList)
+            {
+                if (crew != "")
+                    crew += ", ";
+                crew += s.name;
+            }
+            return crew;
+        }
+
         void onLaunch(EventReport evt)
         {
             Log.Info("onLaunch 0, LoadedScene: " + HighLogic.LoadedScene.ToString());
@@ -446,7 +458,7 @@ namespace KaptainsLogNamespace
                 return;
             //if (!klw.pauseActivated && Planetarium.GetUniversalTime() > klw.lastNoteTime && HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnLaunch)
             //    klw.activatePause();
-            CreateLogEntry(Events.Launch, HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnLaunch, "Vessel launched, current cre: " + getCurrentCrew());
+            CreateLogEntry(Events.Launch, HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnLaunch, "Vessel launched, current crew: " + getCurrentCrew());
         }
 
         void onStageSeperation(EventReport evt)

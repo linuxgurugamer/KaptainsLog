@@ -1,5 +1,9 @@
 TODO list
 
+misresport by Kottabos: Fix screenshot save when not saving in mod's save dir
+
+On main window, "Make Log Entry" not working
+
 
 future updates
 	Move intro window into KSPedia

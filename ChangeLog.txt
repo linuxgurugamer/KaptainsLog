@@ -117,3 +117,12 @@
 0.0.1.16-rc2
 		Fixed some typos on the Intro screen
 		Fixed performance issue in SpaceCenter and Editor
+
+0.1.0
+		Initial full release
+		Added screenshot on vessel rollout
+		Added pause on vessel rollout
+		Fixed "Add Crew" button, so that it will add the correct crew even for an older log entry
+		Makde "Add Crew" button not visible if no crew to add
+		Fixed the global setting of screenshot values (some were hardcoded to the gui option)
+		Fixed bug where thumbnail wouldn't be shown for the last entry in the log

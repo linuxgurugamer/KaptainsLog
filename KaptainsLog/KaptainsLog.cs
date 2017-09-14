@@ -1081,6 +1081,9 @@ namespace KaptainsLogNamespace
                 case Events.PartDied:
                     doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnPartDie;
                     break;
+                case Events.OnVesselRollout:
+                    doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselRollout;
+                    break;
                 case Events.Launch:
                     doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnLaunch;
                     Log.Info("Events.Launch, doScreenshot: " + doScreenshot.ToString());

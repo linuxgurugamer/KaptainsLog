@@ -274,7 +274,7 @@ namespace KaptainsLogNamespace
                             }
                             else
                             {
-                                if (i < imgCacheList.Count - 1 && imgCacheList[i].image != null)
+                                if (i <= imgCacheList.Count - 1 && imgCacheList[i].image != null)
                                 {
 
                                     if (GUILayout.Button(imgCacheList[i].image, GUIStyle.none, GUILayout.Width(imgCacheList[i].image.width), GUILayout.Height(imgCacheList[i].image.height)))
@@ -285,7 +285,10 @@ namespace KaptainsLogNamespace
                                     }
                                 }
                                 else
+                                {
+                                    Log.Info("i: " + i.ToString() + "  imgCacheList.Count: " + imgCacheList.Count.ToString());
                                     GUILayout.Box("n/a", GUILayout.Width(colWidth[d]));
+                                }
                             }
                         }
 

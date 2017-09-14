@@ -92,9 +92,14 @@ namespace KaptainsLogNamespace
                 }
                 GUILayout.FlexibleSpace();
             }
-            if (GUILayout.Button("Add Crew", GUILayout.Width(90)))
+            if (utils.le.crewList.Count > 0)
             {
-                notesText += utils.getCurrentCrew();
+                if (GUILayout.Button("Add Crew", GUILayout.Width(90)))
+                {
+                    notesText += utils.getCurrentCrew(utils.le.crewList);
+
+
+                }
             }
             GUILayout.FlexibleSpace();
             var b1 = GUILayout.Button("Cancel", GUILayout.Width(90));
