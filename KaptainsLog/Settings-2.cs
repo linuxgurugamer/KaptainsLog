@@ -11,6 +11,95 @@ using UnityEngine;
 
 namespace KaptainsLogNamespace
 {
+    class ManualEntrySelectHotKey : MonoBehaviour
+    {
+        public static ManualEntrySelectHotKey Instance;
+
+        public bool active = false;
+        public bool completed = false;
+        KeyCode _lastKeyPressed = KeyCode.None;
+        public KeyCode hotkey = KeyCode.None;
+        internal bool keyOK;
+        public float lastTimeTic = 0;
+        private Rect settingsRect = new Rect(200, 200, 350, 150);
+
+        void Start()
+        {
+            Log.Info("ManualEntrySelectHotKey.Start");
+            Instance = this;
+        }
+        public void EnableWindow(bool b = true)
+        {
+            if (b)
+            {
+                if (!active)
+                {
+                    _lastKeyPressed = KeyCode.None;
+                    active = true;
+                    completed = false;
+                    keyOK = false;
+                }
+            }
+            else
+            {
+                completed = false;
+            }
+        }
+        void OnGUI()
+        {
+            if (!active)
+                return;
+
+            if (Time.realtimeSinceStartup - lastTimeTic > 0.25)            {                active = false;                return;            }
+
+            // The settings are only available in the space center
+            GUI.skin = HighLogic.Skin;
+            settingsRect = GUILayout.Window("HotKeySettings".GetHashCode(),                                            settingsRect,                                            SettingsWindowFcn,                                            "Manual Entry Hotkey",                                            GUILayout.ExpandWidth(true),
+                                            GUILayout.ExpandHeight(true));
+        }
+
+        void Update()
+        {
+            if (Event.current.isKey)
+            {
+                _lastKeyPressed = Event.current.keyCode;
+            }
+        }
+
+        void SettingsWindowFcn(int windowID)
+        {            GUILayout.BeginHorizontal();            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();            GUILayout.Label("Enter desired hotkey: ");
+            GUILayout.Label(hotkey.ToString(), GUI.skin.textField);
+
+            if (_lastKeyPressed != KeyCode.None)
+            {
+                hotkey = _lastKeyPressed;
+                _lastKeyPressed = KeyCode.None;
+            }
+            // look at EEX
+
+            GUILayout.EndHorizontal();
+
+            GUILayout.BeginHorizontal();            GUILayout.FlexibleSpace();            GUILayout.Label("(type the key you want to use,");
+            GUILayout.FlexibleSpace();            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();            GUILayout.FlexibleSpace();            GUILayout.Label("press the OK button when complete)");            GUILayout.FlexibleSpace();            GUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();            if (GUILayout.Button("Cancel", GUILayout.Width(60)))            {
+                active = false;
+                completed = true;
+                keyOK = false;
+            }
+            if (GUILayout.Button("OK", GUILayout.Width(60)))            {
+                active = false;
+                completed = true;
+                keyOK = true;
+            }
+            GUILayout.FlexibleSpace();            GUILayout.EndHorizontal();            GUI.DragWindow();
+        }
+
+    }
+
+
     public class KL_12 : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Initial Display Columns"; } }
@@ -50,6 +139,8 @@ namespace KaptainsLogNamespace
         public bool notes = false;
         [GameParameters.CustomParameterUI("Thumbnail")]
         public bool thumbnail = true;
+        [GameParameters.CustomParameterUI("Tag")]
+        public bool tag = true;
 
         public bool screenshot = false;
         public bool lastItem = false;
@@ -74,6 +165,7 @@ namespace KaptainsLogNamespace
             settings.AddValue("thumbnail", thumbnail);
             settings.AddValue("screenshot", screenshot);
             settings.AddValue("lastItem", lastItem);
+            settings.AddValue("tag", tag);
 
             GlobalSettings.UpdateNode("KL_12", settings);
 
@@ -103,6 +195,7 @@ namespace KaptainsLogNamespace
             thumbnail = Boolean.Parse(Utils.SafeLoad(settings.GetValue("thumbnail"), "true"));
             screenshot = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshot"), "true"));
             lastItem = Boolean.Parse(Utils.SafeLoad(settings.GetValue("lastItem"), "true"));
+            tag = Boolean.Parse(Utils.SafeLoad(settings.GetValue("tag"), "false"));
         }
 
 
@@ -139,6 +232,8 @@ namespace KaptainsLogNamespace
             return null;
         }
     }
+
+
     public class KL_13 : GameParameters.CustomParameterNode
     {
         public override string Title { get { return "Misc"; } }
@@ -156,19 +251,40 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomStringParameterUI("Filter Limits", autoPersistance = true, lines = 2, title = "Filter Limits", toolTip = "Specifiy limits on some filters")]
         public string UIstring = "";
 
-        [GameParameters.CustomFloatParameterUI("Upper limit on altitude filter", minValue = 100.0f, maxValue = 500000.0f)]
+        [GameParameters.CustomFloatParameterUI("Upper limit on altitude filter", minValue = 100.0f, maxValue = 500000.0f,
+            toolTip = "Used in filter slider only")]
         public double altitudeFilterMax = 300000f;
 
-        [GameParameters.CustomFloatParameterUI("Upper limit on speed filter", minValue = 100.0f, maxValue = 5000.0f)]
+        [GameParameters.CustomFloatParameterUI("Upper limit on speed filter", minValue = 100.0f, maxValue = 5000.0f,
+            toolTip = "Used in filter slider only")]
         public double speedFilterMax = 2500;
 
 
-        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "")]
+        [GameParameters.CustomStringParameterUI("", autoPersistance = true, lines = 2, title = "")]
+        public string UIstring1 = "";
+
+        [GameParameters.CustomFloatParameterUI("Landed stability time", minValue = 0.5f, maxValue = 5.0f,
+            toolTip = "How long a vessel needs to be stable after landing before being considered <b>Landed</b>")]
+        public double landedStabilityTime = 1;
+
+        [GameParameters.CustomFloatParameterUI("Min altitude to be flying", minValue = 25.0f, maxValue = 500.0f,
+            toolTip = "Minimum altitude to be considered flying")]
+        public double minFlyingAltitude = 50;
+        [GameParameters.CustomFloatParameterUI("Min flying time ", minValue = 1.0f, maxValue = 50.0f,
+            toolTip = "Minimum time not touching the ground to be considered flying")]
+        public double minFlyingTime = 10;
+
+        [GameParameters.CustomParameterUI("Specify Manual Log Entry Key",
+            toolTip ="initial default is letter 'O'")]
+        public bool getLogEntryKey = false;
+
+        public KeyCode ManualEntryKeycode = KeyCode.O;
+
+
+        [GameParameters.CustomStringParameterUI("", autoPersistance = true, lines = 2, title = "")]
         public string UIstring2 = "";
-        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "Screen Message Log", toolTip = "Options for the screen messages")]
+        [GameParameters.CustomStringParameterUI("", autoPersistance = true, lines = 2, title = "<b>Screen Message Log</b>")]
         public string UIstring3 = "";
-        [GameParameters.CustomStringParameterUI("Screen Message Log", autoPersistance = true, lines = 2, title = "")]
-        public string UIstring4 = "";
 
 
         [GameParameters.CustomIntParameterUI("Max screen messages to display", minValue = 1, maxValue = 50,
@@ -195,7 +311,7 @@ namespace KaptainsLogNamespace
             settings.AddValue("maxMsgs", maxMsgs);
             settings.AddValue("expireMsgsAfter", expireMsgsAfter);
             settings.AddValue("hideWhenNoMsgs", hideWhenNoMsgs);
-
+            settings.AddValue("ManualEntryKeycode", ManualEntryKeycode);
             GlobalSettings.UpdateNode("KL_13", settings);
 
         }
@@ -214,6 +330,9 @@ namespace KaptainsLogNamespace
             maxMsgs = Int32.Parse(Utils.SafeLoad(settings.GetValue("maxMsgs"), "20"));
             expireMsgsAfter = Int32.Parse(Utils.SafeLoad(settings.GetValue("expireMsgsAfter"), "20"));
             hideWhenNoMsgs = Boolean.Parse(Utils.SafeLoad(settings.GetValue("hideWhenNoMsgs"), "false"));
+            string s = settings.GetValue("ManualEntryKeycode");
+            if (s != null)
+                ManualEntryKeycode = (KeyCode)Enum.Parse(typeof(KeyCode), s);
         }
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
@@ -232,6 +351,7 @@ namespace KaptainsLogNamespace
             return MMCheck.EnabledForSave;
         }
 
+
         public override bool Interactible(MemberInfo member, GameParameters parameters)
         {
             if (MMCheck.atMainMenu && MMCheck.useGlobalSettings4All)
@@ -240,7 +360,37 @@ namespace KaptainsLogNamespace
                 return true;
             if (MMCheck.atMainMenu && MMCheck.useGlobalSettings4Misc)
                     return false;
-            
+
+            if (getLogEntryKey)            {                // Use MapView.MapCamera to get a gameObject                ManualEntrySelectHotKey gui = MapView.MapCamera.gameObject.GetComponent<ManualEntrySelectHotKey>();
+                if (gui == null)
+                {
+                    Log.Info("Adding ManualEntrySelectHotKey");
+                    gui = MapView.MapCamera.gameObject.AddComponent<ManualEntrySelectHotKey>();
+                }
+                if (ManualEntrySelectHotKey.Instance != null)
+                {
+                    if (ManualEntrySelectHotKey.Instance.completed)
+                    {
+                        getLogEntryKey = false;
+                        ManualEntrySelectHotKey.Instance.EnableWindow(false);
+                        if (ManualEntrySelectHotKey.Instance.keyOK)
+                            ManualEntryKeycode = ManualEntrySelectHotKey.Instance.hotkey;
+                        UnityEngine.Object.Destroy(gui);
+                        gui = null;
+                        ManualEntrySelectHotKey.Instance = null;
+                    }
+                    else
+                    {
+                        ManualEntrySelectHotKey.Instance.lastTimeTic = Time.realtimeSinceStartup;
+                        if (!ManualEntrySelectHotKey.Instance.active)
+                        {
+                            ManualEntrySelectHotKey.Instance.EnableWindow();
+                            ManualEntrySelectHotKey.Instance.hotkey = ManualEntryKeycode;
+                        }
+                    }
+                }
+                return true;
+            }
             return true;
         }
 

@@ -64,14 +64,14 @@ namespace KaptainsLogNamespace
             if (settingsFile != null && allSettings != null)
             {
                 settingsFile.Save(PLUGINDATA);
-                ScreenMessages.PostScreenMessage("Global settings saved");
+               // ScreenMessages.PostScreenMessage("Global settings saved");
             }
         }
 
         public static void LoadSettings()
         {
             Log.Info("Global settings loaded: " + PLUGINDATA);
-            ScreenMessages.PostScreenMessage("Global settings loaded");
+            //ScreenMessages.PostScreenMessage("Global settings loaded");
             settingsFile = ConfigNode.Load(PLUGINDATA);
 
             if (settingsFile == null)

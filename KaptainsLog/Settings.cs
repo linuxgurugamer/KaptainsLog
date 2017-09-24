@@ -260,13 +260,19 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("Pause on all events")]
         public bool pauseOnAllEvents = false;
 
-        [GameParameters.CustomParameterUI("Unset all screenshot settings")]
+        [GameParameters.CustomParameterUI("Unset all pause settings")]
         public bool unsetSettings = false;
 
 
 
         [GameParameters.CustomParameterUI("Pause on Vessel Rollout")]
         public bool pauseOnVesselRollout = false;
+
+        [GameParameters.CustomParameterUI("Pause on landing")]
+        public bool pauseOnVesselLanded = false;
+
+        [GameParameters.CustomParameterUI("Pause on splashdown")]
+        public bool pauseOnVesselSplashdown = false;
 
         [GameParameters.CustomParameterUI("Pause on crash or splashdown")]
         public bool pauseOnCrashSplashdown = false;
@@ -328,6 +334,8 @@ namespace KaptainsLogNamespace
 
             
             settings.AddValue("pauseOnVesselRollout", pauseOnVesselRollout);
+            settings.AddValue("pauseOnVesselLanded", pauseOnVesselLanded);
+            settings.AddValue("pauseOnVesselSplashdown", pauseOnVesselSplashdown);
             settings.AddValue("pauseOnCrashSplashdown", pauseOnCrashSplashdown);
             settings.AddValue("pauseOnVesselRecovered", pauseOnVesselRecovered);
             settings.AddValue("pauseOnLaunch", pauseOnLaunch);
@@ -361,6 +369,8 @@ namespace KaptainsLogNamespace
             }
 
             pauseOnVesselRollout = Boolean.Parse(Utils.SafeLoad(settings.GetValue("pauseOnVesselRollout"), "false"));
+            pauseOnVesselLanded = Boolean.Parse(Utils.SafeLoad(settings.GetValue("pauseOnVesselLanded"), "false"));
+            pauseOnVesselSplashdown = Boolean.Parse(Utils.SafeLoad(settings.GetValue("pauseOnVesselSplashdown"), "false"));
             pauseOnCrashSplashdown = Boolean.Parse(Utils.SafeLoad(settings.GetValue("pauseOnCrashSplashdown"), "false"));
             pauseOnVesselRecovered = Boolean.Parse(Utils.SafeLoad(settings.GetValue("pauseOnVesselRecovered"), "false"));
             pauseOnLaunch = Boolean.Parse(Utils.SafeLoad(settings.GetValue("pauseOnLaunch"), "false"));
@@ -381,49 +391,37 @@ namespace KaptainsLogNamespace
             pauseOnVesselOrbitEscaped = Boolean.Parse(Utils.SafeLoad(settings.GetValue("pauseOnVesselOrbitEscaped"), "false"));
         }
 
+        void SetAllPauseOptions(bool b)
+        {
+            pauseOnVesselRollout = b;
+            pauseOnVesselLanded = b;
+            pauseOnVesselSplashdown = b;
+            pauseOnCrashSplashdown = b;
+            pauseOnVesselRecovered = b;
+            pauseOnLaunch = b;
+            pauseOnStageSeparation = b;
+            pauseOnStageActivate = b;
+            pauseOnPartDie = b;
+            pauseOnDisconnectedPartDie = b;
+            pauseOnPartCouple = b;
+            pauseOnVesselWasModified = b;
+            pauseOnVesselCrewWasModified = b;
+            pauseOnVesselOrbitClosed = b;
+            pauseOnVesselOrbitEscaped = b;
+            pauseOnCrewKilled = b;
+            pauseOnCrewTransferred = b;
+            pauseOnDominantBodyChange = b;
+            pauseOnFlagPlant = b;
+            pauseOnCrewOnEVA = b;
+            pauseOnVesselOrbitEscaped = b;
+        }
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
-            pauseOnVesselRollout = false;
-            pauseOnCrashSplashdown = false;
-            pauseOnVesselRecovered = false;
-            pauseOnLaunch = false;
-            pauseOnStageSeparation = false;
-            pauseOnStageActivate = false;
-            pauseOnPartDie = false;
-            pauseOnDisconnectedPartDie = false;
-            pauseOnPartCouple = false;
-            pauseOnVesselWasModified = false;
-            pauseOnVesselCrewWasModified = false;
-            pauseOnVesselOrbitClosed = false;
-            pauseOnVesselOrbitEscaped = true;
-            pauseOnCrewKilled = false;
-            pauseOnCrewTransferred = false;
-            pauseOnDominantBodyChange = false;
-            pauseOnFlagPlant = false;
-            pauseOnCrewOnEVA = false;
-            pauseOnVesselOrbitEscaped = false;
+            SetAllPauseOptions(false);
         }
         void enableAllPause()
         {
-            pauseOnVesselRollout = true;
-            pauseOnCrashSplashdown = true;
-            pauseOnVesselRecovered = true;
-            pauseOnLaunch = true;
-            pauseOnStageSeparation = true;
-            pauseOnStageActivate = true;
-            pauseOnPartDie = true;
-            pauseOnDisconnectedPartDie = true;
-            pauseOnPartCouple = true;
-            pauseOnVesselWasModified = true;
-            pauseOnVesselCrewWasModified = true;
-            pauseOnVesselOrbitClosed = true;
-            pauseOnVesselOrbitEscaped = true;
-            pauseOnCrewKilled = true;
-            pauseOnCrewTransferred = true;
-            pauseOnDominantBodyChange = true;
-            pauseOnFlagPlant = true;
-            pauseOnCrewOnEVA = true;
-            pauseOnVesselOrbitEscaped = true;
+            SetAllPauseOptions(true);
         }
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
@@ -505,6 +503,9 @@ namespace KaptainsLogNamespace
 
         [GameParameters.CustomParameterUI("Log on vessel rollout")]
         public bool logOnVesselRollout = true;
+
+        [GameParameters.CustomParameterUI("Log on landing")]
+        public bool logOnVesselLanded = true;
 
         [GameParameters.CustomParameterUI("Log on crash or splashdown")]
         public bool logOnCrashSplashdown = true;
@@ -605,6 +606,7 @@ namespace KaptainsLogNamespace
             ConfigNode settings = new ConfigNode("KL_22");
 
             settings.AddValue("logAllEvents", logAllEvents);
+            settings.AddValue("logOnVesselLanded", logOnVesselLanded);
             settings.AddValue("logOnCrashSplashdown", logOnCrashSplashdown);
             settings.AddValue("logOnVesselRecovered", logOnVesselRecovered);
             settings.AddValue("logOnLaunch", logOnLaunch);
@@ -651,6 +653,7 @@ namespace KaptainsLogNamespace
             }
             
             logAllEvents = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logAllEvents"), "true"));
+            logOnVesselLanded = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnVesselLanded"), "true"));
             logOnCrashSplashdown = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnCrashSplashdown"), "true"));
             logOnVesselRecovered = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnVesselRecovered"), "true"));
             logOnLaunch = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnLaunch"), "true"));
@@ -683,39 +686,45 @@ namespace KaptainsLogNamespace
             logOnProgressComplete = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnProgressComplete"), "true"));
         }
 
+        void SetAllLogOptions(bool b)
+        {
+            logAllEvents = b;
+            logOnVesselLanded = b;
+            logOnCrashSplashdown = b;
+            logOnVesselRecovered = b;
+            logOnLaunch = b;
+            logOnStageSeparation = b;
+            logOnStageActivate = b;
+            logOnPartDie = b;
+            logOnDisconnectedPartDie = b;
+            logOnPartCouple = b;
+            logOnVesselWasModified = b;
+            logOnVesselCrewWasModified = b;
+            logOnVesselOrbitClosed = b;
+            logOnVesselOrbitEscaped = b;
+            logOnCrewKilled = b;
+            logOnCrewTransferred = b;
+            logOnDominantBodyChange = b;
+            logOnFlagPlant = b;
+            logOnCrewOnEVA = b;
+            logOnScienceChanged = b;
+            logOnScienceReceived = b;
+            logOnOrbitalSurveyCompleted = b;
+            logOnReputationChanged = b;
+            logOnTriggeredDataTransmission = b;
+            logOnVesselRollout = b;
+            logOnPartUpgradePurchased = b;
+            logOnPartPurchased = b;
+            logOnFundsChanged = b;
+            logOnKerbalPassedOutFromGeeForce = b;
+            logOnFlightLogRecorded = b;
+            logOnProgressAchieve = b;
+            logOnProgressComplete = b;
+        }
+
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
-            logAllEvents = true;
-            logOnCrashSplashdown = true;
-            logOnVesselRecovered = true;
-            logOnLaunch = true;
-            logOnStageSeparation = true;
-            logOnStageActivate = true;
-            logOnPartDie = true;
-            logOnDisconnectedPartDie = true;
-            logOnPartCouple = true;
-            logOnVesselWasModified = true;
-            logOnVesselCrewWasModified = true;
-            logOnVesselOrbitClosed = true;
-            logOnVesselOrbitEscaped = true;
-            logOnCrewKilled = true;
-            logOnCrewTransferred = true;
-            logOnDominantBodyChange = true;
-            logOnFlagPlant = true;
-            logOnCrewOnEVA = true;
-            logOnScienceChanged = true;
-            logOnScienceReceived = true;
-            logOnOrbitalSurveyCompleted = true;
-            logOnReputationChanged = true;
-            logOnTriggeredDataTransmission = true;
-            logOnVesselRollout = true;
-            logOnPartUpgradePurchased = true;
-            logOnPartPurchased = true;
-            logOnFundsChanged = true;
-            logOnKerbalPassedOutFromGeeForce = true;
-            logOnFlightLogRecorded = true;
-            logOnProgressAchieve = true;
-            logOnProgressComplete = true;
+            SetAllLogOptions(true);
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
@@ -743,37 +752,7 @@ namespace KaptainsLogNamespace
                 SetDifficultyPreset(GameParameters.Preset.Normal);
             if (unsetSettings)
             {
-                logOnCrashSplashdown = false;
-                logOnVesselRecovered = false;
-                logOnLaunch = false;
-                logOnStageSeparation = false;
-                logOnStageActivate = false;
-                logOnPartDie = false;
-                logOnDisconnectedPartDie = false;
-                logOnPartCouple = false;
-                logOnVesselWasModified = false;
-                logOnVesselCrewWasModified = false;
-                logOnVesselOrbitClosed = false;
-                logOnVesselOrbitEscaped = false;
-                logOnCrewKilled = false;
-                logOnCrewTransferred = false;
-                logOnDominantBodyChange = false;
-                logOnFlagPlant = false;
-                logOnCrewOnEVA = false;
-                logOnScienceChanged = false;
-                logOnScienceReceived = false;
-                logOnOrbitalSurveyCompleted = false;
-                logOnReputationChanged = false;
-                logOnTriggeredDataTransmission = false;
-                logOnVesselRollout = false;
-                logOnPartUpgradePurchased = false;
-                logOnPartPurchased = false;
-                logOnFundsChanged = false;
-                logOnKerbalPassedOutFromGeeForce = false;
-                logOnFlightLogRecorded = false;
-                logOnProgressAchieve = false;
-                logOnProgressComplete = false;
-                unsetSettings = false;
+                SetAllLogOptions(false);
             }
             return !logAllEvents;
             //            return true; //otherwise return true
@@ -822,7 +801,13 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("<color=yellow><b>Vessel Rollout (EVA)</b></color>")]
         public ScreenshotOptions screenshotOnVesselRollout = ScreenshotOptions.With_Gui;
 
-        [GameParameters.CustomParameterUI("<color=yellow><b>Land, splashdown, crash</b></color>")]
+        [GameParameters.CustomParameterUI("<color=yellow><b>Land</b></color>")]
+        public ScreenshotOptions screenshotOnLanded = ScreenshotOptions.With_Gui;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Splashdown</b></color>")]
+        public ScreenshotOptions screenshotOnSplashdown = ScreenshotOptions.With_Gui;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Crash</b></color>")]
         public ScreenshotOptions screenshotOnCrashSplashdown = ScreenshotOptions.With_Gui;
 
         [GameParameters.CustomParameterUI("<color=yellow><b>Vessel recovered</b></color>")]
@@ -884,7 +869,9 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("<color=yellow><b>Progress Completion</b></color>")]
         public ScreenshotOptions screenshotOnProgressComplete = ScreenshotOptions.With_Gui;
 
-  
+        [GameParameters.CustomParameterUI("<color=yellow><b>Manual Entry</b></color>")]
+        public ScreenshotOptions screenshotOnManualEntry;
+
         public void SaveGlobalSettingsNode()
         {
             Log.Info("KL_23 SaveGlobalSettingsNode");
@@ -892,6 +879,8 @@ namespace KaptainsLogNamespace
             ConfigNode settings = new ConfigNode("KL_23");
 
             //settings.AddValue("screenshotOnAllEvents", screenshotOnAllEvents);
+            settings.AddValue("screenshotOnLanded", screenshotOnLanded);
+            settings.AddValue("screenshotOnSplashdown", screenshotOnSplashdown);
             settings.AddValue("screenshotOnCrashSplashdown", screenshotOnCrashSplashdown);
             settings.AddValue("screenshotOnVesselRecovered", screenshotOnVesselRecovered);
             settings.AddValue("screenshotOnLaunch", screenshotOnLaunch);
@@ -912,6 +901,7 @@ namespace KaptainsLogNamespace
             settings.AddValue("screenshotOnProgressAchieve", screenshotOnProgressAchieve);
             settings.AddValue("screenshotOnProgressComplete", screenshotOnProgressComplete);
             settings.AddValue("screenshotOnVesselRollout", screenshotOnVesselRollout);
+            settings.AddValue("screenshotOnVesselRollout", screenshotOnManualEntry);
 
             GlobalSettings.UpdateNode("KL_23", settings);
 
@@ -929,6 +919,8 @@ namespace KaptainsLogNamespace
 
 
             //screenshotOnAllEvents = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshotOnAllEvents"), "true"));
+            screenshotOnLanded = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions), Utils.SafeLoad(settings.GetValue("screenshotOnLanded"), "With_Gui"));
+            screenshotOnSplashdown = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions), Utils.SafeLoad(settings.GetValue("screenshotOnSplashdown"), "With_Gui"));
             screenshotOnCrashSplashdown = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnCrashSplashdown"), "With_Gui"));
             screenshotOnVesselRecovered = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnVesselRecovered"), "With_Gui"));
             screenshotOnLaunch = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnLaunch"), "With_Gui"));
@@ -949,6 +941,7 @@ namespace KaptainsLogNamespace
             screenshotOnProgressAchieve = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions),Utils.SafeLoad(settings.GetValue("screenshotOnProgressAchieve"), "With_Gui"));
             screenshotOnProgressComplete = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions), Utils.SafeLoad(settings.GetValue("screenshotOnProgressComplete"), "With_Gui"));
             screenshotOnVesselRollout = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions), Utils.SafeLoad(settings.GetValue("screenshotOnVesselRollout"), "With_Gui"));
+            screenshotOnManualEntry = (ScreenshotOptions)Enum.Parse(typeof(ScreenshotOptions), Utils.SafeLoad(settings.GetValue("screenshotOnManualEntry"), "With_Gui"));
         }
 
 
@@ -957,6 +950,8 @@ namespace KaptainsLogNamespace
         void SetAllScreenshotOptions(ScreenshotOptions s)
         {
             //screenshotOnAllEvents = true;
+            screenshotOnLanded = s;
+            screenshotOnSplashdown = s;
             screenshotOnCrashSplashdown = s;
             screenshotOnVesselRecovered = s;
             screenshotOnLaunch = s;
@@ -979,7 +974,9 @@ namespace KaptainsLogNamespace
             screenshotOnProgressAchieve = s;
             screenshotOnProgressComplete = s;
             screenshotOnVesselRollout = s;
+            screenshotOnManualEntry = s;
         }
+
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
         {
@@ -1020,29 +1017,7 @@ namespace KaptainsLogNamespace
             if (disableAllScreenshots)
             {
                 disableAllScreenshots = false;
-                screenshotOnCrashSplashdown = ScreenshotOptions.No_Screenshot;
-                screenshotOnVesselRecovered = ScreenshotOptions.No_Screenshot;
-                screenshotOnLaunch = ScreenshotOptions.No_Screenshot;
-                screenshotOnStageSeparation = ScreenshotOptions.No_Screenshot;
-                screenshotOnStageActivate = ScreenshotOptions.No_Screenshot;
-                screenshotOnPartDie = ScreenshotOptions.No_Screenshot;
-                //screenshotOnDisconnectedPartDie = false;
-                screenshotOnPartCouple = ScreenshotOptions.No_Screenshot;
-                screenshotOnVesselWasModified = ScreenshotOptions.No_Screenshot;
-                screenshotOnVesselCrewWasModified = ScreenshotOptions.No_Screenshot;
-                screenshotOnVesselOrbitClosed = ScreenshotOptions.No_Screenshot;
-                screenshotOnVesselOrbitEscaped = ScreenshotOptions.No_Screenshot;
-                screenshotOnCrewKilled = ScreenshotOptions.No_Screenshot;
-                screenshotOnCrewTransferred = ScreenshotOptions.No_Screenshot;
-                screenshotOnDominantBodyChange = ScreenshotOptions.No_Screenshot;
-                screenshotOnFlagPlant = ScreenshotOptions.No_Screenshot;
-                screenshotOnCrewOnEVA = ScreenshotOptions.No_Screenshot;
-
-                screenshotOnKerbalPassedOutFromGeeForce = ScreenshotOptions.No_Screenshot;
-                screenshotOnProgressAchieve = ScreenshotOptions.No_Screenshot;
-                screenshotOnProgressComplete = ScreenshotOptions.No_Screenshot;
-                screenshotOnVesselRollout = ScreenshotOptions.No_Screenshot;
-
+                SetAllScreenshotOptions(ScreenshotOptions.No_Screenshot); 
             }
             return !screenshotOnAllEventsWithGUI;
             //            return true; //otherwise return true

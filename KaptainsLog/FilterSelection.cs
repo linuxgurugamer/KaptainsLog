@@ -83,6 +83,11 @@ namespace KaptainsLogNamespace
                                     if (evt.Value.selected)
                                         str += ", " + LogEntry.displayEventString(evt.Value.evnt);
                                 break;
+                            case Fields.tag:
+                                foreach (var t in tagList)
+                                    if (t.Value.selected)
+                                        str += ", " + t.Value.tag;
+                                break;
                         }
                         if (str != "")
                             GUILayout.Label(str.Substring(2, str.Length - 2));

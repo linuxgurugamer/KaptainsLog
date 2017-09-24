@@ -16,8 +16,8 @@ namespace KaptainsLogNamespace
         static bool updateSize = false;
         private static string _imagefile;
 
-        private Rect _windowRect;
-        private Rect _windowRect2 = new Rect(Screen.width / 2 - 150f, Screen.height / 2 - 75f, 260f, 390f);
+        public Rect imageWindow;
+        //private Rect _windowRect2 = new Rect(Screen.width / 2 - 150f, Screen.height / 2 - 75f, 260f, 390f);
         bool resetSize = false;
 
         public int winId = 0;
@@ -111,25 +111,25 @@ namespace KaptainsLogNamespace
                 {
                     float x, y;
 
-                    x = _windowRect.x + _windowRect.width / 2;
-                    y = _windowRect.y + _windowRect.height / 2;
-                    _windowRect = new Rect((Screen.width - _image.width) / 2f, (Screen.height - _image.height) / 2f, _image.width, _image.height + 30);
+                    x = imageWindow.x + imageWindow.width / 2;
+                    y = imageWindow.y + imageWindow.height / 2;
+                    imageWindow = new Rect((Screen.width - _image.width) / 2f, (Screen.height - _image.height) / 2f, _image.width, _image.height + 30);
 
                     if (!everVisible)
                     {
                         everVisible = true;
 
-                        _windowRect.x = (Screen.width - _image.width) / 2f;
-                        _windowRect.y = (Screen.height - _image.height) / 2f;
+                        imageWindow.x = (Screen.width - _image.width) / 2f;
+                        imageWindow.y = (Screen.height - _image.height) / 2f;
                     }
                     else
                     {
-                        _windowRect.x = x - _windowRect.width / 2;
-                        _windowRect.y = y - _windowRect.height / 2;
+                        imageWindow.x = x - imageWindow.width / 2;
+                        imageWindow.y = y - imageWindow.height / 2;
                     }
                     updateSize = false;
                 }
-                _windowRect = GUILayout.Window(GUIUtility.GetControlID(0, FocusType.Passive), _windowRect, IvWindow,
+                imageWindow = GUILayout.Window(GUIUtility.GetControlID(0, FocusType.Passive), imageWindow, IvWindow,
                         "Image viewer");
             }
 
@@ -179,7 +179,7 @@ namespace KaptainsLogNamespace
             }
             else
             {
-                _windowRect = new Rect(Screen.width / 2f, Screen.height / 2f, 100f, 100f);
+                imageWindow = new Rect(Screen.width / 2f, Screen.height / 2f, 100f, 100f);
             }
             if (GUI.Button(new Rect(2f, 2f, 13f, 13f), "X"))
             {

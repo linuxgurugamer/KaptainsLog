@@ -59,6 +59,8 @@ namespace KaptainsLogNamespace
         void onGameStatePostLoad(ConfigNode n)
         {
             Log.Info("onGameStatePostLoad");
+            if (KaptainsLog.Instance.disableTagOnRevert)
+                KaptainsLog.Instance.activeTag = "";
             KaptainsLog.utils.CreateLogEntry(Events.Revert, false, "Game reverted to " + KaptainsLog.utils.GetKerbinTime(Planetarium.GetUniversalTime(), false).ToString(), "");
         }
 

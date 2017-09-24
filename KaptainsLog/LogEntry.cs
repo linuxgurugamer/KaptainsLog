@@ -38,6 +38,8 @@ namespace KaptainsLogNamespace
         FlightLogRecorded,
         KerbalPassedOutFromGeeForce,
         Landed,
+        Splashdown,
+        CrashOrSplashdown,
         Launch,
         ManualEntry,
         MiscExternal,
@@ -64,11 +66,14 @@ namespace KaptainsLogNamespace
         VesselRecovered
 
     };
-    public enum Fields { none, index, vesselId, vesselName, universalTime, utcTime, missionTime,
+    public enum Fields
+    {
+        none, index, vesselId, vesselName, universalTime, utcTime, missionTime,
         vesselSituation, controlLevel, mainBody, altitude, speed,
-        eventType, notes, thumbnail, screenshot, lastItem };
+        eventType, notes, thumbnail, screenshot, tag, lastItem
+    };
 
-    public enum PrintType { noPrint, print, screenshotPrint};
+    public enum PrintType { noPrint, print, screenshotPrint };
     public class LogEntry : IComparable<LogEntry>
     {
         public int index = 0;
@@ -85,6 +90,7 @@ namespace KaptainsLogNamespace
         public Events eventType;
         public string notes;
         public string vesselFlagURL = "";
+        public string tag = "";
 
         public bool guiHidden = false;
         public string screenshotName = "";
@@ -136,6 +142,8 @@ namespace KaptainsLogNamespace
                     return "Thumbnail";
                 case Fields.screenshot:
                     return "Screenshot";
+                case Fields.tag:
+                    return "Tag";
                 case Fields.lastItem:
                     return "none";
             }
@@ -162,6 +170,8 @@ namespace KaptainsLogNamespace
                 case Events.OrbitClosed: return "Orbit closed";
                 case Events.OrbitEscaped: return "Orbit escaped";
                 case Events.VesselRecovered: return "Vessel recovered";
+                case Events.Splashdown: return "Splashdown";
+                case Events.CrashOrSplashdown: return "Crash";
                 case Events.Landed: return "Landed";
                 case Events.CrewModified: return "Crew modified";
                 case Events.ProgressRecord: return "Progress Record";
@@ -240,7 +250,7 @@ namespace KaptainsLogNamespace
         public static Fields sortField = Fields.index;
         public static bool sortReverse = false;
 
-         public int CompareTo(LogEntry y)
+        public int CompareTo(LogEntry y)
         {
             int rc = 0;
             switch (sortField)
@@ -298,6 +308,9 @@ namespace KaptainsLogNamespace
                     else
                      if (eventType > y.eventType) rc = 1;
                     break;
+                case Fields.tag:
+                    rc = String.Compare(tag, y.tag);
+                    break;
             }
             if (rc == 0)
             {
@@ -315,6 +328,90 @@ namespace KaptainsLogNamespace
             if (sortReverse)
                 return -rc;
             return rc;
+        }
+
+        public ScreenshotOptions eventScreenshot
+        {
+            get
+            {
+                ScreenshotOptions doScreenshot = ScreenshotOptions.No_Screenshot;
+                switch (eventType)
+                {
+                    case Events.FlightLogRecorded: break;
+                    case Events.ScreenMsgRecord: break;
+                    case Events.Revert: break;
+                    case Events.PartDied:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnPartDie;
+                        break;
+                    case Events.OnVesselRollout:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselRollout;
+                        break;
+                    case Events.Launch:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnLaunch;
+                        Log.Info("Events.Launch, doScreenshot: " + doScreenshot.ToString());
+                        break;
+                    case Events.StageSeparation:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnStageSeparation;
+                        break;
+                    case Events.PartCouple:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnPartCouple;
+                        break;
+                    case Events.VesselModified:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselWasModified;
+                        break;
+                    case Events.StageActivate:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnStageActivate;
+                        break;
+                    case Events.OrbitClosed:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselOrbitClosed;
+                        break;
+                    case Events.OrbitEscaped:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselOrbitEscaped;
+                        break;
+                    case Events.VesselRecovered:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselRecovered;
+                        break;
+                    case Events.Landed:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnLanded;
+                        break;
+                    case Events.Splashdown:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnSplashdown;
+                        break;
+                    case Events.CrashOrSplashdown:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrashSplashdown;
+                        break;
+                    case Events.CrewModified:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnVesselCrewWasModified;
+                        break;
+                    case Events.ProgressRecord:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnProgressAchieve;
+                        break;
+                    case Events.ManualEntry:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnManualEntry;
+                        break;
+                    case Events.FinalFrontier: doScreenshot = ScreenshotOptions.No_Screenshot; break;
+                    case Events.MiscExternal: doScreenshot = ScreenshotOptions.No_Screenshot; break;
+                    case Events.CrewKilled:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrewKilled;
+                        break;
+                    case Events.CrewOnEVA:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrewOnEVA;
+                        break;
+                    case Events.CrewTransferred:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnCrewTransferred;
+                        break;
+                    case Events.DominantBodyChange:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnDominantBodyChange;
+                        break;
+                    case Events.FlagPlant:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnFlagPlant;
+                        break;
+                    case Events.KerbalPassedOutFromGeeForce:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnKerbalPassedOutFromGeeForce;
+                        break;
+                }
+                return doScreenshot;
+            }
         }
     }
 }

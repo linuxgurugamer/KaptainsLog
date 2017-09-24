@@ -175,6 +175,20 @@ namespace KaptainsLogNamespace
                             GUILayout.EndHorizontal();
                         }
                         break;
+                    case Fields.tag:
+                        GUILayout.BeginHorizontal();
+                        noTagfilter = GUILayout.Toggle(noTagfilter, "(no tag)");
+                        GUILayout.EndHorizontal();
+                        foreach (var t in tagList)
+                        {
+                            GUILayout.BeginHorizontal();
+                            old = t.Value.selected;
+                            t.Value.selected = GUILayout.Toggle(t.Value.selected, t.Value.tag);
+                            if (old != t.Value.selected)
+                                KLScenario.dirtyFilter = true;
+                            GUILayout.EndHorizontal();
+                        }
+                        break;
                 }
 
 
@@ -186,57 +200,11 @@ namespace KaptainsLogNamespace
 
                 if (GUILayout.Button("Select All", GUILayout.Width(90)))
                 {
-                    KLScenario.dirtyFilter = true;
-                    switch (entryField)
-                    {
-                        case Fields.vesselName:
-                            foreach (KeyValuePair<string, vesselId> vid in allVessels)
-                                vid.Value.selected = true;
-                            break;
-                        case Fields.vesselSituation:
-                            foreach (var s in situations)
-                                s.Value.selected = true;
-                            break;
-                        case Fields.controlLevel:
-                            foreach (var vcl in controlLevels)
-                                vcl.Value.selected = true;
-                            break;
-                        case Fields.mainBody:
-                            foreach (var body in bodiesList)
-                                body.Value.selected = true;
-                            break;
-                        case Fields.eventType:
-                            foreach (var evt in eventTypes)
-                                evt.Value.selected = true;
-                            break;
-                    }
+                    SetSelectFlag(true);
                 }
                 if (GUILayout.Button("Deselect All", GUILayout.Width(90)))
                 {
-                    KLScenario.dirtyFilter = true;
-                    switch (entryField)
-                    {
-                        case Fields.vesselName:
-                            foreach (KeyValuePair<string, vesselId> vid in allVessels)
-                                vid.Value.selected = false;
-                            break;
-                        case Fields.vesselSituation:
-                            foreach (var s in situations)
-                                s.Value.selected = false;
-                            break;
-                        case Fields.controlLevel:
-                            foreach (var vcl in controlLevels)
-                                vcl.Value.selected = false;
-                            break;
-                        case Fields.mainBody:
-                            foreach (var body in bodiesList)
-                                body.Value.selected = false;
-                            break;
-                        case Fields.eventType:
-                            foreach (var evt in eventTypes)
-                                evt.Value.selected = false;
-                            break;
-                    }
+                    SetSelectFlag(false);
                 }
             }
 
@@ -248,6 +216,37 @@ namespace KaptainsLogNamespace
             GUILayout.FlexibleSpace();
             GUILayout.EndHorizontal();
             GUI.DragWindow();
+        }
+        void SetSelectFlag(bool b)
+        {
+            KLScenario.dirtyFilter = true;
+            switch (entryField)
+            {
+                case Fields.vesselName:
+                    foreach (KeyValuePair<string, vesselId> vid in allVessels)
+                        vid.Value.selected = b;
+                    break;
+                case Fields.vesselSituation:
+                    foreach (var s in situations)
+                        s.Value.selected = b;
+                    break;
+                case Fields.controlLevel:
+                    foreach (var vcl in controlLevels)
+                        vcl.Value.selected = b;
+                    break;
+                case Fields.mainBody:
+                    foreach (var body in bodiesList)
+                        body.Value.selected = b;
+                    break;
+                case Fields.eventType:
+                    foreach (var evt in eventTypes)
+                        evt.Value.selected = b;
+                    break;
+                case Fields.tag:
+                    foreach (var t in tagList)
+                        t.Value.selected = b;
+                    break;
+            }
         }
     }
 }

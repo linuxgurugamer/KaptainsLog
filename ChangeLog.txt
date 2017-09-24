@@ -126,3 +126,36 @@
 		Makde "Add Crew" button not visible if no crew to add
 		Fixed the global setting of screenshot values (some were hardcoded to the gui option)
 		Fixed bug where thumbnail wouldn't be shown for the last entry in the log
+
+0.1.1
+		Disabled the screenmessages:
+			Global settings saved
+			Global settings loaded
+			Window Positions Saved
+		Corrected setting lavel for unsetting all the pause settings
+		Removed "Narrow" button from narrow Screen Messages Window
+		Changed TextField to Label for the Main Window display
+		Made MainWindow resizable
+		Make ScreenMessage window resizable
+		Removed the narrow, medium & wide buttons on the screenmessage widow
+		Updated title of Screen messgae window
+		Changed TextField to Label for the Screen Messages window display
+		Changed background of Screen Messages window to be solid
+		Added missing flags for closing all windows when clicking the toolbar button
+		set default main width to 1000
+		Disabled closing main window when showing screen messages window
+		Added screenshotOnManualEntry
+		Added check for landed
+		Added pause, log and screenshot options for landed
+		Added hotkey for manual entry
+		Added window in settings to enter hotkey
+		Removed "Make Log Entry" from Main window, replaced with new hotkey
+		Added new options to Misc in settings:
+			landedStabilityTime
+			minFlyingAltitude
+			minFlyingTime
+			getLogEntryKey
+			ManualEntryKeycode (always global)
+		Added tagging, ability to set a tag to mark new events with, and then filter on them
+		Added more help screens
+		Updated help info 

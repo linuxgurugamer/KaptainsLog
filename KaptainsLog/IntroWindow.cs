@@ -58,6 +58,19 @@ namespace KaptainsLogNamespace
         string msg = null;
         Texture2D image;
         string msgOverview =
+            "The Kaptain's Log is designed to record events and screenshots of your missions.  It can record \n" +
+            "more than 40 different events.\n" +
+            "\n" +
+            "<color=yellow><B>Tags</B></color>\n" +
+            "You can specify a tag to be applied to events as they occur, you can enter your own\n" +
+            "notes for each event, and you can create an entry at any time by using the hotkey (default 'O')\n" +
+            "\n" +
+            "<color=yellow><B>Resizing Windows</B></color>\n" +
+            "Three of the windows can be resized by dragging the bottom edge, right edge or lower-right corner:\n" +
+            "     the Main Window\n" +
+            "     the Screen Messages window\n" +
+            "     the Image Viewer window.\n\n" +
+            "<color=yellow><B>Settings</B></color>\n" +
             "\nBe sure to check the various settings for The Kaptain's Log.\n" +
             "This window will be shown at the beginning of each game until you disable it\n" +
             "in the settings.\n\n" +                      
@@ -102,6 +115,10 @@ namespace KaptainsLogNamespace
             "The <B>Filter Limits</B> are used as an upper limit when specifying an altitude or speed filter.\n\n" +
             "The <b>Screen Message Log</b> options control the maximum messages which are displayed.  The <B>Keep screen message for</b> specifies how long they are kept before being removed.";
 
+        string hotkeyEntry = "The hotkey is used when you want to create a manual entry in the log.\n\n"+
+            "Press the key you want to use to bring up the Manual Entry window, the key you press will be shown.\n\n" + 
+            "The default is current the letter 'O'";
+
         string captureSettings = "The <color=yellow><B>Event Capture Settings</B></color> column in the second settings page specifies which events will be captured and logged.\n\n" +
             "You can specify <b>Log all events</b> which will enable logging on all the available events.  Selecting the <b>Unset all event log settings</b> will disable all of them.  Note that this button does not stay enabled; once all the events are disabled, this option is also disabled";
 
@@ -131,7 +148,16 @@ namespace KaptainsLogNamespace
             "<B><color=yellow>Select Fields</color></B> - Select which columns to display\n" +
             "<B><color=yellow>Export</color></B> - Start the export/print process\n" +
             "<B><color=yellow>Close</color></b> - Close the window\n" +
+            "<B><color=yellow>Specify Tag</color></B> - Click to specify a tag.  Current tag is shown in parentheses\n" +
             "<B><color=yellow>Screen Messages</color></b> - Open the Screen Messages window";
+
+        string tagEntry = "The tag is a way to mark log entries for a specific period of time.  For example,\n" +
+            "if  you are doing a test flight you could set a tag so you could see only the test flight tags (once you set up the filters)\n\n" +
+            "Enter the tag you want applied to all new entries.  There are three options which can be toggled to automatically disable the tag at specific events:\n\n" +
+            "   Disable tag on revert\n" +
+            "   Disable tag on landing, splashdown or crash\n" +
+            "   disable tag on vessel recovery";
+
 
         string sortSelection = "Select which field to use for sorting on this screen.  The selected field is <b><color=green>Green</color></b>, and all other fields are <B><color=red>Red</color></b>";
 
@@ -183,6 +209,11 @@ namespace KaptainsLogNamespace
                 msg = misc;
                 LoadImage("Misc.png");
             }
+            if (GUILayout.Button("Hotkey"))
+            {
+                msg = hotkeyEntry;
+                LoadImage("HotkeyEntry.png");
+            }
 
             if (GUILayout.Button("Evt Capture Settings"))
             {
@@ -204,6 +235,11 @@ namespace KaptainsLogNamespace
             {
                 msg = mainWindow;
                 LoadImage("Mainwindow.png");
+            }
+            if (GUILayout.Button("Tag Entry"))
+            {
+                msg = tagEntry;
+                LoadImage("TagEntry.png");
             }
             if (GUILayout.Button("Sort Selection Window"))
             {

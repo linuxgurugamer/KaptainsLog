@@ -1,9 +1,8 @@
 TODO list
 
-misresport by Kottabos: Fix screenshot save when not saving in mod's save dir
+Add manual flag
 
-On main window, "Make Log Entry" not working
-
+Add slideshow to image viewer ????
 
 future updates
 	Move intro window into KSPedia

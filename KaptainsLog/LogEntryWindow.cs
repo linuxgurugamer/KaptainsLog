@@ -16,8 +16,9 @@ namespace KaptainsLogNamespace
     partial class KaptainsLog
     {
 
-        void DisplayLogEntryExitCleanup()
+        void DisplayLogEntryExitCleanup(int x)
         {
+            Log.Info("DisplayLogEntryExitCleanup, x: " + x.ToString());
             notesText = "";
             notesEntry = false;
             manualEntry = false;
@@ -27,18 +28,20 @@ namespace KaptainsLogNamespace
             editItem = null;
             
             FlightDriver.SetPause(false);
+            pauseActivated = PauseStatus.complete;
         }
 
         internal void SaveEditItem()
         {
             Log.Info("Saving editItem: " + editItem.Value.ToString());
-            //if (!escapePressed || notesText != "")
+
             if (notesText != "")
                     utils.le.notes = notesText;
             kaptainsLogList[editItem.Value] = utils.le;
-            DisplayLogEntryExitCleanup();
+            DisplayLogEntryExitCleanup(1);
 
         }
+
         void DisplayLogEntryWindow(int id)
         {
             //Log.Info("DisplayLogEntryWindow");
@@ -102,28 +105,17 @@ namespace KaptainsLogNamespace
                 }
             }
             GUILayout.FlexibleSpace();
-            var b1 = GUILayout.Button("Cancel", GUILayout.Width(90));
-            //if (b1 || (escapePressed && notesText == ""))
-            if (b1 || notesText == "")
+            var cancelPressed = GUILayout.Button("Cancel", GUILayout.Width(90));
+
+            if (cancelPressed)
             {
-               // Log.Info("LogEntryWindow b1, escapePressed: " + escapePressed.ToString());
-                pms = PauseMenuState.hidden;
-#if false
-                if (escapePressed)
-                {
-                    Log.Info("escapePressed, setting pms = PauseMenuState.KLEntry");
-                    pms = PauseMenuState.KLEntry;
-                    cancelManualEntry = true;
-                }
-#endif
-                DisplayLogEntryExitCleanup();
+                Log.Info("CancelPressed");
+                DisplayLogEntryExitCleanup(2);
                
-                //if (visibleByToolbar)
-                {
-                    ToggleToolbarButton();
-                  //  kaptainsLogStockButton.SetFalse();
-                }
+                ToggleToolbarButton();
+     
                 kaptainsLogStockButton.SetFalse();
+                cancelManualEntry = true;
                 notesText = "";
                 //escapePressed = false;
             }
@@ -135,32 +127,22 @@ namespace KaptainsLogNamespace
             }
             GUILayout.FlexibleSpace();
             
-            var b = GUILayout.Button("OK", GUILayout.Width(120));
-            //if (escapePressed || b)
-            if (b)
-            {
+            var okPressed = GUILayout.Button("OK", GUILayout.Width(120));
 
-                pms = PauseMenuState.hidden;
-#if false
-                if (escapePressed)
-                {
-                    Log.Info("LogEntryWindow b, escapePressed: " + escapePressed.ToString());
-                    pms = PauseMenuState.KLEntry;
-       }
-#endif
-
+            if (okPressed)
+            { 
+                Log.Info("okPressed");
                 if (editItem != null)
                 {
                     SaveEditItem();
                 }
                 else
                 {
-                    //if (!escapePressed || notesText != "")
                     if (notesText != "")
                     {
                         utils.le.notes = notesText;
-                        //if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().screenshot)
-                        if (eventScreenshot(utils.le) != ScreenshotOptions.No_Screenshot)
+
+                        if (utils.le.eventScreenshot != ScreenshotOptions.No_Screenshot)
                         {
                             if (utils.le.screenshotName == null || utils.le.screenshotName == "")
                             {
@@ -174,8 +156,8 @@ namespace KaptainsLogNamespace
                         lastNoteTime = Planetarium.GetUniversalTime() + HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().minTime;
                     }
                 }
-
-                DisplayLogEntryExitCleanup();
+                
+                DisplayLogEntryExitCleanup(3);
 
                 if (visibleByToolbar)
                 {

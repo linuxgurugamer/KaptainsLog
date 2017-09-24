@@ -39,10 +39,10 @@ namespace KaptainsLogNamespace
     {
         static public ScreenMessagesLog Instance;
 
-        private IEnumerator coroutine;
+        private IEnumerator coroutineExpireScreenMsgs;
 
         Queue<ScreenMessage> scrnMsgLog = new Queue<ScreenMessage>();
-        bool visible = false;
+        internal bool visible = false;
         internal Rect ScrnMsgsWindow;
         int logentryWindowId = GUIUtility.GetControlID(FocusType.Native);
         Vector2 displayScrollVector;
@@ -105,9 +105,9 @@ namespace KaptainsLogNamespace
             Log.Info("ScreenMessagesLog.Start");
             StartCoroutine(WaitForScreenMessages());
 
-            coroutine = ExpireScreenMessages(5f);
+            coroutineExpireScreenMsgs = ExpireScreenMessages(5f);
             LoadFilterList();
-            StartCoroutine(coroutine);
+            StartCoroutine(coroutineExpireScreenMsgs);
 
             greenButtonTexture = new Texture2D(2, 2, TextureFormat.ARGB32, false);
             greenButtonTexture.SetPixel(0, 0, Color.green);
@@ -183,9 +183,7 @@ namespace KaptainsLogNamespace
         }
 #endif
 
-
-
-
+       
         IEnumerator ExpireScreenMessages(float waitTime)
         {
             while (true)
@@ -196,32 +194,6 @@ namespace KaptainsLogNamespace
                 int numToCheck = Math.Min(numActiveMsgs, scrnMsgLog.Count);
                 if (numActiveMsgs > 0)
                 {
-#if false
-                    for (int cnt = 0; cnt < numActiveMsgs; cnt++)
-                    {
-                        bool copied = false;
-                        if (numToCheck > 0)
-                        {
-                            var idx = scrnMsgLog.Count - 1;
-                            if (filterList.Count > 0 && filterList.Contains(ScreenMessages.Instance.ActiveMessages[cnt].message))
-                            {
-                                Log.Info("filtered: " + ScreenMessages.Instance.ActiveMessages[cnt].message);
-                                copied = true;
-                            }
-                            else
-                                for (int i = 0; i < numToCheck; i++)
-                                {
-                                   
-                                    if (scrnMsgLog.ElementAtOrDefault(idx - i) == ScreenMessages.Instance.ActiveMessages[cnt])
-                                        copied = true;
-                                }
-
-                        }
-
-                        //if (!copied)
-                        //    scrnMsgLog.Enqueue(ScreenMessages.Instance.ActiveMessages[cnt]);
-                    }
-#endif
                     // Remove expired messages here
                     while (scrnMsgLog.Count > HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().maxMsgs)
                     {
@@ -249,7 +221,7 @@ namespace KaptainsLogNamespace
             {
                 GUI.color = Color.grey;
 
-                msgTextStyle = new GUIStyle(GUI.skin.textField);
+                msgTextStyle = new GUIStyle(GUI.skin.label);
                 msgTextStyle.normal.textColor = Color.yellow;
 
                 buttonOffStyle = new GUIStyle(GUI.skin.button);
@@ -262,7 +234,7 @@ namespace KaptainsLogNamespace
                 //buttonOnStyle.active.background = greenButtonTexture;
                 //buttonOnStyle.focused.background = greenButtonTexture;
 
-                ScrnMsgsWindow = GUILayout.Window(logentryWindowId, ScrnMsgsWindow, DisplayScreenMsgsWindow, "Kaptain's Log Entry"); //, KaptainsLog.windowStyle);
+                ScrnMsgsWindow = GUILayout.Window(logentryWindowId, ScrnMsgsWindow, DisplayScreenMsgsWindow, "Kaptain's Log - Screen Messages", KaptainsLog.windowStyle);
             }
         }
 
@@ -334,7 +306,7 @@ namespace KaptainsLogNamespace
 
                     }
                     GUILayout.Button(icon, GUIStyle.none, GUILayout.Height(32), GUILayout.Width(32));
-                    GUILayout.TextField(scrnMsg.message, msgTextStyle, GUILayout.ExpandWidth(true));
+                    GUILayout.Label(scrnMsg.message, msgTextStyle, GUILayout.ExpandWidth(true));
                     
                     GUILayout.EndHorizontal();
                 }
@@ -391,25 +363,10 @@ namespace KaptainsLogNamespace
                 ShowWin(false);
             }
             GUILayout.FlexibleSpace();
-
-            if (ScrnMsgsWindow.width != NARROW_WIDTH)
-            {
-                if (GUILayout.Button("Narrow"))
-                    ScrnMsgsWindow.width = NARROW_WIDTH;
-            }
-            if (ScrnMsgsWindow.width != MED_WIDTH)
-            {
-                if (GUILayout.Button("Medium"))
-                    ScrnMsgsWindow.width = MED_WIDTH;
-            }
-            if (ScrnMsgsWindow.width != WIDE_WIDTH)
-            {
-                if (GUILayout.Button("Wide"))
-                    ScrnMsgsWindow.width = WIDE_WIDTH;
-            }
+            
             GUILayout.EndHorizontal();
-
-            GUI.DragWindow();
+            if (KaptainsLog.Instance.resizing == KaptainsLog.CursorType.Default)
+                GUI.DragWindow();
         }
 
         public string NODENAME = "Filters";

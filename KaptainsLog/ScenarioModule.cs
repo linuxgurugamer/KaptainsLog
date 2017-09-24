@@ -94,7 +94,7 @@ namespace KaptainsLogNamespace
         private static int screenshotCnt;
 
         public static KLScenario Instance; 
-        static bool inited = false;
+       // static bool inited = false;
         static bool loaded = false;
 
         
@@ -125,7 +125,7 @@ namespace KaptainsLogNamespace
         {
             Log.Info("ShelterPersistent.Awake");
             //Shelter.persistent = this;
-            inited = true;
+            //inited = true;
             Instance = this;
             DoInit();
         }

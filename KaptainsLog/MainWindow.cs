@@ -97,12 +97,17 @@ namespace KaptainsLogNamespace
             bStyle.normal.textColor = Color.red;
 
             lastSortField = "";
+
+            
             GUILayout.BeginArea(new Rect(0, 0, 26, 26));
             if (GUILayout.Button(GameDatabase.Instance.GetTexture(QuestionMarkIcon, false), GUIStyle.none, GUILayout.Height(26), GUILayout.Width(26)))
             {
                 IntroWindowClass.showHelp = true;
             }
             GUILayout.EndArea();
+
+            windowResizeScrollVector = GUILayout.BeginScrollView(windowResizeScrollVector);
+
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Vessel"))
                 if (entryField == Fields.none)
@@ -129,13 +134,13 @@ namespace KaptainsLogNamespace
                     entryField = Fields.altitude;
                 else
                     entryField = Fields.none;
-#if false
-            if (GUILayout.Button("Speed"))
+
+            if (GUILayout.Button("Tag"))
                 if (entryField == Fields.none)
-                    entryField = Fields.speed;
+                    entryField = Fields.tag;
                 else
                     entryField = Fields.none;
-#endif
+
             if (GUILayout.Button("Event"))
                 if (entryField == Fields.none)
                     entryField = Fields.eventType;
@@ -161,8 +166,11 @@ namespace KaptainsLogNamespace
             }
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
+            //float width = mainWindow.width * 30 / 160;
+            //float height = mainWindow.width * 38 / 160 - Screen.height * 1 / 25;
+            //displayScrollVector = GUILayout.BeginScrollView(displayScrollVector, false, true, GUILayout.Width(width), GUILayout.Height(height));
 
-            displayScrollVector = GUILayout.BeginScrollView(displayScrollVector);
+            displayScrollVector = GUILayout.BeginScrollView(displayScrollVector, false, false, GUIStyle.none, GUI.skin.verticalScrollbar);
 
             bool treeView = false;
             if (LogEntry.sortField == Fields.vesselId || LogEntry.sortField == Fields.vesselId || LogEntry.sortField == Fields.vesselName)
@@ -199,6 +207,9 @@ namespace KaptainsLogNamespace
                             break;
                         case Fields.mainBody:
                             sortedField = le1.vesselMainBody;
+                            break;
+                        case Fields.tag:
+                            sortedField = le1.tag;
                             break;
                     }
 
@@ -270,7 +281,7 @@ namespace KaptainsLogNamespace
                             string f = utils.getDisplayString(le1, displayFields[d].f);
                             if (displayFields[d].f != Fields.thumbnail)
                             {
-                                GUILayout.TextField(f, GUILayout.Width(colWidth[d]));
+                                GUILayout.Label(f, GUILayout.Width(colWidth[d]));
                             }
                             else
                             {
@@ -286,7 +297,7 @@ namespace KaptainsLogNamespace
                                 }
                                 else
                                 {
-                                    Log.Info("i: " + i.ToString() + "  imgCacheList.Count: " + imgCacheList.Count.ToString());
+                                    //Log.Info("i: " + i.ToString() + "  imgCacheList.Count: " + imgCacheList.Count.ToString());
                                     GUILayout.Box("n/a", GUILayout.Width(colWidth[d]));
                                 }
                             }
@@ -331,14 +342,7 @@ namespace KaptainsLogNamespace
                 DeleteSelected();
                 deleteConfirmed = false;
             }
-#if false
-            GUILayout.FlexibleSpace();
-            if (GUILayout.Button("Filters", GUILayout.Width(90)))
-            {
-                displayFilterWindow = true;
-                getDataColLimits(displayFields);
-            }
-#endif
+
             GUILayout.FlexibleSpace();
 
             if (displayFilterWindow || displayColSelectWindow)
@@ -370,24 +374,35 @@ namespace KaptainsLogNamespace
                 ToggleToolbarButton();
             }
             GUILayout.FlexibleSpace();
-            if (FlightGlobals.ActiveVessel != null)
-            {
-                if (GUILayout.Button("Make Log Entry"))
-                {
-                    onManualEntry();
 
-                }
+            if (tagEntry == null)
+            {
+                if (GUILayout.Button("Specify tag (" + activeTag + ")"))
+                {
+                    tagEntry = MapView.MapCamera.gameObject.GetComponent<TagEntry>();
+                    if (tagEntry == null)
+                    {
+                        Log.Info("Adding ManualEntrySelectHotKey");
+                        tagEntry = MapView.MapCamera.gameObject.AddComponent<TagEntry>();
+                    }
+                    TagEntry.newtag = activeTag;
+                    TagEntry.disableTagOnRevert = disableTagOnRevert;
+                    TagEntry.disableTagOnLanding = disableTagOnLanding;
+                    TagEntry.disableTagOnRecovery = disableTagOnRecovery;
+    }
             }
+ 
             if (GUILayout.Button("Screen Messages"))
             {
                 ScreenMessagesLog.Instance.ShowWin(true);
                 //visibleByToolbar = false;
-                ToggleToolbarButton();
+                //ToggleToolbarButton();
             }
 
             GUILayout.EndHorizontal();
-            GUI.DragWindow();
-
+            if (resizing == CursorType.Default)
+                GUI.DragWindow();
+            GUILayout.EndScrollView();
             if (deleteItem != null)
             {
                 DeleteSingleItem(deleteItem.Value);
