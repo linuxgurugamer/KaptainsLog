@@ -393,6 +393,8 @@ namespace KaptainsLogNamespace
 
         void SetAllPauseOptions(bool b)
         {
+            pauseOnAllEvents = false;
+            unsetSettings = false;
             pauseOnVesselRollout = b;
             pauseOnVesselLanded = b;
             pauseOnVesselSplashdown = b;
@@ -450,26 +452,7 @@ namespace KaptainsLogNamespace
                 enableAllPause();
             if (unsetSettings)
             {
-                pauseOnVesselRollout = false;
-                pauseOnCrashSplashdown = false;
-                pauseOnVesselRecovered = false;
-                pauseOnLaunch = false;
-                pauseOnStageSeparation = false;
-                pauseOnStageActivate = false;
-                pauseOnPartDie = false;
-                pauseOnDisconnectedPartDie = false;
-                pauseOnPartCouple = false;
-                pauseOnVesselWasModified = false;
-                pauseOnVesselCrewWasModified = false;
-                pauseOnVesselOrbitClosed = false;
-                pauseOnVesselOrbitEscaped = false;
-                pauseOnCrewKilled = false;
-                pauseOnCrewTransferred = false;
-                pauseOnDominantBodyChange = false;
-                pauseOnFlagPlant = false;
-                pauseOnCrewOnEVA = false;
-                pauseOnVesselOrbitEscaped = false;
-                unsetSettings = false;
+                SetAllPauseOptions(false);
             }
             return !pauseOnAllEvents;
             //            return true; //otherwise return true
@@ -605,7 +588,7 @@ namespace KaptainsLogNamespace
 
             ConfigNode settings = new ConfigNode("KL_22");
 
-            settings.AddValue("logAllEvents", logAllEvents);
+            //settings.AddValue("logAllEvents", logAllEvents);
             settings.AddValue("logOnVesselLanded", logOnVesselLanded);
             settings.AddValue("logOnCrashSplashdown", logOnCrashSplashdown);
             settings.AddValue("logOnVesselRecovered", logOnVesselRecovered);
@@ -652,7 +635,7 @@ namespace KaptainsLogNamespace
                 return;
             }
             
-            logAllEvents = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logAllEvents"), "true"));
+            //logAllEvents = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logAllEvents"), "true"));
             logOnVesselLanded = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnVesselLanded"), "true"));
             logOnCrashSplashdown = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnCrashSplashdown"), "true"));
             logOnVesselRecovered = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnVesselRecovered"), "true"));
@@ -688,7 +671,9 @@ namespace KaptainsLogNamespace
 
         void SetAllLogOptions(bool b)
         {
-            logAllEvents = b;
+            logAllEvents = false;
+            unsetSettings = false;
+            
             logOnVesselLanded = b;
             logOnCrashSplashdown = b;
             logOnVesselRecovered = b;

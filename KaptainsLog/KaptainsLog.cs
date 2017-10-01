@@ -142,7 +142,8 @@ namespace KaptainsLogNamespace
         const int SAVE_HEIGHT = 200;
 
         const int HTML_TEMPLATE_SEL_WIDTH = 300;
-        const int HTML_TEMPLATE_SEL_HEIGHT = 400;
+        const int HTML_TEMPLATE_SEL_HEIGHT = 600;
+
 
         public string notesText = "";
         Vector2 notesScrollVector;

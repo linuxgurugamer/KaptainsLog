@@ -143,8 +143,8 @@ namespace KaptainsLogNamespace
             if (visibleByToolbar)
                 CheckForResize("mainWindow", ref mainWindow);
 
-            if (displayScreenshot)
-                CheckForResize("imageWindow", ref iv.imageWindow);
+            //if (displayScreenshot)
+            //    CheckForResize("imageWindow", ref iv.imageWindow);
 
             if (ScreenMessagesLog.Instance != null && ScreenMessagesLog.Instance.visible)
                 CheckForResize("ScrnMsgsWindow", ref ScreenMessagesLog.Instance.ScrnMsgsWindow);

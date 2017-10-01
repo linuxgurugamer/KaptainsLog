@@ -76,6 +76,22 @@ namespace KaptainsLogNamespace
             KLScenario.imgCacheFilled = true;
         }
 
+        int GetDisplayableCount()
+        {
+            int cnt = 0;
+            for (int i = 0; i < kaptainsLogList.Count; i++)
+            {
+
+                var le1 = kaptainsLogList[i];
+                if (KLScenario.dirtyFilter)
+                    ApplyFilters(le1);
+                if (!le1.leSelected)
+                    continue;
+                cnt++;
+            }
+            return cnt;
+        }
+
 
         int? deleteItem, editItem, editNewItem;
         string lastSortField = "";
@@ -83,6 +99,11 @@ namespace KaptainsLogNamespace
         const string N_A = "N/A";
 
         int mainWinId;
+
+        int firstDisplayed = 1;
+      
+        const int MAXDISPLAYED = 25;
+        const int SCROLLVIEW_HEIGHT = 450;
 
         void DisplayMainWindow(int id)
         {
@@ -98,7 +119,10 @@ namespace KaptainsLogNamespace
 
             lastSortField = "";
 
-            
+            //
+            // Display the Questionmark first, so it's in the upper left
+            //
+             
             GUILayout.BeginArea(new Rect(0, 0, 26, 26));
             if (GUILayout.Button(GameDatabase.Instance.GetTexture(QuestionMarkIcon, false), GUIStyle.none, GUILayout.Height(26), GUILayout.Width(26)))
             {
@@ -106,8 +130,14 @@ namespace KaptainsLogNamespace
             }
             GUILayout.EndArea();
 
+            //
+            // Now start the scrollview for the rest of the windiw, necessary for the resizing code
+            //
             windowResizeScrollVector = GUILayout.BeginScrollView(windowResizeScrollVector);
 
+            //
+            // Display the filter buttons
+            //
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("Vessel"))
                 if (entryField == Fields.none)
@@ -154,6 +184,9 @@ namespace KaptainsLogNamespace
             }
             GUILayout.EndHorizontal();
 
+            //
+            // Display the column headings
+            //
             GUILayout.BeginHorizontal();
             GUILayout.Label(" Sel", GUILayout.Width(30));
             GUILayout.Space(45);
@@ -161,17 +194,21 @@ namespace KaptainsLogNamespace
             {
                 if (displayFields[d].f != Fields.none && displayFields[d].visible)
                 {
-                    GUILayout.Label(LogEntry.displayFieldName(displayFields[d].f), GUILayout.Width(colWidth[d]));
+                    GUILayout.Label("<color=yellow>" + LogEntry.displayFieldName(displayFields[d].f) + "</color>", GUILayout.Width(colWidth[d]));
                 }
             }
             GUILayout.EndHorizontal();
+
+            //
+            // Now start the scrollview for the rows
+            //
             GUILayout.BeginHorizontal();
-            //float width = mainWindow.width * 30 / 160;
-            //float height = mainWindow.width * 38 / 160 - Screen.height * 1 / 25;
-            //displayScrollVector = GUILayout.BeginScrollView(displayScrollVector, false, true, GUILayout.Width(width), GUILayout.Height(height));
-
-            displayScrollVector = GUILayout.BeginScrollView(displayScrollVector, false, false, GUIStyle.none, GUI.skin.verticalScrollbar);
-
+                       
+            displayScrollVector = GUILayout.BeginScrollView(displayScrollVector, false, false, GUIStyle.none, GUI.skin.verticalScrollbar, GUILayout.Height(SCROLLVIEW_HEIGHT));
+            //Log.Info("displayScrollvector   x: " + displayScrollVector.x + ",  y: " + displayScrollVector.y);
+            //
+            // Determine if we need the tree view or now
+            //
             bool treeView = false;
             if (LogEntry.sortField == Fields.vesselId || LogEntry.sortField == Fields.vesselId || LogEntry.sortField == Fields.vesselName)
             {
@@ -186,136 +223,199 @@ namespace KaptainsLogNamespace
                 }
                 GUILayout.EndHorizontal();
             }
+
+            //
+            // Loop through the rows 
+            // Only display MAXDISPLAYED rows for performance issues
+            //
+            int cnt = 0;
+            int displayCnt = 0;
             for (int i = 0; i < kaptainsLogList.Count; i++)
             {
+
                 var le1 = kaptainsLogList[i];
                 if (KLScenario.dirtyFilter)
                     ApplyFilters(le1);
                 if (!le1.leSelected)
                     continue;
-
-                string sortedField = "all";
-                if (treeView)
+                cnt++;
+                //Log.Info("cnt: " + cnt + ", firstDisplayed: " + firstDisplayed);
+                if (cnt < firstDisplayed)
+                    continue;
+                displayCnt++;
+                //Log.Info("i: " + i + ", displayCnt: " + displayCnt);
+                if (displayCnt <= MAXDISPLAYED)
                 {
-                    switch (LogEntry.sortField)
+#if false
+                if (displayCnt > MAXDISPLAYED)
+                {
+                    Log.Info("displayCnt: " + displayCnt);
+                    break ;
+                }
+#endif
+                    string sortedField = "all";
+                    if (treeView)
                     {
-                        case Fields.vesselId:
-                            sortedField = le1.vesselId + ": " + le1.vesselName;
-                            break;
-                        case Fields.vesselName:
-                            sortedField = le1.vesselName;
-                            break;
-                        case Fields.mainBody:
-                            sortedField = le1.vesselMainBody;
-                            break;
-                        case Fields.tag:
-                            sortedField = le1.tag;
-                            break;
-                    }
-
-                    toggleStyle.normal.textColor = Color.red;
-
-
-                    if (sortedField != "")
-                    {
-                        if (lastSortField != sortedField)
+                        switch (LogEntry.sortField)
                         {
-                            if (sortedField == selectedSortField)
-                                toggleStyle.normal.textColor = Color.green;
-                            lastSortField = sortedField;
+                            case Fields.vesselId:
+                                sortedField = le1.vesselId + ": " + le1.vesselName;
+                                break;
+                            case Fields.vesselName:
+                                sortedField = le1.vesselName;
+                                break;
+                            case Fields.mainBody:
+                                sortedField = le1.vesselMainBody;
+                                break;
+                            case Fields.tag:
+                                sortedField = le1.tag;
+                                break;
+                        }
 
-                            GUILayout.BeginHorizontal();
-                            if (GUILayout.Button(sortedField, toggleStyle))
+                        toggleStyle.normal.textColor = Color.red;
+
+
+                        if (sortedField != "")
+                        {
+                            if (lastSortField != sortedField)
                             {
-                                if (selectedSortField == sortedField)
-                                    selectedSortField = "none";
-                                else
-                                    selectedSortField = sortedField;
+                                if (sortedField == selectedSortField)
+                                    toggleStyle.normal.textColor = Color.green;
+                                lastSortField = sortedField;
+
+                                GUILayout.BeginHorizontal();
+                                if (GUILayout.Button(sortedField, toggleStyle))
+                                {
+                                    if (selectedSortField == sortedField)
+                                        selectedSortField = "none";
+                                    else
+                                        selectedSortField = sortedField;
+                                }
+                                GUILayout.EndHorizontal();
                             }
-                            GUILayout.EndHorizontal();
                         }
                     }
-                }
-                if (sortedField == "all" || (sortedField == "" && selectedSortField == N_A) || sortedField == selectedSortField)
-                {
-                    GUILayout.BeginHorizontal();
-
-                    GUIStyle printStyle = new GUIStyle(GUI.skin.button);
-                    printStyle.fixedWidth = 20;
-
-                    string prDisplay = " ";
-
-                    if (le1.printFlag != PrintType.noPrint)
+                    if (sortedField == "all" || (sortedField == "" && selectedSortField == N_A) || sortedField == selectedSortField)
                     {
-                        printStyle.normal.background = greenButtonTexture;
-                        printStyle.hover.background = greenButtonTexture;
-                        printStyle.active.background = greenButtonTexture;
+                        GUILayout.BeginHorizontal();
 
-                        printStyle.normal.textColor = Color.black;
-                        printStyle.hover.textColor = Color.black;
-                        printStyle.active.textColor = Color.black;
+                        GUIStyle printStyle = new GUIStyle(GUI.skin.button);
+                        printStyle.fixedWidth = 20;
 
-                    }
-                    if (le1.printFlag == PrintType.screenshotPrint)
-                        prDisplay = "+";
-                    if (GUILayout.Button(prDisplay, printStyle))
-                    {
-                        le1.printFlag = (PrintType)((int)le1.printFlag + 1);
-                        if (le1.printFlag > PrintType.screenshotPrint)
-                            le1.printFlag = PrintType.noPrint;
-                    }
+                        string prDisplay = " ";
 
-                    if (GUILayout.Button("x", bStyle, GUILayout.Height(21), GUILayout.Width(21)))
-                    {
-                        deleteItem = i;
-                    }
-                    if (GUILayout.Button(GameDatabase.Instance.GetTexture(PencilIcon, false), GUILayout.Height(21), GUILayout.Width(21)))
-                    {
-                        editNewItem = i;
-                    }
-                    for (int d = 0; d < displayFields.Count; d++)
-                    {
-                        if (displayFields[d].f != Fields.none && displayFields[d].visible)
+                        if (le1.printFlag != PrintType.noPrint)
                         {
+                            printStyle.normal.background = greenButtonTexture;
+                            printStyle.hover.background = greenButtonTexture;
+                            printStyle.active.background = greenButtonTexture;
 
-                            string f = utils.getDisplayString(le1, displayFields[d].f);
-                            if (displayFields[d].f != Fields.thumbnail)
+                            printStyle.normal.textColor = Color.black;
+                            printStyle.hover.textColor = Color.black;
+                            printStyle.active.textColor = Color.black;
+
+                        }
+                        if (le1.printFlag == PrintType.screenshotPrint)
+                            prDisplay = "+";
+                        if (GUILayout.Button(prDisplay, printStyle))
+                        {
+                            le1.printFlag = (PrintType)((int)le1.printFlag + 1);
+                            if (le1.printFlag > PrintType.screenshotPrint)
+                                le1.printFlag = PrintType.noPrint;
+                        }
+
+                        if (GUILayout.Button("x", bStyle, GUILayout.Height(21), GUILayout.Width(21)))
+                        {
+                            deleteItem = i;
+                        }
+                        if (GUILayout.Button(GameDatabase.Instance.GetTexture(PencilIcon, false), GUILayout.Height(21), GUILayout.Width(21)))
+                        {
+                            editNewItem = i;
+                        }
+                        for (int d = 0; d < displayFields.Count; d++)
+                        {
+                            if (displayFields[d].f != Fields.none && displayFields[d].visible)
                             {
-                                GUILayout.Label(f, GUILayout.Width(colWidth[d]));
-                            }
-                            else
-                            {
-                                if (i <= imgCacheList.Count - 1 && imgCacheList[i].image != null)
+
+                                string f = utils.getDisplayString(le1, displayFields[d].f);
+                                if (displayFields[d].f != Fields.thumbnail)
                                 {
-
-                                    if (GUILayout.Button(imgCacheList[i].image, GUIStyle.none, GUILayout.Width(imgCacheList[i].image.width), GUILayout.Height(imgCacheList[i].image.height)))
+                                    GUILayout.Label(f, GUILayout.Width(colWidth[d]));
+                                }
+                                else
+                                {
+                                    if (i <= imgCacheList.Count - 1 && imgCacheList[i].image != null)
                                     {
-                                        displayScreenshot = true;
-                                        leToDisplay = le1;
-                                        newLeToDisplay = true;
+
+                                        if (GUILayout.Button(imgCacheList[i].image, GUIStyle.none, GUILayout.Width(imgCacheList[i].image.width), GUILayout.Height(imgCacheList[i].image.height)))
+                                        {
+                                            displayScreenshot = true;
+                                            leToDisplay = le1;
+                                            newLeToDisplay = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        //Log.Info("i: " + i.ToString() + "  imgCacheList.Count: " + imgCacheList.Count.ToString());
+                                        GUILayout.Box("n/a", GUILayout.Width(colWidth[d]));
                                     }
                                 }
-                                else
-                                {
-                                    //Log.Info("i: " + i.ToString() + "  imgCacheList.Count: " + imgCacheList.Count.ToString());
-                                    GUILayout.Box("n/a", GUILayout.Width(colWidth[d]));
-                                }
                             }
-                        }
 
+                        }
+                        GUILayout.EndHorizontal();
+                        GUILayout.Space(5);
                     }
-                    GUILayout.EndHorizontal();
-                    GUILayout.Space(5);
                 }
+              
             }
             KLScenario.dirtyFilter = false;
             GUILayout.EndScrollView();
             GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
 
+
+            int maxDisplayCnt = GetDisplayableCount();
+            GUILayout.Label("Displayable Rows: " + maxDisplayCnt);
+            GUILayout.Space(20);
+            GUILayout.Label("Page: " + (firstDisplayed / MAXDISPLAYED + 1) + "/" + (maxDisplayCnt / MAXDISPLAYED + 1));
+            GUILayout.FlexibleSpace();
+            if (firstDisplayed == 1)
+                GUI.enabled = false;
+            if (GUILayout.Button("<<", GUILayout.Width(90)))
+            {
+                firstDisplayed = 1;
+                displayScrollVector.y = 1;
+            }
+            if (GUILayout.Button("Page Back", GUILayout.Width(90)))
+            {
+                firstDisplayed = Math.Max(1, firstDisplayed - MAXDISPLAYED);
+                displayScrollVector.y = 99999;
+            }
+
+            if (firstDisplayed >= kaptainsLogList.Count - MAXDISPLAYED)
+                GUI.enabled = false;
+            else
+                GUI.enabled = true;
+           
+            if (GUILayout.Button("Page Forward", GUILayout.Width(90)))
+            {
+                firstDisplayed = Math.Max(1, Math.Min(maxDisplayCnt - MAXDISPLAYED + 1, firstDisplayed + MAXDISPLAYED));
+                displayScrollVector.y = 1;
+            }
+            if (GUILayout.Button(">>", GUILayout.Width(90)))
+            {
+                firstDisplayed = maxDisplayCnt - MAXDISPLAYED + 1;
+                displayScrollVector.y = 1;
+            }
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
 
             if (/* displayFilterWindow ||*/ displayColSelectWindow)
                 GUI.enabled = false;
+            else
+                GUI.enabled = true;
             if (GUILayout.Button("Select All"))
             {
                 SelectAllExport(PrintType.print);
@@ -371,7 +471,8 @@ namespace KaptainsLogNamespace
             //GUILayout.FlexibleSpace();
             if (GUILayout.Button("Close", GUILayout.Width(90)))
             {
-                ToggleToolbarButton();
+                visibleByToolbar = false;
+                //ToggleToolbarButton();
             }
             GUILayout.FlexibleSpace();
 

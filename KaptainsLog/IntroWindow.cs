@@ -66,10 +66,9 @@ namespace KaptainsLogNamespace
             "notes for each event, and you can create an entry at any time by using the hotkey (default 'O')\n" +
             "\n" +
             "<color=yellow><B>Resizing Windows</B></color>\n" +
-            "Three of the windows can be resized by dragging the bottom edge, right edge or lower-right corner:\n" +
+            "Two of the windows can be resized by dragging the bottom edge, right edge or lower-right corner:\n" +
             "     the Main Window\n" +
-            "     the Screen Messages window\n" +
-            "     the Image Viewer window.\n\n" +
+            "     the Screen Messages window\n\n" +
             "<color=yellow><B>Settings</B></color>\n" +
             "\nBe sure to check the various settings for The Kaptain's Log.\n" +
             "This window will be shown at the beginning of each game until you disable it\n" +

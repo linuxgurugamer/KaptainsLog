@@ -159,3 +159,8 @@
 		Added tagging, ability to set a tag to mark new events with, and then filter on them
 		Added more help screens
 		Updated help info 
+
+0.1.2
+	Fixed settings options
+	Changed main window display to be paged, with 35 rows per page, for performance reasons
+	Disabled resize of image viewer window

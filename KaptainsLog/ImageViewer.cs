@@ -17,7 +17,6 @@ namespace KaptainsLogNamespace
         private static string _imagefile;
 
         public Rect imageWindow;
-        //private Rect _windowRect2 = new Rect(Screen.width / 2 - 150f, Screen.height / 2 - 75f, 260f, 390f);
         bool resetSize = false;
 
         public int winId = 0;
