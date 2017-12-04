@@ -1065,7 +1065,7 @@ namespace KaptainsLogNamespace
  //           if (FlightGlobals.ActiveVessel.LandedOrSplashed)
  //               utils.onVesselLanded(FlightGlobals.ActiveVessel);
 
-            if (utils.le == null || utils.leQ == null)
+            if (utils == null || utils.le == null || utils.leQ == null)
                 return;
 
             //

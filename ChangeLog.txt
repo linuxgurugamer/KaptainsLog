@@ -167,3 +167,6 @@
 
 0.1.3
 	Updated for KSP 1.3.1
+
+0.1.4
+	Fixed nullref which occurred if KC is disabled 
