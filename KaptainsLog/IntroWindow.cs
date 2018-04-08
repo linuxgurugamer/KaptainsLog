@@ -9,6 +9,7 @@ using System.Reflection;
 using KSP.UI.Screens;
 using UnityEngine;
 using UnityEngine.UI;
+using ClickThroughFix;
 
 namespace KaptainsLogNamespace
 {
@@ -20,7 +21,7 @@ namespace KaptainsLogNamespace
         static string lastGameShown = "";
 
         Rect introWindow;
-        int introWindowId = GUIUtility.GetControlID(FocusType.Native);
+        int introWindowId = GUIUtility.GetControlID(FocusType.Passive);
         int MAIN_WIDTH = Screen.height *3/4;
         int MAIN_HEIGHT = 400;
         int automoved = 0;
@@ -44,7 +45,7 @@ namespace KaptainsLogNamespace
         {
             if (!showHelp && ((shown && lastGameShown == HighLogic.SaveFolder) || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().EnabledForSave || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().showIntroAtStartup))
                 return;
-            introWindow = GUILayout.Window(introWindowId, introWindow, IntroWindow, "Kaptain's Log Intro", KaptainsLog.windowStyle);
+            introWindow = ClickThruBlocker.GUILayoutWindow(introWindowId, introWindow, IntroWindow, "Kaptain's Log Intro", KaptainsLog.windowStyle);
             if (automoved < 2)
             {
                 introWindow.x = (Screen.width - introWindow.width) / 2;

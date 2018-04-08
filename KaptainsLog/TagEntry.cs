@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using ClickThroughFix;
 
 namespace KaptainsLogNamespace
 {
@@ -34,7 +35,7 @@ namespace KaptainsLogNamespace
         {
 
             GUI.skin = HighLogic.Skin;
-            settingsRect = GUILayout.Window("Tag Entry".GetHashCode(),                                            settingsRect,                                            SettingsWindowFcn,                                            "Tag Entry",                                            GUILayout.ExpandWidth(true),
+            settingsRect = ClickThruBlocker.GUILayoutWindow("Tag Entry".GetHashCode(),                                            settingsRect,                                            SettingsWindowFcn,                                            "Tag Entry",                                            GUILayout.ExpandWidth(true),
                                             GUILayout.ExpandHeight(true));
         }
 

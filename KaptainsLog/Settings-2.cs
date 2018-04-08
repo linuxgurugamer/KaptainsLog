@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
-
+using ClickThroughFix;
 
 
 namespace KaptainsLogNamespace
@@ -54,7 +54,7 @@ namespace KaptainsLogNamespace
 
             // The settings are only available in the space center
             GUI.skin = HighLogic.Skin;
-            settingsRect = GUILayout.Window("HotKeySettings".GetHashCode(),                                            settingsRect,                                            SettingsWindowFcn,                                            "Manual Entry Hotkey",                                            GUILayout.ExpandWidth(true),
+            settingsRect = ClickThruBlocker.GUILayoutWindow("HotKeySettings".GetHashCode(),                                            settingsRect,                                            SettingsWindowFcn,                                            "Manual Entry Hotkey",                                            GUILayout.ExpandWidth(true),
                                             GUILayout.ExpandHeight(true));
         }
 

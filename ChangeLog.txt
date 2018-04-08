@@ -170,3 +170,10 @@
 
 0.1.4
 	Fixed nullref which occurred if KC is disabled 
+
+0.1.5
+	Updated for 1.4.1+
+	Added support for the ClickThroughblocker
+	Added support for Toolbar Controller
+
+

@@ -114,7 +114,7 @@ namespace KaptainsLogNamespace
                
                 ToggleToolbarButton();
      
-                kaptainsLogStockButton.SetFalse();
+                toolbarControl.SetFalse();
                 cancelManualEntry = true;
                 notesText = "";
                 //escapePressed = false;
@@ -162,7 +162,7 @@ namespace KaptainsLogNamespace
                 if (visibleByToolbar)
                 {
                     ToggleToolbarButton();
-                    kaptainsLogStockButton.SetFalse();
+                    toolbarControl.SetFalse();
                 }
             }
             GUILayout.EndHorizontal();

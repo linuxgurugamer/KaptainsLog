@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using File = KSP.IO.File;
+using ClickThroughFix;
 
 namespace KaptainsLogNamespace
 {
@@ -128,7 +129,7 @@ namespace KaptainsLogNamespace
                     }
                     updateSize = false;
                 }
-                imageWindow = GUILayout.Window(GUIUtility.GetControlID(0, FocusType.Passive), imageWindow, IvWindow,
+                imageWindow = ClickThruBlocker.GUILayoutWindow(GUIUtility.GetControlID(0, FocusType.Passive), imageWindow, IvWindow,
                         "Image viewer");
             }
 

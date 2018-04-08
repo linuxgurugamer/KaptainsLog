@@ -11,6 +11,7 @@ using KSP.UI.Screens;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using ClickThroughFix;
 
 namespace KaptainsLogNamespace
 {
@@ -44,7 +45,7 @@ namespace KaptainsLogNamespace
         Queue<ScreenMessage> scrnMsgLog = new Queue<ScreenMessage>();
         internal bool visible = false;
         internal Rect ScrnMsgsWindow;
-        int logentryWindowId = GUIUtility.GetControlID(FocusType.Native);
+        int logentryWindowId = GUIUtility.GetControlID(FocusType.Passive);
         Vector2 displayScrollVector;
 
         const int NARROW_WIDTH = 400;
@@ -234,7 +235,7 @@ namespace KaptainsLogNamespace
                 //buttonOnStyle.active.background = greenButtonTexture;
                 //buttonOnStyle.focused.background = greenButtonTexture;
 
-                ScrnMsgsWindow = GUILayout.Window(logentryWindowId, ScrnMsgsWindow, DisplayScreenMsgsWindow, "Kaptain's Log - Screen Messages", KaptainsLog.windowStyle);
+                ScrnMsgsWindow = ClickThruBlocker.GUILayoutWindow(logentryWindowId, ScrnMsgsWindow, DisplayScreenMsgsWindow, "Kaptain's Log - Screen Messages", KaptainsLog.windowStyle);
             }
         }
 

@@ -9,6 +9,8 @@ using System.Reflection;
 using KSP.UI.Screens;
 using UnityEngine;
 using UnityEngine.UI;
+using ClickThroughFix;
+using ToolbarControl_NS;
 
 namespace KaptainsLogNamespace
 {
@@ -45,8 +47,9 @@ namespace KaptainsLogNamespace
             ControlTypes.MISC | ControlTypes.GROUPS_ALL | ControlTypes.CUSTOM_ACTION_GROUPS;
 
         // The button for the toolbar.
-        private IButton kaptainsLogIButton;
-        private ApplicationLauncherButton kaptainsLogStockButton;
+        //private IButton kaptainsLogIButton;
+        //private ApplicationLauncherButton kaptainsLogStockButton;
+        ToolbarControl toolbarControl;
 
 
         // The tooltip text for the toolbar icon if the plugin is off.
@@ -111,14 +114,14 @@ namespace KaptainsLogNamespace
         Rect htmlTemplateSelectWindow;
 
 
-        int mainWindowId = GUIUtility.GetControlID(FocusType.Native);
-        int logentryWindowId = GUIUtility.GetControlID(FocusType.Native);
-        int filterselWindowId = GUIUtility.GetControlID(FocusType.Native);
-        int colSelWindowId = GUIUtility.GetControlID(FocusType.Native);
-        int saveWindowId = GUIUtility.GetControlID(FocusType.Native);
-        int imgSelWindowId = GUIUtility.GetControlID(FocusType.Native);
-        int entryFieldWindowId = GUIUtility.GetControlID(FocusType.Native);
-        int htmlTemplateWindowId = GUIUtility.GetControlID(FocusType.Native);
+        int mainWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int logentryWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int filterselWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int colSelWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int saveWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int imgSelWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int entryFieldWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int htmlTemplateWindowId = GUIUtility.GetControlID(FocusType.Passive);
 
         const int MAIN_WIDTH = 1000;
         const int MAIN_HEIGHT = 600;
@@ -171,7 +174,7 @@ namespace KaptainsLogNamespace
         public string SAVE_PATH = ROOT_PATH + "saves/" + HighLogic.SaveFolder;
         string PLUGINDATA = MOD_FOLDER + "PluginData/KaptainsLogSettings.cfg";
 
-        bool blizzyButtonActive;
+        //bool blizzyButtonActive;
 
         const string QuestionMarkIcon = "KaptainsLog/Icons/questionMark";
 
@@ -372,43 +375,9 @@ namespace KaptainsLogNamespace
             displayFields.Add(new DisplayField(kl4.tag, Fields.tag));
         }
 
-        void ShowStockToolbarButton()
-        {
-            GameEvents.onGUIApplicationLauncherReady.Add(OnGUIAppLauncherReady);
-            GameEvents.onGUIApplicationLauncherDestroyed.Add(OnGUIAppLauncherDestroyed);
-
-            OnGUIAppLauncherReady();
-            blizzyButtonActive = false;
-        }
-        void ShowBlizzyButton()
-        {
-            kaptainsLogIButton = ToolbarManager.Instance.add("notes", "toggle");
-            kaptainsLogIButton.TexturePath = BlizzyToolbarIconInActive;
-            kaptainsLogIButton.ToolTip = _tooltipOff;
-            kaptainsLogIButton.OnClick += e => ToggleToolbarButton();
-            blizzyButtonActive = true;
-        }
 
         internal void OnGameSettingsApplied()
         {
-            if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy != blizzyButtonActive)
-            {
-                if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
-                {
-                    if (kaptainsLogIButton != null)
-                    {
-                        kaptainsLogIButton.Destroy();
-                        kaptainsLogIButton = null;
-                    }
-                    ShowStockToolbarButton();
-                }
-                else
-                {
-                    OnGUIAppLauncherDestroyed();
-                    ShowBlizzyButton();
-                }
-            }
-
             GlobalSettings.SaveGlobalSettings();
 
         }
@@ -421,10 +390,10 @@ namespace KaptainsLogNamespace
  
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().EnabledForSave)
                 return;
-            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
+            //if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
                 ShowStockToolbarButton();
-            else
-                ShowBlizzyButton();
+            //else
+            //    ShowBlizzyButton();
 
 
             mainWindow = new Rect((Screen.width - MAIN_WIDTH - 40), 50, MAIN_WIDTH, MAIN_HEIGHT);
@@ -509,57 +478,44 @@ namespace KaptainsLogNamespace
         public void OnDestroy()
         {
             Log.Info("OnDestroy");
-            if (kaptainsLogStockButton != null)
+
+            if (toolbarControl == null)
             {
-                GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
-                GameEvents.onGameStateCreated.Remove(onGameStateCreated);
-                GameEvents.onGUIApplicationLauncherDestroyed.Remove(OnGUIAppLauncherDestroyed);
-                if (this.kaptainsLogStockButton != null)
-                {
-                    ApplicationLauncher.Instance.RemoveModApplication(this.kaptainsLogStockButton);
-                    kaptainsLogStockButton = null;
-                }
+                toolbarControl.OnDestroy();
+                Destroy(toolbarControl);
             }
-            if (kaptainsLogIButton != null)
-            {
-                kaptainsLogIButton.Destroy();
-                kaptainsLogIButton = null;
-            }
+
             utils.initializeEvents(false);
 
         }
 
-        private void OnGUIAppLauncherReady()
+        private void ShowStockToolbarButton()
         {
             Log.Info("OnGUIAppLauncherReady");
             // Setup PW Stock Toolbar button
-            bool hidden = false;
-            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
+           // bool hidden = false;
+            //if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
+            if (toolbarControl == null)
             {
-                if (ApplicationLauncher.Ready && (kaptainsLogStockButton == null || !ApplicationLauncher.Instance.Contains(kaptainsLogStockButton, out hidden)))
-                {
-                    kaptainsLogStockButton = ApplicationLauncher.Instance.AddModApplication(
-                        ToggleToolbarButton,
-                        ToggleToolbarButton,
-                        null, null, null, null,
-                        ApplicationLauncher.AppScenes.SPACECENTER | ApplicationLauncher.AppScenes.FLIGHT | ApplicationLauncher.AppScenes.MAPVIEW |
-                        ApplicationLauncher.AppScenes.TRACKSTATION | ApplicationLauncher.AppScenes.VAB | ApplicationLauncher.AppScenes.SPH,
 
-                        (Texture)GameDatabase.Instance.GetTexture(StockToolbarIconInactive, false));
+                toolbarControl = gameObject.AddComponent<ToolbarControl>();
+                toolbarControl.AddToAllToolbars(ToggleToolbarButton, ToggleToolbarButton,
+                     ApplicationLauncher.AppScenes.SPACECENTER | 
+                     ApplicationLauncher.AppScenes.FLIGHT |
+                     ApplicationLauncher.AppScenes.MAPVIEW |
+                     ApplicationLauncher.AppScenes.TRACKSTATION | 
+                     ApplicationLauncher.AppScenes.VAB | 
+                     ApplicationLauncher.AppScenes.SPH,
+                    "KaptainsLog_NS",
+                    "kaptainsLogButton",
+                    "KaptainsLog/Icons/kaptainslog_active_toolbar_38_icon",
+                    "KaptainsLog/Icons/kaptainslog_inactive_toolbar_38_icon",
+                    "KaptainsLog/Icons/kaptainslog_active_toolbar_24_icon",
+                    "KaptainsLog/Icons/kaptainslog_inactive_toolbar_24_icon",
+                    "Kaptains Log"
+                );
+                toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy);
 
-                }
-            }
-        }
-
-        private void OnGUIAppLauncherDestroyed()
-        {
-            Log.Info("OnGUIAppLauncherDestroyed");
-            if (kaptainsLogStockButton != null)
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(kaptainsLogStockButton);
-                GameEvents.onGUIApplicationLauncherReady.Remove(OnGUIAppLauncherReady);
-                GameEvents.onGUIApplicationLauncherDestroyed.Remove(OnGUIAppLauncherDestroyed);
-                kaptainsLogStockButton = null;
             }
         }
 
@@ -593,49 +549,19 @@ namespace KaptainsLogNamespace
                 }
 
             }
-            if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
+
+            toolbarControl.SetFalse(false);
+            if (visibleByToolbar)
             {
-                if (!visibleByToolbar)
-                {
-                    // This odd code is needed because sometimes this is called by methds other than the depresing of the button
-                    // So we set the button false, but that then triggers a call to this function, so we then set it false again to un
-                    // what Unity did.
-                    kaptainsLogStockButton.SetFalse();
-                    visibleByToolbar = false;
-                }
-                kaptainsLogStockButton.SetTexture((Texture)GameDatabase.Instance.GetTexture(visibleByToolbar ? StockToolbarIconActive : StockToolbarIconInactive, false));
+                toolbarControl.SetTexture(StockToolbarIconActive, BlizzyToolbarIconActive);
             }
             else
             {
-                if (!visibleByToolbar)
-                {
-                    kaptainsLogIButton.TexturePath = BlizzyToolbarIconInActive;
-                    kaptainsLogIButton.ToolTip = _tooltipOff;
-                }
-                else
-                {
-                    kaptainsLogIButton.TexturePath = BlizzyToolbarIconActive;
-                    kaptainsLogIButton.ToolTip = _tooltipOn;
-                }
+                toolbarControl.SetTexture(StockToolbarIconInactive, BlizzyToolbarIconInActive);
 
-            }
-
+            }            
         }
 
-#if false
-        private void toggleLock()
-        {
-            _toggleInput = !_toggleInput;
-            if (_toggleInput)
-            {
-                InputLockManager.SetControlLock(_blockAllControls, "notes");
-            }
-            else
-            {
-                InputLockManager.RemoveControlLock("notes");
-            }
-        }
-#endif
         // bool escapePressed = false;
         bool cancelManualEntry = false;
 
@@ -666,21 +592,21 @@ namespace KaptainsLogNamespace
                     if (mainWindow.y + mainWindow.height > Screen.height)
                         mainWindow.y = Screen.height - mainWindow.height;
                 }
-                mainWindow = GUILayout.Window(mainWindowId, mainWindow, DisplayMainWindow, "Kaptain's Log Display", windowStyle);
+                mainWindow = ClickThruBlocker.GUILayoutWindow(mainWindowId, mainWindow, DisplayMainWindow, "Kaptain's Log Display", windowStyle);
             }
 
             if (notesEntry && !utils.recoveryRequested)
             {
-                logEntryWindow = GUILayout.Window(logentryWindowId, logEntryWindow, DisplayLogEntryWindow, "Kaptain's Log Entry", windowStyle);
+                logEntryWindow = ClickThruBlocker.GUILayoutWindow(logentryWindowId, logEntryWindow, DisplayLogEntryWindow, "Kaptain's Log Entry", windowStyle);
                 return;
             }
             if (imageSelection)
             {
-                imageSelectionWindow = GUILayout.Window(imgSelWindowId, imageSelectionWindow, DisplayImageSelectionWindow, "Kaptain's Log Image Selection", windowStyle);
+                imageSelectionWindow = ClickThruBlocker.GUILayoutWindow(imgSelWindowId, imageSelectionWindow, DisplayImageSelectionWindow, "Kaptain's Log Image Selection", windowStyle);
             }
             if (displaySortWindow)
             {
-                sortSelectionWindow = GUILayout.Window(imgSelWindowId, sortSelectionWindow, DisplaySortSelWindow, "Kaptain's Log Sort Selection", windowStyle);
+                sortSelectionWindow = ClickThruBlocker.GUILayoutWindow(imgSelWindowId, sortSelectionWindow, DisplaySortSelWindow, "Kaptain's Log Sort Selection", windowStyle);
             }
             if (displayFilterWindow)
             {
@@ -692,7 +618,7 @@ namespace KaptainsLogNamespace
             }
             if (displayExportWindow)
             {
-                saveWindow = GUILayout.Window(saveWindowId, saveWindow, DisplaySaveWindow, "Kaptain's Log Export/Save", windowStyle);
+                saveWindow = ClickThruBlocker.GUILayoutWindow(saveWindowId, saveWindow, DisplaySaveWindow, "Kaptain's Log Export/Save", windowStyle);
             }
             if (entryField != Fields.none)
             {
@@ -702,7 +628,7 @@ namespace KaptainsLogNamespace
             }
             if (displayHTMLTemplate || displayQuickHTMLTemplate)
             {
-                htmlTemplateSelectWindow = GUILayout.Window(saveWindowId, htmlTemplateSelectWindow, DisplayHtmlTemplateSelectionWindow, "Kaptain's Log HTML Template Selection", windowStyle);
+                htmlTemplateSelectWindow = ClickThruBlocker.GUILayoutWindow(saveWindowId, htmlTemplateSelectWindow, DisplayHtmlTemplateSelectionWindow, "Kaptain's Log HTML Template Selection", windowStyle);
             }
             if (TagEntry.ready)
             {
@@ -767,7 +693,7 @@ namespace KaptainsLogNamespace
             }
             displayWin.x = Math.Max(0, displayWin.x);
             displayWin.y = Math.Max(0, displayWin.y);
-            displayWin = GUILayout.Window(winId, displayWin, func, title, window);
+            displayWin = ClickThruBlocker.GUILayoutWindow(winId, displayWin, func, title, window);
             offset.x = parentWin.x - displayWin.x;
             offset.y = parentWin.y - displayWin.y;
         }
@@ -862,7 +788,7 @@ namespace KaptainsLogNamespace
                             {
 
                                 string _imageurl = "file://" + f;
-                                var _imagetex = new WWW(_imageurl + _imageurl);
+                                var _imagetex = new WWW(_imageurl);
                                 var _image = _imagetex.texture;
                                 _imagetex.Dispose();
                                 colWidth[d] = Math.Max(colWidth[d], _image.width);
@@ -1098,7 +1024,7 @@ namespace KaptainsLogNamespace
                             if (utils.le.eventType == Events.ManualEntry)
                             {
                                 utils.snapshotTaken = 0;
-                                Application.CaptureScreenshot(utils.le.pngName);
+                                ScreenCapture.CaptureScreenshot(utils.le.pngName);
                                 utils.snapshotInProgress = Utils.SnapshotProgress.inProgress;
                             }
                             if (utils.snapshotTaken > 0)
@@ -1115,7 +1041,7 @@ namespace KaptainsLogNamespace
                                 utils.snapshotTaken--;
                                 if (utils.snapshotTaken == 0)
                                 {
-                                    Application.CaptureScreenshot(utils.le.pngName);
+                                    ScreenCapture.CaptureScreenshot(utils.le.pngName);
                                     utils.snapshotInProgress = Utils.SnapshotProgress.inProgress;
                                 }
                                 else

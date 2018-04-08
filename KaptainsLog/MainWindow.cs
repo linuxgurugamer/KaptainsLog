@@ -48,7 +48,7 @@ namespace KaptainsLogNamespace
                 {
 
                     string _imageurl = "file://" + fileName;
-                    var imagetex = new WWW(_imageurl + _imageurl);
+                    var imagetex = new WWW(_imageurl);
                     content.image = imagetex.texture;
                 }
                 imgCacheList.Add(content);
@@ -68,7 +68,7 @@ namespace KaptainsLogNamespace
                 {
 
                     string _imageurl = "file://" + fileName;
-                    var imagetex = new WWW(_imageurl + _imageurl);
+                    var imagetex = new WWW(_imageurl);
                     content.image = imagetex.texture;
                 }
                 imgCacheList.Add(content);

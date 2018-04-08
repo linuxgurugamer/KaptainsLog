@@ -696,6 +696,8 @@ namespace KaptainsLogNamespace
         //
         void onProgressAchieve(ProgressNode node)
         {
+            if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
+                return;
             if (node == null)
                 return;
             Log.Info("onProgressAchieve");
@@ -726,6 +728,8 @@ namespace KaptainsLogNamespace
 
         void onProgressComplete(ProgressNode node)
         {
+            if (HighLogic.CurrentGame.Mode == Game.Modes.SANDBOX)
+                return;
             if (node == null)
                 return;
             if (!node.IsComplete)
