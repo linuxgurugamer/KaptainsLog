@@ -76,26 +76,26 @@
   <ItemGroup>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.4.1_dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath>R:\KSP_1.4.3_dev\KSP_x64_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ClickThroughBlocker">
-      <HintPath>R:\KSP_1.4.1_dev\GameData\ClickThroughBlocker\Plugins\ClickThroughBlocker.dll</HintPath>
+      <HintPath>R:\KSP_1.4.3_dev\GameData\ClickThroughBlocker\Plugins\ClickThroughBlocker.dll</HintPath>
     </Reference>
     <Reference Include="ProgressParser, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.4.1_dev\GameData\DMagicUtilities\ProgressParser\ProgressParser.dll</HintPath>
+      <HintPath>R:\KSP_1.4.3_dev\GameData\DMagicUtilities\ProgressParser\ProgressParser.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="ToolbarControl">
-      <HintPath>R:\KSP_1.4.1_dev\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll</HintPath>
+      <HintPath>R:\KSP_1.4.3_dev\GameData\001_ToolbarControl\Plugins\ToolbarControl.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.4.1_dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath>R:\KSP_1.4.3_dev\KSP_x64_Data\Managed\UnityEngine.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>R:\KSP_1.4.1_dev\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <HintPath>R:\KSP_1.4.3_dev\KSP_x64_Data\Managed\UnityEngine.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
@@ -103,8 +103,14 @@
     <PostBuildEvent>
 start /D D:\Users\jbb\github\KaptainsLog /WAIT deploy.bat  $(TargetDir) $(TargetFileName)
 
+
+
 if $(ConfigurationName) == Release (
-start /D D:\Users\jbb\github\KaptainsLog  /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
+     start /D D:\Users\jbb\github\KaptainsLog  /WAIT buildRelease.bat $(TargetDir) $(TargetFileName)
+
+
 )
 </PostBuildEvent>
   </PropertyGroup>

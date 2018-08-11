@@ -50,7 +50,6 @@ namespace KaptainsLogNamespace
         OnReputationChanged,
         OnScienceChanged,
         OnScienceReceived,
-        OnTechnologyResearched,
         OnTriggeredDataTransmission,
         OnVesselRollout,
         OrbitClosed,
@@ -63,7 +62,17 @@ namespace KaptainsLogNamespace
         StageActivate,
         StageSeparation,
         VesselModified,
-        VesselRecovered
+        VesselRecovered,
+
+        OnReachingSpace,
+        OnReEntries,
+        OnReturnsFromOrbitSurface,
+        OnVesselDestruction,
+        OnUndocking,
+        OnAnomalyDiscovery,
+        OnBuildingUpgrades,
+        OnBuildingDamaged,
+        OnTechnologyResearch
 
     };
     public enum Fields
@@ -188,12 +197,21 @@ namespace KaptainsLogNamespace
                 case Events.OnScienceReceived: return "Science received at R&D";
                 case Events.OnOrbitalSurveyCompleted: return "Orbital survey completed";
                 case Events.OnReputationChanged: return "Reputation changed";
-                case Events.OnTechnologyResearched: return "Technology researched";
                 case Events.OnTriggeredDataTransmission: return "Data transmission triggered";
                 case Events.OnVesselRollout: return "Vessel rollout";
                 case Events.OnPartUpgradePurchased: return "Part upgrade purchased";
                 case Events.OnPartPurchased: return "Part purchased";
                 case Events.OnFundsChanged: return "Funds changed";
+
+                case Events.OnReachingSpace: return "Reached space";
+                case Events.OnReEntries: return "Reentry";
+                case Events.OnReturnsFromOrbitSurface: return "Returned from orbit/surface";
+                case Events.OnVesselDestruction: return "Vessel destroyed";
+                case Events.OnUndocking: return "Undocked";
+                case Events.OnAnomalyDiscovery: return "Anomaly discovered";
+                case Events.OnBuildingUpgrades: return "Building upgraded";
+                case Events.OnBuildingDamaged: return "Building damaged";
+                case Events.OnTechnologyResearch: return "Technology researched";
             }
             return evt.ToString();
         }
@@ -409,6 +427,25 @@ namespace KaptainsLogNamespace
                     case Events.KerbalPassedOutFromGeeForce:
                         doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnKerbalPassedOutFromGeeForce;
                         break;
+                    case Events.OnReachingSpace:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnReachingSpace;
+                        break;
+                    case Events.OnReEntries:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnReEntries;
+                        break;
+                    case Events.OnReturnsFromOrbitSurface:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnReturnsFromOrbitSurface;
+                        break;
+                    case Events.OnUndocking:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnUndocking;
+                        break;
+                    case Events.OnAnomalyDiscovery:
+                        doScreenshot = HighLogic.CurrentGame.Parameters.CustomParams<KL_23>().screenshotOnAnomalyDiscovery;
+                        break;
+                    case Events.OnBuildingUpgrades: doScreenshot = ScreenshotOptions.No_Screenshot; break;
+                    case Events.OnBuildingDamaged: doScreenshot = ScreenshotOptions.No_Screenshot; break;
+                    case Events.OnTechnologyResearch: doScreenshot = ScreenshotOptions.No_Screenshot; break;
+                    case Events.OnVesselDestruction: doScreenshot = ScreenshotOptions.No_Screenshot; break;
                 }
                 return doScreenshot;
             }

@@ -1,4 +1,4 @@
-TODO list
+﻿TODO list
 
 Add manual flag
 
@@ -15,4 +15,6 @@ future updates
 	Ability to identify and mark accordingly (in the ship name/description) KRASH simulations. (i.e. "Ship 123 - SIM")
 
 	
-	
+Create sets of reasonable default settings
+
+

@@ -265,64 +265,64 @@ namespace KaptainsLogNamespace
 
 
 
-        [GameParameters.CustomParameterUI("Pause on Vessel Rollout")]
+        [GameParameters.CustomParameterUI("On Vessel Rollout")]
         public bool pauseOnVesselRollout = false;
 
-        [GameParameters.CustomParameterUI("Pause on landing")]
+        [GameParameters.CustomParameterUI("On landing")]
         public bool pauseOnVesselLanded = false;
 
-        [GameParameters.CustomParameterUI("Pause on splashdown")]
+        [GameParameters.CustomParameterUI("On splashdown")]
         public bool pauseOnVesselSplashdown = false;
 
-        [GameParameters.CustomParameterUI("Pause on crash or splashdown")]
+        [GameParameters.CustomParameterUI("On crash or splashdown")]
         public bool pauseOnCrashSplashdown = false;
 
-        [GameParameters.CustomParameterUI("Pause on vessel recovered")]
+        [GameParameters.CustomParameterUI("On vessel recovered")]
         public bool pauseOnVesselRecovered = false;
 
-        [GameParameters.CustomParameterUI("Pause on launch")]
+        [GameParameters.CustomParameterUI("On launch")]
         public bool pauseOnLaunch = false;
 
-        [GameParameters.CustomParameterUI("Pause on stage separation")]
+        [GameParameters.CustomParameterUI("On stage separation")]
         public bool pauseOnStageSeparation = false;
 
-        [GameParameters.CustomParameterUI("Pause on stage activate")]
+        [GameParameters.CustomParameterUI("On stage activate")]
         public bool pauseOnStageActivate = false;
 
-        [GameParameters.CustomParameterUI("Pause on part dying")]
+        [GameParameters.CustomParameterUI("On part dying")]
         public bool pauseOnPartDie = false;
 
-        [GameParameters.CustomParameterUI("Pause on disconnected part dying")]
+        [GameParameters.CustomParameterUI("On disconnected part dying")]
         public bool pauseOnDisconnectedPartDie = false;
 
-        [GameParameters.CustomParameterUI("Pause on part couple (docking)")]
+        [GameParameters.CustomParameterUI("On docking")]
         public bool pauseOnPartCouple = false;
 
-        [GameParameters.CustomParameterUI("Pause on vessel was modified")]
+        [GameParameters.CustomParameterUI("On vessel was modified")]
         public bool pauseOnVesselWasModified = false;
 
-        [GameParameters.CustomParameterUI("Pause on crew modified (EVA)")]
+        [GameParameters.CustomParameterUI("On crew modified (EVA)")]
         public bool pauseOnVesselCrewWasModified = false;
 
-        [GameParameters.CustomParameterUI("Pause on closing into orbit")]
+        [GameParameters.CustomParameterUI("On reaching orbit")]
         public bool pauseOnVesselOrbitClosed = false;
 
-        [GameParameters.CustomParameterUI("Pause on escaping orbit")]
+        [GameParameters.CustomParameterUI("On escaping orbit")]
         public bool pauseOnVesselOrbitEscaped = false;
 
-        [GameParameters.CustomParameterUI("Pause on crew killed")]
+        [GameParameters.CustomParameterUI("On crew killed")]
         public bool pauseOnCrewKilled = false;
 
-        [GameParameters.CustomParameterUI("Pause on crew transferred")]
+        [GameParameters.CustomParameterUI("On crew transferred")]
         public bool pauseOnCrewTransferred = false;
 
-        [GameParameters.CustomParameterUI("Pause on SOI change")]
+        [GameParameters.CustomParameterUI("On SOI change")]
         public bool pauseOnDominantBodyChange = false;
 
-        [GameParameters.CustomParameterUI("Pause on flag plant")]
+        [GameParameters.CustomParameterUI("On flag plant")]
         public bool pauseOnFlagPlant = false;
 
-        [GameParameters.CustomParameterUI("Pause on Crew EVA")]
+        [GameParameters.CustomParameterUI("On Crew EVA")]
         public bool pauseOnCrewOnEVA = false;
 
 
@@ -483,103 +483,137 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("Unset all event log settings")]
         public bool unsetSettings = false;
 
+        [GameParameters.CustomParameterUI("Set to default")]
+        public bool setDefaultSettings = false;
 
-        [GameParameters.CustomParameterUI("Log on vessel rollout")]
+        [GameParameters.CustomParameterUI("On vessel rollout")]
         public bool logOnVesselRollout = true;
 
-        [GameParameters.CustomParameterUI("Log on landing")]
+        [GameParameters.CustomParameterUI("On landing")]
         public bool logOnVesselLanded = true;
 
-        [GameParameters.CustomParameterUI("Log on crash or splashdown")]
+        [GameParameters.CustomParameterUI("On crash or splashdown")]
         public bool logOnCrashSplashdown = true;
 
-        [GameParameters.CustomParameterUI("Log on vessel recovered")]
+        [GameParameters.CustomParameterUI("On vessel recovered")]
         public bool logOnVesselRecovered = true;
 
-        [GameParameters.CustomParameterUI("Log on launch")]
+        [GameParameters.CustomParameterUI("On launch")]
         public bool logOnLaunch = true;
 
-        [GameParameters.CustomParameterUI("Log on stage separation")]
+        [GameParameters.CustomParameterUI("On stage separation")]
         public bool logOnStageSeparation = true;
 
-        [GameParameters.CustomParameterUI("Log on stage activate")]
+        [GameParameters.CustomParameterUI("On stage activate")]
         public bool logOnStageActivate = true;
 
-        [GameParameters.CustomParameterUI("Log on part dying")]
+        [GameParameters.CustomParameterUI("On part dying")]
         public bool logOnPartDie = true;
 
-        [GameParameters.CustomParameterUI("Log on disconnected part dying")]
+        [GameParameters.CustomParameterUI("On disconnected part dying")]
         public bool logOnDisconnectedPartDie = true;
 
-        [GameParameters.CustomParameterUI("Log on part couple (docking)")]
+        [GameParameters.CustomParameterUI("On docking")]
         public bool logOnPartCouple = true;
 
-        [GameParameters.CustomParameterUI("Log on vessel was modified")]
+        [GameParameters.CustomParameterUI("On vessel was modified")]
         public bool logOnVesselWasModified = true;
 
-        [GameParameters.CustomParameterUI("Log on crew modified (EVA)")]
+        [GameParameters.CustomParameterUI("On crew modified (EVA)")]
         public bool logOnVesselCrewWasModified = true;
 
-        [GameParameters.CustomParameterUI("Log on closing into orbit")]
+        [GameParameters.CustomParameterUI("On closing into orbit")]
         public bool logOnVesselOrbitClosed = true;
 
-        [GameParameters.CustomParameterUI("Log on escaping orbit")]
+        [GameParameters.CustomParameterUI("On escaping orbit")]
         public bool logOnVesselOrbitEscaped = true;
 
-        [GameParameters.CustomParameterUI("Log on crew killed")]
+        [GameParameters.CustomParameterUI("On crew killed")]
         public bool logOnCrewKilled = true;
 
-        [GameParameters.CustomParameterUI("Log on crew transferred")]
+        [GameParameters.CustomParameterUI("On crew transferred")]
         public bool logOnCrewTransferred = true;
 
-        [GameParameters.CustomParameterUI("Log on SOI change")]
+        [GameParameters.CustomParameterUI("On SOI change")]
         public bool logOnDominantBodyChange = true;
 
-        [GameParameters.CustomParameterUI("Log on flag plant")]
+        [GameParameters.CustomParameterUI("On flag plant")]
         public bool logOnFlagPlant = true;
 
-        [GameParameters.CustomParameterUI("Log on Crew EVA")]
+        [GameParameters.CustomParameterUI("On Crew EVA")]
         public bool logOnCrewOnEVA = true;
+
+        [GameParameters.CustomParameterUI("On reaching space")]
+        public bool logOnReachingSpace = true;
+
+        [GameParameters.CustomParameterUI("On re-entries")]
+        public bool logOnReEntries = true;
+
+        [GameParameters.CustomParameterUI("On returns from orbit & surface")]
+        public bool logOnReturnsFromOrbitSurface = true;
+
+        [GameParameters.CustomParameterUI("On vessel destruction")]
+        public bool logOnVesselDestruction = true;
+
+        [GameParameters.CustomParameterUI("On undocking")]
+        public bool logOnUndocking = true;
+
+        [GameParameters.CustomParameterUI("On anomaly discovery")]
+        public bool logOnAnomalyDiscovery = true;
 
         [GameParameters.CustomStringParameterUI("Record-only Events Below", autoPersistance = true, lines = 2, title = "Record-only Events Below", toolTip = "")]
         public string UIstring = "";
 
         /* Following don't have equivilent Pause options */
-        [GameParameters.CustomParameterUI("Log on Kerbal passed out from G-force")]
+        [GameParameters.CustomParameterUI("On Kerbal passed out from G-force")]
         public bool logOnKerbalPassedOutFromGeeForce = true;
 
-        [GameParameters.CustomParameterUI("Log on Flight Log Recorded")]
+        [GameParameters.CustomParameterUI("On Flight Log Recorded")]
         public bool logOnFlightLogRecorded = true;
 
-        [GameParameters.CustomParameterUI("Log on Progress Achievement")]
+        [GameParameters.CustomParameterUI("On Progress Achievement")]
         public bool logOnProgressAchieve = true;
 
-        [GameParameters.CustomParameterUI("Log on Progress Completion")]
+        [GameParameters.CustomParameterUI("On Progress Completion")]
         public bool logOnProgressComplete = true;
 
-        [GameParameters.CustomParameterUI("Log on Science Changed")]
+        [GameParameters.CustomParameterUI("On Science Changed")]
         public bool logOnScienceChanged = true;
 
-        [GameParameters.CustomParameterUI("Log on Science Received")]
+        [GameParameters.CustomParameterUI("On Science Received")]
         public bool logOnScienceReceived = true;
 
-        [GameParameters.CustomParameterUI("Log on Orbital Survey Completed")]
+        [GameParameters.CustomParameterUI("On Orbital Survey Completed")]
         public bool logOnOrbitalSurveyCompleted = true;
 
-        [GameParameters.CustomParameterUI("Log on reputation changed")]
+        [GameParameters.CustomParameterUI("On reputation changed")]
         public bool logOnReputationChanged = true;
 
-        [GameParameters.CustomParameterUI("Log on triggered data transmission")]
+        [GameParameters.CustomParameterUI("On triggered data transmission")]
         public bool logOnTriggeredDataTransmission = true;
 
-        [GameParameters.CustomParameterUI("Log on part upgrade purchased")]
+        [GameParameters.CustomParameterUI("On part upgrade purchased")]
         public bool logOnPartUpgradePurchased = true;
 
-        [GameParameters.CustomParameterUI("Log on part purchase")]
+        [GameParameters.CustomParameterUI("On part purchase")]
         public bool logOnPartPurchased = true;
 
-        [GameParameters.CustomParameterUI("Log on funds changed")]
+        [GameParameters.CustomParameterUI("On funds changed")]
         public bool logOnFundsChanged = true;
+
+
+
+
+
+        [GameParameters.CustomParameterUI("On building upgrades")]
+        public bool logOnBuildingUpgrades = true;
+
+        [GameParameters.CustomParameterUI("On buildings damaged")]
+        public bool logOnBuildingDamaged = true;
+
+        [GameParameters.CustomParameterUI("On tech research")]
+        public bool logOnTechnologyResearch = true;
+
 
 
         public void SaveGlobalSettingsNode()
@@ -620,6 +654,16 @@ namespace KaptainsLogNamespace
             settings.AddValue("logOnFlightLogRecorded", logOnFlightLogRecorded);
             settings.AddValue("logOnProgressAchieve", logOnProgressAchieve);
             settings.AddValue("logOnProgressComplete", logOnProgressComplete);
+
+            settings.AddValue("logOnReachingSpace", logOnReachingSpace);
+            settings.AddValue("logOnReEntries", logOnReEntries);
+            settings.AddValue("logOnReturnsFromOrbitSurface", logOnReturnsFromOrbitSurface);
+            settings.AddValue("logOnVesselDestruction", logOnVesselDestruction);
+            settings.AddValue("logOnUndocking", logOnUndocking);
+            settings.AddValue("logOnAnomalyDiscovery", logOnAnomalyDiscovery);
+            settings.AddValue("logOnBuildingUpgrades", logOnBuildingUpgrades);
+            settings.AddValue("logOnBuildingDamaged", logOnBuildingDamaged);
+            settings.AddValue("logOnTechnologyResearch", logOnTechnologyResearch);
 
             GlobalSettings.UpdateNode("KL_22", settings);
 
@@ -667,12 +711,24 @@ namespace KaptainsLogNamespace
             logOnFlightLogRecorded = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnFlightLogRecorded"), "true"));
             logOnProgressAchieve = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnProgressAchieve"), "true"));
             logOnProgressComplete = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnProgressComplete"), "true"));
+
+            logOnReachingSpace = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnReachingSpace"), "true"));
+            logOnReEntries = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnReEntries"), "true"));
+            logOnReturnsFromOrbitSurface = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnReturnsFromOrbitSurface"), "true"));
+            logOnVesselDestruction = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnVesselDestruction"), "true"));
+            logOnUndocking = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnUndocking"), "true"));
+            logOnAnomalyDiscovery = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnAnomalyDiscovery"), "true"));
+            logOnBuildingUpgrades = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnBuildingUpgrades"), "true"));
+            logOnBuildingDamaged = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnBuildingDamaged"), "true"));
+            logOnTechnologyResearch = Boolean.Parse(Utils.SafeLoad(settings.GetValue("logOnTechnologyResearch"), "true"));
+
         }
 
         void SetAllLogOptions(bool b)
         {
             logAllEvents = false;
             unsetSettings = false;
+            setDefaultSettings = false;
             
             logOnVesselLanded = b;
             logOnCrashSplashdown = b;
@@ -705,11 +761,67 @@ namespace KaptainsLogNamespace
             logOnFlightLogRecorded = b;
             logOnProgressAchieve = b;
             logOnProgressComplete = b;
+
+            logOnReachingSpace = b;
+            logOnReEntries = b;
+            logOnReturnsFromOrbitSurface = b;
+            logOnVesselDestruction = b;
+            logOnUndocking = b;
+            logOnAnomalyDiscovery = b;
+            logOnBuildingUpgrades = b;
+            logOnBuildingDamaged = b;
+            logOnTechnologyResearch = b;
+
         }
 
         public override void SetDifficultyPreset(GameParameters.Preset preset)
         {
-            SetAllLogOptions(true);
+            //SetAllLogOptions(true);
+            logAllEvents = false;
+            unsetSettings = false;
+            setDefaultSettings = false;
+
+            logOnVesselLanded = true;
+            logOnCrashSplashdown = true;
+            logOnVesselRecovered = false;
+            logOnLaunch = true;
+            logOnStageSeparation = true;
+            logOnStageActivate = false;
+            logOnPartDie = false;
+            logOnDisconnectedPartDie = false;
+            logOnPartCouple = true;
+            logOnVesselWasModified = false;
+            logOnVesselCrewWasModified = false;
+            logOnVesselOrbitClosed = true;
+            logOnVesselOrbitEscaped = true;
+            logOnCrewKilled = true;
+            logOnCrewTransferred = false;
+            logOnDominantBodyChange = true;
+            logOnFlagPlant = true;
+            logOnCrewOnEVA = false;
+            logOnScienceChanged = false;
+            logOnScienceReceived = false;
+            logOnOrbitalSurveyCompleted = true;
+            logOnReputationChanged = false;
+            logOnTriggeredDataTransmission = false;
+            logOnVesselRollout = true;
+            logOnPartUpgradePurchased = false;
+            logOnPartPurchased = false;
+            logOnFundsChanged = false;
+            logOnKerbalPassedOutFromGeeForce = false;
+            logOnFlightLogRecorded = false;
+            logOnProgressAchieve = true;
+            logOnProgressComplete = false;
+
+            logOnReachingSpace = true;
+            logOnReEntries = true;
+            logOnReturnsFromOrbitSurface = true;
+            logOnVesselDestruction = true;
+            logOnUndocking = true;
+            logOnAnomalyDiscovery = true;
+            logOnBuildingUpgrades = true;
+            logOnBuildingDamaged = true;
+            logOnTechnologyResearch = true;
         }
 
         public override bool Enabled(MemberInfo member, GameParameters parameters)
@@ -734,6 +846,8 @@ namespace KaptainsLogNamespace
             if (member.Name == "logAllEvents")
                 return true;
             if (logAllEvents)
+                SetAllLogOptions(true);
+            if (setDefaultSettings)
                 SetDifficultyPreset(GameParameters.Preset.Normal);
             if (unsetSettings)
             {
@@ -814,7 +928,7 @@ namespace KaptainsLogNamespace
         // [GameParameters.CustomParameterUI("Screenshot on disconnected part dying")]
         // public bool screenshotOnDisconnectedPartDie = true;
 
-        [GameParameters.CustomParameterUI("<color=yellow><b>Part couple (docking)</b></color>")]
+        [GameParameters.CustomParameterUI("<color=yellow><b>docking</b></color>")]
         public ScreenshotOptions screenshotOnPartCouple = ScreenshotOptions.With_Gui;
 
         [GameParameters.CustomParameterUI("<color=yellow><b>Vessel was modified</b></color>")]
@@ -856,6 +970,26 @@ namespace KaptainsLogNamespace
 
         [GameParameters.CustomParameterUI("<color=yellow><b>Manual Entry</b></color>")]
         public ScreenshotOptions screenshotOnManualEntry;
+
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Reaching space</b></color>")]
+        public ScreenshotOptions screenshotOnReachingSpace;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Reentries</b></color>")]
+        public ScreenshotOptions screenshotOnReEntries;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Returns from orbit/surface</b></color>")]
+        public ScreenshotOptions screenshotOnReturnsFromOrbitSurface;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Undocking</b></color>")]
+        public ScreenshotOptions screenshotOnUndocking;
+
+        [GameParameters.CustomParameterUI("<color=yellow><b>Anomaly discovery</b></color>")]
+        public ScreenshotOptions screenshotOnAnomalyDiscovery;
+
+
+
+
 
         public void SaveGlobalSettingsNode()
         {

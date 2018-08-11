@@ -176,4 +176,21 @@
 	Added support for the ClickThroughblocker
 	Added support for Toolbar Controller
 
+0.1.6
+	Cleaned up settings page a bit
+	Fixed bug where when fund changed it would stop recording.
+	Fixed bug where purchasing a tech node would log part purchase even if  HighLogic.CurrentGame.Parameters.Difficulty.BypassEntryPurchaseAfterResearch was false
+	Changed default settings to be a subset of all the options
+	Added button to set to default
+	Added following events:
+	            OnReachSpace
+                onVesselSituationChanged
+                OnReturnFromOrbit
+                OnReturnFromSurface
+                onVesselDestroy)
+                onPartDeCoupleComplete
+                OnProgressComplete
+                OnKSCFacilityUpgrading
+                OnKSCStructureCollapsing
+                OnTechnologyResearched
 

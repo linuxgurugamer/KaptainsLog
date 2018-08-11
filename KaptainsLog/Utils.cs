@@ -84,7 +84,17 @@ namespace KaptainsLogNamespace
 
                 GameEvents.onGameStatePostLoad.Add(onGameStatePostLoad);
                 GameEvents.onGameStateLoad.Add(onGameStateLoad);
-                //GameEvents.onGameStateCreated.Add(onGameStateCreated);
+
+                GameEvents.VesselSituation.onReachSpace.Add(OnReachSpace);
+                GameEvents.onVesselSituationChange.Add(onVesselSituationChanged);
+                GameEvents.VesselSituation.onReturnFromOrbit.Add(OnReturnFromOrbit);
+                GameEvents.VesselSituation.onReturnFromSurface.Add(OnReturnFromSurface);
+                GameEvents.onVesselDestroy.Add(onVesselDestroy);
+                GameEvents.onPartDeCoupleComplete.Add(onPartDeCoupleComplete);
+                GameEvents.OnProgressComplete.Add(OnProgressComplete);
+                GameEvents.OnKSCFacilityUpgrading.Add(OnKSCFacilityUpgrading);
+                GameEvents.OnKSCStructureCollapsing.Add(OnKSCStructureCollapsing);
+                GameEvents.OnTechnologyResearched.Add(OnTechnologyResearched);
 
             }
             else
@@ -144,8 +154,108 @@ namespace KaptainsLogNamespace
                 GameEvents.OnPartPurchased.Remove(OnPartPurchased);
                 GameEvents.OnFundsChanged.Remove(OnFundsChanged);
 
+                GameEvents.VesselSituation.onReachSpace.Remove(OnReachSpace);
+                GameEvents.onVesselSituationChange.Remove(onVesselSituationChanged);
+                GameEvents.VesselSituation.onReturnFromOrbit.Remove(OnReturnFromOrbit);
+                GameEvents.VesselSituation.onReturnFromSurface.Remove(OnReturnFromSurface);
+                GameEvents.onVesselDestroy.Remove(onVesselDestroy);
+                GameEvents.onPartDeCoupleComplete.Remove(onPartDeCoupleComplete);
+                GameEvents.OnProgressComplete.Remove(OnProgressComplete);
+                GameEvents.OnKSCFacilityUpgrading.Remove(OnKSCFacilityUpgrading);
+                GameEvents.OnKSCStructureCollapsing.Remove(OnKSCStructureCollapsing);
+                GameEvents.OnTechnologyResearched.Remove(OnTechnologyResearched);
+
             }
         }
+
+        void OnReachSpace(Vessel v)
+        {
+            Log.Info("OnReachSpace, logOnReachingSpace: " + HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnReachingSpace);
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnReachingSpace)
+                return;
+
+            string s = v.vesselName + " has reached space for the first time";
+
+            CreateLogEntry(Events.OnReachingSpace, false, s);
+        }
+        void onVesselSituationChanged(GameEvents.HostedFromToAction<Vessel, Vessel.Situations> a)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnReEntries)
+                return;
+            if ((a.from & (Vessel.Situations.SUB_ORBITAL | Vessel.Situations.ESCAPING | Vessel.Situations.ORBITING)) != 0)
+            {
+                string s = a.host.vesselName + " reentered the atmosphere";
+
+                CreateLogEntry(Events.OnReEntries, false, s);
+            }
+        }
+        void OnReturnFromOrbit(Vessel v, CelestialBody b)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnReturnsFromOrbitSurface)
+                return;
+            string s = v.vesselName + " returned from orbit around " + b.displayName;
+
+            CreateLogEntry(Events.OnReturnsFromOrbitSurface, false, s);
+        }
+        void OnReturnFromSurface(Vessel v, CelestialBody b)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnReturnsFromOrbitSurface)
+                return;
+
+            string s = v.vesselName + " returned from surface of " + b.displayName;
+
+            CreateLogEntry(Events.OnReturnsFromOrbitSurface, false, s);
+        }
+        void onVesselDestroy(Vessel v)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnVesselDestruction)
+                return;
+            string s = v.vesselName + " was destroyed";
+
+            CreateLogEntry(Events.OnVesselDestruction, false, s);
+        }
+        void onPartDeCoupleComplete(Part p)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnUndocking)
+                return;
+            string s = p.vessel.vesselName + " undocked";
+
+            CreateLogEntry(Events.OnUndocking, false, s);
+        }
+        void OnProgressComplete(ProgressNode n)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnAnomalyDiscovery)
+                return;
+            if (n is KSPAchievements.PointOfInterest)
+            {
+                string s = "Reached a point of interest: " + ((KSPAchievements.PointOfInterest)n).Id + " on " + ((KSPAchievements.PointOfInterest)n).body;
+                CreateLogEntry( Events.OnAnomalyDiscovery, false, s, "");                
+            }
+        }
+        void OnKSCFacilityUpgrading(Upgradeables.UpgradeableFacility facility, int i)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnBuildingUpgrades)
+                return;
+            string s = "Facility " + facility.name + " upgraded to level " + i;
+            CreateLogEntry(Events.OnBuildingUpgrades, false, s, "");
+        }
+        void OnKSCStructureCollapsing(DestructibleBuilding facility)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnBuildingDamaged)
+                return;
+            string s = "Facility " + facility.name + " destroyed ";
+            CreateLogEntry(Events.OnBuildingDamaged, false, s, "");
+        }
+        void OnTechnologyResearched(GameEvents.HostTargetAction<RDTech, RDTech.OperationResult> a)
+        {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnTechnologyResearch)
+                return;
+            string s = "Technology " + a.host.name + "', '" + a.target.ToString() + " researched";
+            CreateLogEntry(Events.OnTechnologyResearch, false, s, "");
+        }
+
+
+
 
         void OnReputationChanged(float f, TransactionReasons tr)
         {
@@ -193,7 +303,7 @@ namespace KaptainsLogNamespace
 
         void OnPartPurchased(AvailablePart p)
         {
-            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnPartPurchased)
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnPartPurchased || !HighLogic.CurrentGame.Parameters.Difficulty.BypassEntryPurchaseAfterResearch)
                 return;
             string s = "Part " + p.partPrefab.partInfo.name + " purchased";
             CreateLogEntry(Events.OnPartPurchased, false, s, "");
@@ -690,7 +800,7 @@ namespace KaptainsLogNamespace
             CreateLogEntry(Events.FlagPlant, HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnFlagPlant, v.vesselName + " planted flag on " + v.mainBody.name);
         }
 
-        #region AdaptedFromProgressParser
+#region AdaptedFromProgressParser
         //
         // The following two methods are adapted from the ProgressParser mod, written by @DMagic
         //
@@ -868,7 +978,7 @@ namespace KaptainsLogNamespace
         //
         // End of methods adapted from ProgressParser mod
         //
-        #endregion
+#endregion
 
         public bool uiVisible = true;
         private void onShowUI()

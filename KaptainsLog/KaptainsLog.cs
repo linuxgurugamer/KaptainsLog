@@ -998,10 +998,10 @@ namespace KaptainsLogNamespace
             // Check for manual entry cancel
             //
             if (utils.leQ.Count > 0)
-            Log.Info("LateUpdate, utils.leQ.Count: " + utils.leQ.Count.ToString() + 
-                ", snapshotInProgress: " + utils.snapshotInProgress.ToString() +
-                ", utils.le.manualEntryRequired: " + utils.le.manualEntryRequired.ToString() +
-                ", notesEntry: " + notesEntry.ToString() + ", pauseActivated: " + pauseActivated.ToString());
+                Log.Info("LateUpdate, utils.leQ.Count: " + utils.leQ.Count.ToString() + 
+                    ", snapshotInProgress: " + utils.snapshotInProgress.ToString() +
+                    ", utils.le.manualEntryRequired: " + utils.le.manualEntryRequired.ToString() +
+                    ", notesEntry: " + notesEntry.ToString() + ", pauseActivated: " + pauseActivated.ToString());
             checkForManualEntryCancel();
 
             // Now check to see if anything is queued
@@ -1054,8 +1054,12 @@ namespace KaptainsLogNamespace
                 }
                 else
                 {
-                    Log.Error("Snapshow scheduled, but queued event: " + utils.le.displayEventString() + " doesn't allow snapshots");
+                    Log.Error("Snapshot scheduled, but queued event: " + utils.le.displayEventString() + " doesn't allow snapshots");
                     // need to dequeue this one
+
+                    ListExt.AddSorted<LogEntry>(kaptainsLogList, utils.le);
+                    utils.leQ.Dequeue();
+                    return;
                 }
             }
 
