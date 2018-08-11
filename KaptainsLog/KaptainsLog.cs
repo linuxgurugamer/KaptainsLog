@@ -46,11 +46,11 @@ namespace KaptainsLogNamespace
             ControlTypes.ALL_SHIP_CONTROLS | ControlTypes.ACTIONS_ALL | ControlTypes.EVA_INPUT | ControlTypes.TIMEWARP |
             ControlTypes.MISC | ControlTypes.GROUPS_ALL | ControlTypes.CUSTOM_ACTION_GROUPS;
 
-        // The button for the toolbar.
-        //private IButton kaptainsLogIButton;
-        //private ApplicationLauncherButton kaptainsLogStockButton;
+
         ToolbarControl toolbarControl;
 
+        internal const string MODID = "KaptainsLog_NS";
+        internal const string MODNAME = "Kaptain's Log";
 
         // The tooltip text for the toolbar icon if the plugin is off.
         private const string _tooltipOff = "Show Kaptains Log";
@@ -390,10 +390,9 @@ namespace KaptainsLogNamespace
  
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().EnabledForSave)
                 return;
-            //if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
-                ShowStockToolbarButton();
-            //else
-            //    ShowBlizzyButton();
+
+            ShowStockToolbarButton();
+
 
 
             mainWindow = new Rect((Screen.width - MAIN_WIDTH - 40), 50, MAIN_WIDTH, MAIN_HEIGHT);
@@ -494,7 +493,7 @@ namespace KaptainsLogNamespace
             Log.Info("OnGUIAppLauncherReady");
             // Setup PW Stock Toolbar button
            // bool hidden = false;
-            //if (!ToolbarManager.ToolbarAvailable || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy)
+
             if (toolbarControl == null)
             {
 
@@ -506,15 +505,14 @@ namespace KaptainsLogNamespace
                      ApplicationLauncher.AppScenes.TRACKSTATION | 
                      ApplicationLauncher.AppScenes.VAB | 
                      ApplicationLauncher.AppScenes.SPH,
-                    "KaptainsLog_NS",
+                    MODID,
                     "kaptainsLogButton",
                     "KaptainsLog/Icons/kaptainslog_active_toolbar_38_icon",
                     "KaptainsLog/Icons/kaptainslog_inactive_toolbar_38_icon",
                     "KaptainsLog/Icons/kaptainslog_active_toolbar_24_icon",
                     "KaptainsLog/Icons/kaptainslog_inactive_toolbar_24_icon",
-                    "Kaptains Log"
+                    MODNAME
                 );
-                toolbarControl.UseBlizzy(HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().useBlizzy);
 
             }
         }

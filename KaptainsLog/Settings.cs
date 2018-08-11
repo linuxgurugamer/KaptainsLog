@@ -72,9 +72,6 @@ namespace KaptainsLogNamespace
         [GameParameters.CustomParameterUI("Show intro window at Startup")]
         public bool showIntroAtStartup = true;
 
-        [GameParameters.CustomParameterUI("Use Blizzy toolbar if installed")]
-        public bool useBlizzy = false;
-
         [GameParameters.CustomParameterUI("Keep windows on screen",
             toolTip = "Prevents windows from being dragged to be off-screen, even partially")]
         public bool keepOnScreen = true;
@@ -129,7 +126,6 @@ namespace KaptainsLogNamespace
             Log.Info("KL_11 SaveGlobalSettingsNode");
             ConfigNode settings = new ConfigNode("KL_11");
             settings.AddValue("showIntroAtStartup", showIntroAtStartup);
-            settings.AddValue("useBlizzy", useBlizzy);
             settings.AddValue("keepOnScreen", keepOnScreen);
 
             //settings.AddValue("screenshot", screenshot);
@@ -157,7 +153,6 @@ namespace KaptainsLogNamespace
             }
 
             showIntroAtStartup = Boolean.Parse(Utils.SafeLoad(settings.GetValue("showIntroAtStartup"), "true"));
-            useBlizzy = Boolean.Parse(Utils.SafeLoad(settings.GetValue("useBlizzy"), "false"));
             keepOnScreen = Boolean.Parse(Utils.SafeLoad(settings.GetValue("keepOnScreen"), "true"));
             //screenshot = Boolean.Parse(Utils.SafeLoad(settings.GetValue("screenshot"), "true"));
             saveScreenshotsInSaveFolder = Boolean.Parse(Utils.SafeLoad(settings.GetValue("saveScreenshotsInSaveFolder"), "true"));
@@ -178,7 +173,6 @@ namespace KaptainsLogNamespace
             showIntroAtStartup = true;
             keepOnScreen = true;
             EnabledForSave = true;      // is enabled for this save file
-            useBlizzy = false;
             //screenshot = true;
             //hideUIforScreenshot = false;
             saveAsJPEG = false;

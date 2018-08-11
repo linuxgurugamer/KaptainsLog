@@ -49,6 +49,7 @@
     <Compile Include="LogEntryWindow.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegisterToolbar.cs" />
     <Compile Include="ResizeWindows.cs" />
     <Compile Include="SaveExportWindow.cs" />
     <Compile Include="GlobalSettings.cs" />

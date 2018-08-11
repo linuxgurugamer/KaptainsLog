@@ -178,6 +178,9 @@
 
 0.1.6
 	Cleaned up settings page a bit
+	Removed setting for blizzyToolbar
+	Moved control of button into ToolbarController
+	Added dependency check
 	Fixed bug where when fund changed it would stop recording.
 	Fixed bug where purchasing a tech node would log part purchase even if  HighLogic.CurrentGame.Parameters.Difficulty.BypassEntryPurchaseAfterResearch was false
 	Changed default settings to be a subset of all the options
