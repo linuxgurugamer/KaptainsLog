@@ -26,11 +26,11 @@ namespace KaptainsLogNamespace
             public bool Splashed = false;
             public bool Flying = false;
             public double universalTime;
- 
+
             public bool landedEvent = false;
             public bool splashedEvent = false;
             public bool flyingEvent = false;
-          
+
 
 
             public VesselStatus(Vessel v)
@@ -91,6 +91,8 @@ namespace KaptainsLogNamespace
 
         void Start()
         {
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().EnabledForSave)
+                return;
             Log.Info("LandingMonitor.Start");
             DontDestroyOnLoad(this);
             InvokeRepeating("WatchForLanding", 2.0f, 1f / ChecksPerSecond);
@@ -104,8 +106,8 @@ namespace KaptainsLogNamespace
         {
             if (!Utils.vesselInFlight)
                 return;
-            //Log.Info("LandingMonitor: WatchForLanding, time: " + Planetarium.GetUniversalTime().ToString("n2") + ",  vesselsLoaded.Count: " + FlightGlobals.fetch.vesselsLoaded.Count().ToString());
-            for (int x = 0; x < FlightGlobals.fetch.vesselsLoaded.Count(); x++)
+            Log.Info("LandingMonitor: WatchForLanding, time: " + Planetarium.GetUniversalTime().ToString("n2") + ",  vesselsLoaded.Count: " + FlightGlobals.fetch.vesselsLoaded.Count().ToString());
+            for (int x = FlightGlobals.fetch.vesselsLoaded.Count() - 1; x >= 0; x--)
             {
                 var v = FlightGlobals.fetch.vesselsLoaded[x];
                 VesselStatus vesselStatus = null;
@@ -118,7 +120,10 @@ namespace KaptainsLogNamespace
                     vesselStatus = new VesselStatus(v);
                     vesselLandedDict.Add(v.id, vesselStatus);
                 }
-
+                if (vesselStatus == null)
+                {
+                    Log.Error("WatchForLanding, vesselStatus is null");
+                }
                 if (v.Landed != vesselStatus.Landed)
                     vesselStatus.SetLandedTime(v.Landed);
                 if (v.Splashed != vesselStatus.Splashed)
@@ -133,8 +138,8 @@ namespace KaptainsLogNamespace
                     Log.Info("LandingMonitor: v.heightFromTerrain: " + v.heightFromTerrain.ToString());
                     if (!vesselStatus.Flying)
                         vesselStatus.SetFlyingTime(true);
-                    
-                    if (vesselStatus.Flying && 
+
+                    if (vesselStatus.Flying &&
                        Planetarium.GetUniversalTime() - vesselStatus.universalTime >= HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().minFlyingTime)
                     {
                         vesselStatus.SetFlyingEvent();
@@ -146,7 +151,7 @@ namespace KaptainsLogNamespace
                     2.  speed less than 0.05
                     3.  Stable for 5 seconds
                 */
-                if (!vesselStatus.landedEvent && v.Landed && 
+                if (!vesselStatus.landedEvent && v.Landed &&
                     Planetarium.GetUniversalTime() - vesselStatus.universalTime >= HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().landedStabilityTime &&
                     v.speed < 0.05f)
                 {

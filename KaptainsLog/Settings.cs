@@ -59,7 +59,8 @@ namespace KaptainsLogNamespace
         public override int SectionOrder { get { return 1; } }
         public override bool HasPresets { get { return true; } }
 
-        [GameParameters.CustomParameterUI("Mod Enabled")]
+        [GameParameters.CustomParameterUI("Mod Enabled, " ,
+            toolTip = "Changing this requires restarting the game, not just going to the mainmenu")]
         public bool EnabledForSave = true;      // is enabled for this save file
 
         [GameParameters.CustomParameterUI("Use global settings for ALL settings")]

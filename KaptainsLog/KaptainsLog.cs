@@ -470,8 +470,8 @@ namespace KaptainsLogNamespace
         void onManualEntry()
         {
             Log.Info("onManualEntry");
-
-            utils.CreateLogEntry(Events.ManualEntry, true);
+            if (utils != null)
+                utils.CreateLogEntry(Events.ManualEntry, true);
         }
 
         public void OnDestroy()
@@ -483,8 +483,8 @@ namespace KaptainsLogNamespace
                 toolbarControl.OnDestroy();
                 Destroy(toolbarControl);
             }
-
-            utils.initializeEvents(false);
+            if (utils != null)
+                utils.initializeEvents(false);
 
         }
 

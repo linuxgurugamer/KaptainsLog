@@ -38,6 +38,7 @@ namespace KaptainsLogNamespace
                 GameEvents.onStageActivate.Add(onStageActivate);
                 GameEvents.onPartDie.Add(onPartDie);
                 GameEvents.onPartCouple.Add(onPartCouple);
+                GameEvents.onVesselDocking.Add(onVesselDocking);
                 GameEvents.onVesselWasModified.Add(onVesselWasModified);
                 GameEvents.onVesselCrewWasModified.Add(onVesselCrewWasModified);
                 GameEvents.onVesselOrbitClosed.Add(onVesselOrbitClosed);
@@ -56,6 +57,7 @@ namespace KaptainsLogNamespace
 
                 GameEvents.onPartUndock.Add(onPartUndock);
                 GameEvents.onSameVesselUndock.Add(onSameVesselUndock);
+                GameEvents.onSameVesselDock.Add(onSamevesselDock);
                 GameEvents.onUndock.Add(onUndock);
                 GameEvents.onCommandSeatInteractionEnter.Add(onCommandSeatInteractionEnter);
                 GameEvents.onCommandSeatInteractionEnter.Add(onCommandSeatInteraction);
@@ -108,6 +110,7 @@ namespace KaptainsLogNamespace
                 GameEvents.onStageActivate.Remove(onStageActivate);
                 GameEvents.onPartDie.Remove(onPartDie);
                 GameEvents.onPartCouple.Remove(onPartCouple);
+                GameEvents.onVesselDocking.Remove(onVesselDocking);
                 GameEvents.onVesselWasModified.Remove(onVesselWasModified);
                 GameEvents.onVesselCrewWasModified.Remove(onVesselCrewWasModified);
                 GameEvents.onVesselOrbitClosed.Remove(onVesselOrbitClosed);
@@ -133,6 +136,8 @@ namespace KaptainsLogNamespace
 
                 GameEvents.onPartUndock.Remove(onPartUndock);
                 GameEvents.onSameVesselUndock.Remove(onSameVesselUndock);
+
+                GameEvents.onSameVesselDock.Remove(onSamevesselDock);
                 GameEvents.onUndock.Remove(onUndock);
 
                 GameEvents.onShowUI.Remove(onShowUI);
@@ -385,7 +390,7 @@ namespace KaptainsLogNamespace
         {
             get
             {
-                return (HighLogic.LoadedScene == GameScenes.SPACECENTER || HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.TRACKSTATION);
+                return (/* HighLogic.LoadedScene == GameScenes.SPACECENTER || */ HighLogic.LoadedScene == GameScenes.FLIGHT || HighLogic.LoadedScene == GameScenes.TRACKSTATION);
             }
         }
 
@@ -457,6 +462,12 @@ namespace KaptainsLogNamespace
             Log.Info("onSameVesselUndock");
 
         }
+        void onSamevesselDock(GameEvents.FromToAction<ModuleDockingNode, ModuleDockingNode> fta)
+        {
+            Log.Info("onSamevesselDock");
+
+        }
+        
         void onPartUndock(Part p)
         {
             Log.Info("onPartUndock");
@@ -650,6 +661,19 @@ namespace KaptainsLogNamespace
             if (evt.from.vessel.rootPart.Modules.Contains<KerbalEVA>())
                 return;
             Log.Info("onPartCouple");
+            if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnPartCouple)
+                return;
+
+
+            CreateLogEntry(Events.PartCouple, HighLogic.CurrentGame.Parameters.CustomParams<KL_21>().pauseOnPartCouple);
+        }
+        
+        void onVesselDocking(uint i1, uint i2)
+        {
+            if (!vesselInFlight)
+                return;
+ 
+            Log.Info("onVesselDocking");
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_22>().logOnPartCouple)
                 return;
 

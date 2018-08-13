@@ -190,10 +190,16 @@
                 onVesselSituationChanged
                 OnReturnFromOrbit
                 OnReturnFromSurface
-                onVesselDestroy)
+                onVesselDestroy
                 onPartDeCoupleComplete
                 OnProgressComplete
                 OnKSCFacilityUpgrading
                 OnKSCStructureCollapsing
                 OnTechnologyResearched
 
+	0.1.6.1
+		Fixed nullref spam in space center
+		Added onDock and onSaveVesselDock
+		Fixed nullref in onManualentry
+		Added check to landing monitor to see if mod should be active or not
+		Added tooltip to enabledForSave 
