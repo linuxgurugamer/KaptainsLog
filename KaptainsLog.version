@@ -1,6 +1,6 @@
 {
   "NAME": "KaptainsLog",
-  "URL": "https://raw.githubusercontent.com/linuxgurugamer/KaptainsLog/master/KaptainsLog.version",
+  "URL": "http://ksp.spacetux.net/avc/KaptainsLog",
   "DOWNLOAD": "https://github.com/linuxgurugamer/KaptainsLog/releases",
   "GITHUB" :
   {
@@ -11,21 +11,21 @@
     "MAJOR": 0,
     "MINOR": 1,
     "PATCH": 6,
-    "BUILD": 1
+    "BUILD": 2
   },
   "KSP_VERSION": {
     "MAJOR": 1,
-    "MINOR": 4,
+    "MINOR": 5,
     "PATCH": 1
   },
   "KSP_VERSION_MIN": {
     "MAJOR": 1,
-    "MINOR": 4,
+    "MINOR": 5,
     "PATCH": 1
   },
   "KSP_VERSION_MAX": {
     "MAJOR": 1,
-    "MINOR": 4,
+    "MINOR": 5,
     "PATCH": 99
   }
 }
