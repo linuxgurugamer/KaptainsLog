@@ -206,3 +206,7 @@
 
 0.1.6.2
 	Version bump for 1.5 rebuild
+
+0.1.7
+	Updated AssemblyVersion.tt
+	Version bump for 1.7.2
