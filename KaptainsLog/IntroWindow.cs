@@ -43,6 +43,8 @@ namespace KaptainsLogNamespace
 
         public void OnGUI()
         {
+            if (HighLogic.CurrentGame == null)
+                return;
             if (!showHelp && ((shown && lastGameShown == HighLogic.SaveFolder) || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().EnabledForSave || !HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().showIntroAtStartup))
                 return;
             introWindow = ClickThruBlocker.GUILayoutWindow(introWindowId, introWindow, IntroWindow, "Kaptain's Log Intro", KaptainsLog.windowStyle);

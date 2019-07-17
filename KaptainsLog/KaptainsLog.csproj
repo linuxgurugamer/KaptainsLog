@@ -41,6 +41,7 @@
     <Compile Include="HtmlTemplateSelection.cs" />
     <Compile Include="ImageSelection.cs" />
     <Compile Include="ImageViewer.cs" />
+    <Compile Include="InstallChecker.cs" />
     <Compile Include="IntroWindow.cs" />
     <Compile Include="KaptainsLog.cs" />
     <Compile Include="LandingMonitor.cs" />

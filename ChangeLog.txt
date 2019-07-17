@@ -210,3 +210,7 @@
 0.1.7
 	Updated AssemblyVersion.tt
 	Version bump for 1.7.2
+
+0.1.7.1
+	Fixed nullref when returning to main menu (new in 1.7.3)
+	Added InstallChecker

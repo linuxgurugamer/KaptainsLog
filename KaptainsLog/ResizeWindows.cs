@@ -126,6 +126,8 @@ namespace KaptainsLogNamespace
 
         void Update()
         {
+            if (HighLogic.CurrentGame == null)
+                return;
             if (Input.GetKeyDown(HighLogic.CurrentGame.Parameters.CustomParams<KL_13>().ManualEntryKeycode))
             {
                 onManualEntry();
