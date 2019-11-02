@@ -1,12 +1,14 @@
 ﻿
 using KSP.IO;
-using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using File = KSP.IO.File;
 using ClickThroughFix;
+//using UnityEngine.Networking;
+using ToolbarControl_NS;
 
 namespace KaptainsLogNamespace
 {
@@ -42,9 +44,8 @@ namespace KaptainsLogNamespace
         {
             if (System.IO.File.Exists(fname))
             {
-                _imagefile = "file://" + fname;
-                
-                ImageOrig(width, height);
+                _imagefile = fname;
+                ImageOrig( width, height);
                 visible = true;
                 updateSize = false;
                 return _image;
@@ -57,11 +58,14 @@ namespace KaptainsLogNamespace
   
         }
 
-        private static void ImageOrig(int width = 0, int height = 0)
+        private static void ImageOrig( int width = 0, int height = 0)
         {
-            var _imagetex = new WWW(_imagefile);
-            _image = _imagetex.texture;
-            _imagetex.Dispose();
+            _image = new Texture2D(2, 2);
+            ToolbarControl.LoadImageFromFile(ref _image, _imagefile);
+
+            //var _imagetex = UnityWebRequestTexture.GetTexture(_imagefile);
+            //_image = ((DownloadHandlerTexture)_imagetex.downloadHandler).texture;
+            //_imagetex.Dispose();
 
             if (width == 0)
                 width = Screen.width / 2;

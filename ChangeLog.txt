@@ -1,3 +1,5 @@
+ChangeLog
+
 0.0.1.4
 		Released to beta
 
@@ -214,3 +216,8 @@
 0.1.7.1
 	Fixed nullref when returning to main menu (new in 1.7.3)
 	Added InstallChecker
+
+0.1.8
+	Updated for KSP 1.8
+	Replaced old WWW with call to ToolbarControl.LoadImageFromFile
+	Some minor optimizations with image loading

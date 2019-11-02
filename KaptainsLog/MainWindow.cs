@@ -1,15 +1,9 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
-using KSP.UI.Screens;
 using UnityEngine;
-using UnityEngine.UI;
-
+//using UnityEngine.Networking;
+using ToolbarControl_NS;
 
 namespace KaptainsLogNamespace
 {
@@ -38,6 +32,7 @@ namespace KaptainsLogNamespace
         void InitImageCache()
         {
             FreeImgCache();
+ 
             for (int i = 0; i < kaptainsLogList.Count; i++)
             {
                 var le1 = kaptainsLogList[i];
@@ -46,10 +41,11 @@ namespace KaptainsLogNamespace
                 GUIContent content = new GUIContent();
                 if (System.IO.File.Exists(fileName))
                 {
-
-                    string _imageurl = "file://" + fileName;
-                    var imagetex = new WWW(_imageurl);
-                    content.image = imagetex.texture;
+                    Log.Info("thumbnail: " + fileName);
+               
+                    Texture2D imagetex = new Texture2D(2, 2);
+                    ToolbarControl.LoadImageFromFile(ref imagetex, fileName);
+                    content.image = imagetex;
                 }
                 imgCacheList.Add(content);
             }
@@ -66,10 +62,9 @@ namespace KaptainsLogNamespace
                 GUIContent content = new GUIContent();
                 if (System.IO.File.Exists(fileName))
                 {
-
-                    string _imageurl = "file://" + fileName;
-                    var imagetex = new WWW(_imageurl);
-                    content.image = imagetex.texture;
+                    Texture2D imagetex = new Texture2D(2, 2);
+                    ToolbarControl.LoadImageFromFile(ref imagetex, fileName);
+                    content.image = imagetex;
                 }
                 imgCacheList.Add(content);
             }

@@ -1,16 +1,11 @@
 ﻿using System;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection;
 using KSP.UI.Screens;
 using UnityEngine;
-using UnityEngine.UI;
 using ClickThroughFix;
 using ToolbarControl_NS;
+
+//using UnityEngine.Networking;
 
 namespace KaptainsLogNamespace
 {
@@ -98,7 +93,7 @@ namespace KaptainsLogNamespace
         bool entryFieldPosInitted = false;
         Vector2 entryFieldOffset;
 
-        public enum PauseStatus { none, requested, complete};
+        public enum PauseStatus { none, requested, complete };
         public PauseStatus pauseActivated = PauseStatus.none;
         public double lastPauseTime = 0;
         public double lastNoteTime = 0;
@@ -381,13 +376,13 @@ namespace KaptainsLogNamespace
             GlobalSettings.SaveGlobalSettings();
 
         }
-        
+
 
         private void Start()
         {
             Log.Warning("Start");
             DontDestroyOnLoad(this);
- 
+
             if (!HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().EnabledForSave)
                 return;
 
@@ -492,18 +487,18 @@ namespace KaptainsLogNamespace
         {
             Log.Info("OnGUIAppLauncherReady");
             // Setup PW Stock Toolbar button
-           // bool hidden = false;
+            // bool hidden = false;
 
             if (toolbarControl == null)
             {
 
                 toolbarControl = gameObject.AddComponent<ToolbarControl>();
                 toolbarControl.AddToAllToolbars(ToggleToolbarButton, ToggleToolbarButton,
-                     ApplicationLauncher.AppScenes.SPACECENTER | 
+                     ApplicationLauncher.AppScenes.SPACECENTER |
                      ApplicationLauncher.AppScenes.FLIGHT |
                      ApplicationLauncher.AppScenes.MAPVIEW |
-                     ApplicationLauncher.AppScenes.TRACKSTATION | 
-                     ApplicationLauncher.AppScenes.VAB | 
+                     ApplicationLauncher.AppScenes.TRACKSTATION |
+                     ApplicationLauncher.AppScenes.VAB |
                      ApplicationLauncher.AppScenes.SPH,
                     MODID,
                     "kaptainsLogButton",
@@ -538,7 +533,7 @@ namespace KaptainsLogNamespace
                 displayHTMLTemplate = false;
                 displayScreenshot = false;
                 entryField = Fields.none;
-               // ScreenMessagesLog.Instance.ShowWin(false);
+                // ScreenMessagesLog.Instance.ShowWin(false);
                 if (TagEntry.ready)
                 {
                     TagEntry.ready = false;
@@ -557,7 +552,7 @@ namespace KaptainsLogNamespace
             {
                 toolbarControl.SetTexture(StockToolbarIconInactive, BlizzyToolbarIconInActive);
 
-            }            
+            }
         }
 
         // bool escapePressed = false;
@@ -573,7 +568,7 @@ namespace KaptainsLogNamespace
 
             if (confirmDeletePopup != null)
                 return;
-            
+
             if (visibleByToolbar)
             {
                 if (HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().keepOnScreen)
@@ -784,11 +779,9 @@ namespace KaptainsLogNamespace
                         {
                             if (System.IO.File.Exists(f))
                             {
+                                var _image = new Texture2D(2, 2);
+                                ToolbarControl.LoadImageFromFile(ref _image, f);
 
-                                string _imageurl = "file://" + f;
-                                var _imagetex = new WWW(_imageurl);
-                                var _image = _imagetex.texture;
-                                _imagetex.Dispose();
                                 colWidth[d] = Math.Max(colWidth[d], _image.width);
                             }
                         }
@@ -898,7 +891,7 @@ namespace KaptainsLogNamespace
         }
 
 
-        
+
 
 
         public double screenshotAfter;
@@ -937,23 +930,31 @@ namespace KaptainsLogNamespace
                     cancelManualEntry = false;
             }
         }
-        void ProcessScreenshotImages()
+        bool ProcessScreenshotImages()
         {
             utils.le.guiHidden = guiHidden4Screenshot;
 
-            Texture2D screenshot = MakeThumbnailFrom(utils.le.pngName, HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().thumbnailSize);
-            byte[] bytes = screenshot.EncodeToPNG();
-            if (utils.le.pngThumbnailName != "")
+            try
             {
-                System.IO.File.WriteAllBytes(utils.le.pngThumbnailName, bytes);
-                utils.ConvertToJPG(utils.le.pngThumbnailName, utils.le.jpgThumbnailName);
-                System.IO.File.Delete(utils.le.pngThumbnailName);
-            }
-            Log.Info("logEntryComplete = true; 1");
-            logEntryComplete = true;
-            utils.le.pngThumbnailName = "";
-            Destroy(screenshot);
+                Texture2D screenshot = MakeThumbnailFrom(utils.le.pngName, HighLogic.CurrentGame.Parameters.CustomParams<KL_11>().thumbnailSize);
 
+                byte[] bytes = screenshot.EncodeToPNG();
+                if (utils.le.pngThumbnailName != "")
+                {
+                    System.IO.File.WriteAllBytes(utils.le.pngThumbnailName, bytes);
+                    utils.ConvertToJPG(utils.le.pngThumbnailName, utils.le.jpgThumbnailName);
+                    System.IO.File.Delete(utils.le.pngThumbnailName);
+                }
+                Log.Info("logEntryComplete = true; 1");
+                logEntryComplete = true;
+                utils.le.pngThumbnailName = "";
+                Destroy(screenshot);
+            }
+            catch
+            {
+                Log.Error("MakeThumbnailFrom generated exception");
+                return false;
+            }
 
             if (utils.wasUIVisible && guiHidden4Screenshot)
             {
@@ -981,13 +982,14 @@ namespace KaptainsLogNamespace
                     utils.snapshotInProgress = Utils.SnapshotProgress.complete;
                 }
             }
+            return true;
         }
 
 
         public void LateUpdate()
         {
- //           if (FlightGlobals.ActiveVessel.LandedOrSplashed)
- //               utils.onVesselLanded(FlightGlobals.ActiveVessel);
+            //           if (FlightGlobals.ActiveVessel.LandedOrSplashed)
+            //               utils.onVesselLanded(FlightGlobals.ActiveVessel);
 
             if (utils == null || utils.le == null || utils.leQ == null)
                 return;
@@ -996,7 +998,7 @@ namespace KaptainsLogNamespace
             // Check for manual entry cancel
             //
             if (utils.leQ.Count > 0)
-                Log.Info("LateUpdate, utils.leQ.Count: " + utils.leQ.Count.ToString() + 
+                Log.Info("LateUpdate, utils.leQ.Count: " + utils.leQ.Count.ToString() +
                     ", snapshotInProgress: " + utils.snapshotInProgress.ToString() +
                     ", utils.le.manualEntryRequired: " + utils.le.manualEntryRequired.ToString() +
                     ", notesEntry: " + notesEntry.ToString() + ", pauseActivated: " + pauseActivated.ToString());
@@ -1014,8 +1016,8 @@ namespace KaptainsLogNamespace
             {
                 if (utils.le.eventScreenshot != ScreenshotOptions.No_Screenshot)
                 {
-                    if (utils.snapshotInProgress == Utils.SnapshotProgress.queued && (Planetarium.GetUniversalTime() >= screenshotAfter || 
-                        (utils.le.eventType == Events.ManualEntry || utils.le.eventType == Events.Landed) ))
+                    if (utils.snapshotInProgress == Utils.SnapshotProgress.queued && (Planetarium.GetUniversalTime() >= screenshotAfter ||
+                        (utils.le.eventType == Events.ManualEntry || utils.le.eventType == Events.Landed)))
                     {
                         if (utils.le.pngName != "")
                         {
@@ -1068,15 +1070,15 @@ namespace KaptainsLogNamespace
             {
                 if (System.IO.File.Exists(utils.le.pngName))
                 {
-                    ProcessScreenshotImages();
-                    utils.snapshotInProgress = Utils.SnapshotProgress.complete;
+                    if (ProcessScreenshotImages())
+                        utils.snapshotInProgress = Utils.SnapshotProgress.complete;
                 }
             }
 
             //
             // If no snapshot is scheduled or queued and a manual entry is requested, start that
             //
-            if (pauseActivated == PauseStatus.none && 
+            if (pauseActivated == PauseStatus.none &&
                 (utils.snapshotInProgress == Utils.SnapshotProgress.none || utils.snapshotInProgress == Utils.SnapshotProgress.complete) &&
                 utils.le.manualEntryRequired)
             {
