@@ -21,12 +21,17 @@ namespace KaptainsLogNamespace
         static string lastGameShown = "";
 
         Rect introWindow;
-        int introWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        int introWindowId;
         int MAIN_WIDTH = Screen.height *3/4;
         int MAIN_HEIGHT = 400;
         int automoved = 0;
 
         GUIStyle areaStyle;
+
+        void Awake()
+        {
+            introWindowId = GUIUtility.GetControlID(FocusType.Passive);
+        }
 
         private void Start()
         {
@@ -180,6 +185,7 @@ namespace KaptainsLogNamespace
         {
             image = ImageViewer.LoadImage(KaptainsLog.ROOT_PATH + imagePath + s, (int)introWindow.width / 2, (int)introWindow.height / 2);
         }
+
         void IntroWindow(int id)
         {
             GUILayout.BeginHorizontal();

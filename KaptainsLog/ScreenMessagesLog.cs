@@ -91,7 +91,9 @@ namespace KaptainsLogNamespace
             Instance = this;
             DontDestroyOnLoad(this);
             ScrnMsgsWindow = new Rect((Screen.width - 400) / 2, (Screen.height - 400) / 2, 400, 400);
+            FILTERDATA = KaptainsLog.MOD_FOLDER + "PluginData/FilterList.cfg";
         }
+        
 
         public class OnCreateScreenMessage : UnityEvent<ScreenMessagesText> { }
         public class ScreenMessageTextAwake : UnityEvent<ScreenMessagesText> { }
@@ -373,8 +375,9 @@ namespace KaptainsLogNamespace
         public string NODENAME = "Filters";
         string SETTINGSNAME = "FilterString";
         string VALUENAME = "filter";
-        string FILTERDATA = KaptainsLog.MOD_FOLDER + "PluginData/FilterList.cfg";
+        string FILTERDATA;
 
+  
         void SaveFilterList()
         {
             ConfigNode settingsFile = new ConfigNode();

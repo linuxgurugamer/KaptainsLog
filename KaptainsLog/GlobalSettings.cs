@@ -14,7 +14,7 @@ namespace KaptainsLogNamespace
         private static ConfigNode settingsFile = null;
         private static ConfigNode allSettings = null;
 
-        private static string PLUGINDATA = KaptainsLog.MOD_FOLDER + "PluginData/GlobalSettings.cfg";
+        private static string PLUGINDATA { get { return KaptainsLog.MOD_FOLDER + "PluginData/GlobalSettings.cfg"; } }
         
         public static string NODENAME = "KaptainsLog";
 

@@ -221,3 +221,10 @@ ChangeLog
 	Updated for KSP 1.8
 	Replaced old WWW with call to ToolbarControl.LoadImageFromFile
 	Some minor optimizations with image loading
+
+0.1.8.1
+	Fixed initialization of vars
+
+0.1.8.2
+	Added AssemblyFileVersion
+	Updated version file for 1.12

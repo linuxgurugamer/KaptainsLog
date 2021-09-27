@@ -163,11 +163,11 @@ namespace KaptainsLogNamespace
 
         public string logFileName = "KaptainsLog.cfg";
 
-        public static string ROOT_PATH = KSPUtil.ApplicationRootPath;
-        private static string GAMEDATA_FOLDER = ROOT_PATH + "GameData/";
-        public static String MOD_FOLDER = GAMEDATA_FOLDER + "KaptainsLog/";
-        public string SAVE_PATH = ROOT_PATH + "saves/" + HighLogic.SaveFolder;
-        string PLUGINDATA = MOD_FOLDER + "PluginData/KaptainsLogSettings.cfg";
+        public static string ROOT_PATH;
+        private static string GAMEDATA_FOLDER;
+        public static String MOD_FOLDER;
+        public string SAVE_PATH;
+        string PLUGINDATA;
 
         //bool blizzyButtonActive;
 
@@ -321,7 +321,14 @@ namespace KaptainsLogNamespace
         {
             Log.Warning("Awake");
             Instance = this;
+
+            ROOT_PATH = KSPUtil.ApplicationRootPath;
+            GAMEDATA_FOLDER = ROOT_PATH + "GameData/";
+            MOD_FOLDER = GAMEDATA_FOLDER + "KaptainsLog/";
+            SAVE_PATH = ROOT_PATH + "saves/" + HighLogic.SaveFolder;
+            PLUGINDATA = MOD_FOLDER + "PluginData/KaptainsLogSettings.cfg";
         }
+
         List<DisplayField> displayFields;
 
         void onGameStateCreated(Game g)
