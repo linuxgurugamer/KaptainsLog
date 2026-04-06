@@ -68,7 +68,7 @@ namespace KaptainsLogNamespace
                     resizing = CursorType.ResizeNSEW;
                     originalWindow = windowRect;
                     originalMousePosition = Mouse.screenPos;
-                    SetCursor(CursorType.ResizeEW);
+                    SetCursor(CursorType.ResizeNSEW);
                 }
                 else if (!windowLocked && cursorInVZone && resizing == CursorType.Default)
                 {
@@ -159,16 +159,29 @@ namespace KaptainsLogNamespace
         {
             if (type != CursorType.Default)
                 updated = true;
+
+            // Ensure cursor is visible
+            Cursor.visible = true;
+
+            // Get the appropriate texture based on the cursor type, fall back to null
+            Texture2D tex = null;
             if (type == CursorType.ResizeNS)
-                Cursor.SetCursor((Texture2D)buttonTextures["CursorResizeNS"], new Vector2(11, 11), CursorMode.ForceSoftware);
-            else
-            if (type == CursorType.ResizeEW)
-                Cursor.SetCursor((Texture2D)buttonTextures["CursorResizeEW"], new Vector2(11, 11), CursorMode.ForceSoftware);
-            else
-            if (type == CursorType.ResizeNSEW)
-                Cursor.SetCursor((Texture2D)buttonTextures["CursorResizeNSEW"], new Vector2(11, 11), CursorMode.ForceSoftware);
-            else if (type == CursorType.Default)
+                tex = buttonTextures.ContainsKey("CursorResizeNS") ? buttonTextures["CursorResizeNS"] as Texture2D : null;
+            else if (type == CursorType.ResizeEW)
+                tex = buttonTextures.ContainsKey("CursorResizeEW") ? buttonTextures["CursorResizeEW"] as Texture2D : null;
+            else if (type == CursorType.ResizeNSEW)
+                tex = buttonTextures.ContainsKey("CursorResizeNSEW") ? buttonTextures["CursorResizeNSEW"] as Texture2D : null;
+
+            if (type == CursorType.Default || tex == null)
+            {
                 Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                return;
+            }
+
+            // Set the cursor with the appropriate hotspot (center of the texture)
+            float hx = Mathf.Clamp(tex.width * 0.5f, 0, Mathf.Max(0, tex.width - 1));
+            float hy = Mathf.Clamp(tex.height * 0.5f, 0, Mathf.Max(0, tex.height - 1));
+            Cursor.SetCursor(tex, new Vector2(hx, hy), CursorMode.Auto);
         }
     }
 }
