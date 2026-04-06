@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,7 +33,7 @@ namespace KaptainsLogNamespace
         Rect originalWindow;
         private readonly int minimumHeight = 300;
         private readonly int minimumWidth = 300;
-        private Dictionary<String, Texture> buttonTextures = new Dictionary<String, Texture>();
+        private Dictionary<CursorType, Texture2D> buttonTextures = new Dictionary<CursorType, Texture2D>();
         private readonly String pluginDir = "KaptainsLog";
         string activeResizeWindow = "";
         bool updated = false;
@@ -68,7 +68,7 @@ namespace KaptainsLogNamespace
                     resizing = CursorType.ResizeNSEW;
                     originalWindow = windowRect;
                     originalMousePosition = Mouse.screenPos;
-                    SetCursor(CursorType.ResizeEW);
+                    SetCursor(CursorType.ResizeNSEW);
                 }
                 else if (!windowLocked && cursorInVZone && resizing == CursorType.Default)
                 {
@@ -136,9 +136,9 @@ namespace KaptainsLogNamespace
             // Following is the Window resize code
             if (buttonTextures.Count() == 0)
             {
-                buttonTextures.Add("CursorResizeNS", GameDatabase.Instance.GetTexture(pluginDir + "/Icons/CursorResizeNS", false));
-                buttonTextures.Add("CursorResizeEW", GameDatabase.Instance.GetTexture(pluginDir + "/Icons/CursorResizeEW", false));
-                buttonTextures.Add("CursorResizeNSEW", GameDatabase.Instance.GetTexture(pluginDir + "/Icons/CursorResizeNSEW", false));
+                buttonTextures.Add(CursorType.ResizeNS, GameDatabase.Instance.GetTexture(pluginDir + "/Icons/CursorResizeNS", false));
+                buttonTextures.Add(CursorType.ResizeEW, GameDatabase.Instance.GetTexture(pluginDir + "/Icons/CursorResizeEW", false));
+                buttonTextures.Add(CursorType.ResizeNSEW, GameDatabase.Instance.GetTexture(pluginDir + "/Icons/CursorResizeNSEW", false));
             }
 
             updated = false;
@@ -157,18 +157,25 @@ namespace KaptainsLogNamespace
         /// <param name="type"></param>
         public void SetCursor(CursorType type)
         {
+            // Ensure cursor is visible
+            Cursor.visible = true;
+
+            // Get the appropriate texture based on the cursor type, fall back to null
+            Texture2D tex = null;
             if (type != CursorType.Default)
+                buttonTextures.TryGetValue(type, out tex);
+
+            Vector2 hotspot = Vector2.zero;
+            if (tex != null)
+            {
                 updated = true;
-            if (type == CursorType.ResizeNS)
-                Cursor.SetCursor((Texture2D)buttonTextures["CursorResizeNS"], new Vector2(11, 11), CursorMode.ForceSoftware);
-            else
-            if (type == CursorType.ResizeEW)
-                Cursor.SetCursor((Texture2D)buttonTextures["CursorResizeEW"], new Vector2(11, 11), CursorMode.ForceSoftware);
-            else
-            if (type == CursorType.ResizeNSEW)
-                Cursor.SetCursor((Texture2D)buttonTextures["CursorResizeNSEW"], new Vector2(11, 11), CursorMode.ForceSoftware);
-            else if (type == CursorType.Default)
-                Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                // Set the hotspot to the center of the texture
+                float hx = Mathf.Clamp(tex.width * 0.5f, 0, Mathf.Max(0, tex.width - 1));
+                float hy = Mathf.Clamp(tex.height * 0.5f, 0, Mathf.Max(0, tex.height - 1));
+                hotspot = new Vector2(hx, hy);
+            }
+
+            Cursor.SetCursor(tex, hotspot, CursorMode.Auto);
         }
     }
 }
